@@ -9,7 +9,7 @@ const PORT = 8080;
 // App
 const app = express();
 app.get('/', function (req, res) {
-    res.send('8weike\n');
+    res.send('This is a placeholder for 8weike\n');
 });
 
 app.listen(PORT);
