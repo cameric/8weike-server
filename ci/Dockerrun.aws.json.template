@@ -9,6 +9,7 @@
       "name": "nSERVER",
       "image": "cameric8weike/8weike-server-prod:<TAG>",
       "essential": true,
+      "memory": 128,
       "portMappings": [
         {
           "hostPort": 80,
