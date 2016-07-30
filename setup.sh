@@ -1,4 +1,4 @@
-# !/bin/bash
+#! /bin/bash
 
 # This is the general configuration script that runs
 # to configure the dev environment.
@@ -40,7 +40,7 @@ hash docker 2>/dev/null || {
 
 if [[ "$(docker images -q cameric/8weike-server:v1 2> /dev/null)" == "" ]]; then
   printf "Start building the Node.js image...\n"
-  docker build -t cameric/8weike-server:v1 ..
+  docker build -t cameric/8weike-server:v1 .
   command_status_check "build docker image\n"
 else
   printf "nSERVER image already exists. Proceed to next step\n\n"
@@ -53,7 +53,7 @@ printf "If you don't see image cameric/8weike-server, check the Docker build set
 printf "Initiating server image into Docker container...\n"
 docker run -d --name nSERVER \
            -p 3000:8080 \
-           -v server:/srv/nSERVER \
+           -v $(pwd)/server:/srv/nSERVER \
            cameric/8weike-server:v1
 command_status_check "initiate docker container\n"
 
@@ -68,6 +68,6 @@ printf "##################\n\n"
 
 # Print helpful information about docker commands
 printf "Possible next steps:\n"
-printf "- Access container:   $ docker exec -it nSERVER /bin/bash\n"
-printf "- Read container log: $ docker logs -f nSERVER\n"
-printf "- Stop container:     $ docker stop nSERVER\n"
+echo "- Access container:   $ docker exec -it nSERVER /bin/bash"
+echo "- Read container log: $ docker logs -f nSERVER"
+echo "- Stop container:     $ docker stop nSERVER"

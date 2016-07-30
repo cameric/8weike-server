@@ -1,0 +1,26 @@
+{
+  "AWSEBDockerrunVersion": "2",
+  "authentication": {
+    "bucket": "8weike-core",
+    "key": "dockercfg"
+  },
+  "containerDefinitions": [
+    {
+      "name": "nSERVER",
+      "image": "cameric8weike/8weike-server-prod:<TAG>",
+      "essential": true,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 8080
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "awseb-logs-nSERVER",
+          "containerPath": "/srv/nSERVER/log"
+        }
+      ]
+    }
+  ]
+}

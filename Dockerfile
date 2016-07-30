@@ -11,6 +11,10 @@ FROM node:wheezy
 # Authors
 MAINTAINER Tony Zhang <zhzhangtony@gmail.com>
 
+# First install global packages. Include all
+# global dependencies in this line to reduce layers
+RUN npm install --global nodemon mocha
+
 # Create app directory under /srv
 RUN rm -rf /srv/nSERVER
 RUN mkdir -p /srv/nSERVER
@@ -19,11 +23,11 @@ RUN mkdir -p /srv/nSERVER
 WORKDIR /srv/nSERVER
 
 # Install app dependencies
-COPY package.json /srv/nSERVER/
-RUN npm install
+# COPY ./server/package.json /srv/nSERVER/
+# RUN npm install
 
 # Bundle app source
 COPY ./server /srv/nSERVER
 
-CMD [ "node", "index.js" ]
+CMD [ "nodemon", "index.js" ]
 EXPOSE 8080
