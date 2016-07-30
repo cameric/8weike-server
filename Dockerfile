@@ -23,8 +23,8 @@ RUN mkdir -p /srv/nSERVER
 WORKDIR /srv/nSERVER
 
 # Install app dependencies
-# COPY ./server/package.json /srv/nSERVER/
-# RUN npm install
+COPY ./server/package.json /srv/nSERVER/
+RUN npm install
 
 # Bundle app source
 COPY ./server /srv/nSERVER
