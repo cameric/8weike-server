@@ -6,8 +6,11 @@
 # between the production server and the local VM
 
 SHA1=$1
-DOCKERRUN_FILE=$SHA1-Dockerrun.aws.json
 EB_BUCKET=8weike-core
+DOCKERRUN_FILE=$SHA1-Dockerrun.aws.json
+
+# Set working directory for the script
+cd "$(dirname "$0")"
 
 # Push a new version onto docker hub
 docker push cameric8weike/8weike-server-prod:$SHA1
