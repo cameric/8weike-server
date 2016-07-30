@@ -23,7 +23,7 @@ COPY package.json /srv/nSERVER/
 RUN npm install
 
 # Bundle app source
-COPY . /srv/nSERVER
+COPY ./server /srv/nSERVER
 
 CMD [ "node", "index.js" ]
 EXPOSE 8080
