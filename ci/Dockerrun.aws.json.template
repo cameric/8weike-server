@@ -4,6 +4,12 @@
     "bucket": "8weike-core",
     "key": "dockercfg"
   },
+  "environment": [
+    {
+      "name": "NODE_ENV",
+      "value": "production"
+    }
+  ],
   "containerDefinitions": [
     {
       "name": "nSERVER",
