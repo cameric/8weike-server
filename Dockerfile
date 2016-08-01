@@ -29,5 +29,5 @@ RUN npm install
 # Bundle app source
 COPY ./server /srv/nSERVER
 
-CMD [ "nodemon", "server.js" ]
+CMD [ "nodemon", "-L", "server.js" ]
 EXPOSE 8080
