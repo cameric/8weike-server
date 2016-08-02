@@ -15,6 +15,22 @@ MAINTAINER Tony Zhang <zhzhangtony@gmail.com>
 # global dependencies in this line to reduce layers
 RUN npm install --global nodemon mocha
 
+# Set up environment variables inside container
+# ONLY write one ENV to keep the layers clean
+#
+# NOTE(tonyzhang): Any change to this list will be
+# applied to ALL three environments (dev, test, prod).
+# If you want the environment variable to be applied
+# to only one environment (like NODE_ENV), please refer
+# to the paper doc "Docker Setup Guide".
+
+# MySQL configurations
+ENV RDS_DB_NAME=cameric8weike_db_prod \
+    RDS_HOSTNAME=cameric8weike-db.cotvuqysbx1c.us-east-1.rds.amazonaws.com \
+    RDS_PASSWORD="Yn&}5Dz5tS#'K]$." \
+    RDS_PORT=3306 \
+    RDS_USERNAME=dbmaster
+
 # Create app directory under /srv
 RUN rm -rf /srv/nSERVER
 RUN mkdir -p /srv/nSERVER
@@ -22,12 +38,11 @@ RUN mkdir -p /srv/nSERVER
 # Set up workdir so no OS navigation
 WORKDIR /srv/nSERVER
 
-# Install app dependencies
-COPY ./server/package.json /srv/nSERVER/
-RUN npm install
-
 # Bundle app source
 COPY ./server /srv/nSERVER
+
+# Install app dependencies
+RUN npm install
 
 CMD [ "nodemon", "-L", "server.js" ]
 EXPOSE 8080

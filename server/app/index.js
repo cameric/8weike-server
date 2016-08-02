@@ -3,6 +3,7 @@
 const bodyParser = require('body-parser'),
       cookieParser = require('cookie-parser'),
       express = require('express'),
+      mysql = require('mysql'),
       path = require('path');
 
 const config = require('./config/config'),
@@ -13,6 +14,14 @@ const config = require('./config/config'),
 // Express server
 const app = express();
 const bundler = webpack(webpackConfig);
+
+// Test MySQL Database connection
+const connection = mysql.createConnection(config.mysql);
+connection.connect((err) => {
+    if (err) console.log("Error connecting to MySQL database: " + err);
+    else     console.log("Test MySQL connection successfully.");
+});
+connection.end();
 
 // Set up view engine
 app.set('view engine', 'ejs');
