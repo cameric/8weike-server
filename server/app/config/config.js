@@ -1,15 +1,21 @@
 'use strict';
 
+// Set the node environment variable if not set from docker config
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
 const path = require('path');
 const envConfig = require('./env/' + process.env.NODE_ENV);
 
+const ROOT = path.normalize(path.join(__dirname, '/../../'));
 const GENERAL_CONFIG = {
-    root: path.normalize(path.join(__dirname, '/../../')),
+    root: ROOT,
     express: {
         port: process.env.PORT || 8080
     },
     webapp: {
-        folder: '/webapp'
+        source: path.join(ROOT, '/webapp'),
+        output: path.join(ROOT, '/public/build'),
+        publicPath: '/compiles/js'
     },
     mysql: {
         user     : process.env.RDS_USERNAME,

@@ -4,7 +4,12 @@
   "description": "8weike matches talent with opportunities, builds up personal experiences and fulfills individual dreams. ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
+    "start:dev": "npm run build:client && gulp run",
+    "start:prod": "npm run build && node server.bundle.js",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "webpack",
+    "build:server": "webpack --config webpack.server.config.js"
   },
   "repository": {
     "type": "git",
@@ -15,7 +20,7 @@
     "Communication",
     "Talent"
   ],
-  "author": "Tony Zhang <zhzhangtony@gmail.com>",
+  "author": "Tony Zhang <zhzhangtony@gmail.czom>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/zhzhang2012/8weike-server/issues"
@@ -32,17 +37,28 @@
     "babel-runtime": "^6.11.6",
     "body-parser": "^1.15.2",
     "chai": "^3.5.0",
+    "compression": "^1.6.2",
     "cookie-parser": "^1.4.3",
     "ejs": "^2.5.1",
     "express": "^4.14.0",
+    "gulp": "^3.9.1",
+    "if-env": "^1.0.0",
     "jquery": "^3.1.0",
     "mysql": "^2.11.1",
+    "nodemon": "^1.10.0",
     "path": "^0.12.7",
+    "react": "^15.3.0",
+    "react-document-title": "^2.0.2",
+    "react-dom": "^15.3.0",
+    "react-redux": "^4.4.5",
+    "react-router": "^2.6.1",
+    "redux": "^3.5.2",
     "underscore": "^1.8.3",
     "webpack": "^1.13.1",
     "winston": "^2.2.0"
   },
   "devDependencies": {
+    "redux-devtools": "^3.3.1",
     "webpack-dev-middleware": "^1.6.1"
   }
 }
