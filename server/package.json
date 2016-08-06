@@ -4,7 +4,7 @@
   "description": "8weike matches talent with opportunities, builds up personal experiences and fulfills individual dreams. ",
   "main": "index.js",
   "scripts": {
-    "start": "if [[ \"$NODE_ENV\" == \"production\" ]]; then npm run start:prod; else npm run start:dev; fi",
+    "start": "if [ \"$NODE_ENV\" = \"production\" ]; then npm run start:prod; else npm run start:dev; fi",
     "start:dev": "npm run build:client && gulp run",
     "start:prod": "node server.bundle.js",
     "build": "npm run build:client && npm run build:server",
