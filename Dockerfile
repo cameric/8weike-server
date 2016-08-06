@@ -45,4 +45,4 @@ COPY ./server /srv/nSERVER
 RUN npm install
 
 CMD [ "npm", "start" ]
-EXPOSE 8080
+EXPOSE 8080 8888

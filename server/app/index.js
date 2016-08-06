@@ -5,17 +5,14 @@ const bodyParser = require('body-parser'),
       compression = require('compression'),
       express = require('express'),
       mysql = require('mysql'),
-      path = require('path'),
-      webpack = require('webpack');
+      path = require('path');
 
 const config = require('./config/config'),
       Router = require('./api/router'),
-      clientRouter = require('./middlewares/client_router'),
-      webpackConfig = require('../webpack.config');
+      clientRouter = require('./middlewares/client_router');
 
 // Express server
 const app = express();
-const compiler = webpack(webpackConfig);
 
 // Compress if in production environment
 if (process.env.NODE_ENV === 'production') {
@@ -32,18 +29,10 @@ connection.end();
 
 // Set up view engine
 app.set('view engine', 'ejs');
-app.set('views', config.webapp.source);
+app.set('views', path.join(config.webapp.source, 'views'));
 
 // Serve static files
 app.use(express.static(config.webapp.output));
-
-// Set up Webpack hot reloading if in dev
-if (process.env.NODE_ENV === 'development') {
-    app.use(require('webpack-dev-middleware')(compiler, {
-        noInfo: true,
-        publicPath: config.webapp.publicPath
-    }))
-}
 
 app.use(cookieParser());
 app.use(bodyParser.json());

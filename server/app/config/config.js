@@ -12,10 +12,14 @@ const GENERAL_CONFIG = {
     express: {
         port: process.env.PORT || 8080
     },
+    dev: {
+        port: 8888,
+        path: '/dev'
+    },
     webapp: {
         source: path.join(ROOT, '/webapp'),
         output: path.join(ROOT, '/public/build'),
-        publicPath: '/compiles/js'
+        publicPath: '/compiled/js'
     },
     mysql: {
         user     : process.env.RDS_USERNAME,

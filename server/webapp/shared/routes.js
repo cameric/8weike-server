@@ -4,8 +4,8 @@ import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 
 import DocumentTitle from 'react-document-title';
-import IndexPage from './pages/index_page';
-import LoginPage from './pages/login_page';
+import IndexPage from '../pages/index_page';
+import LoginPage from '../pages/login_page';
 
 // App component is a top-level virtual container that
 // doesn't belong to any page.
