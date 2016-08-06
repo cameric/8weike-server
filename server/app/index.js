@@ -2,7 +2,6 @@
 
 const bodyParser = require('body-parser'),
       cookieParser = require('cookie-parser'),
-      compression = require('compression'),
       express = require('express'),
       mysql = require('mysql'),
       path = require('path');
@@ -13,11 +12,6 @@ const config = require('./config/config'),
 
 // Express server
 const app = express();
-
-// Compress if in production environment
-if (process.env.NODE_ENV === 'production') {
-    app.use(compression);
-}
 
 // Test MySQL Database connection
 const connection = mysql.createConnection(config.mysql);
