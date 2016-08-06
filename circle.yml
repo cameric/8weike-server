@@ -12,7 +12,7 @@ dependencies:
   pre:
     - pip install awscli
     - npm install -g webpack
-    - cd serevr && webpack && webpack --config webpack.server.config
+    - cd server && npm run build
     - docker info
     - docker build -t cameric8weike/8weike-server-prod:$CIRCLE_SHA1 .
   cache_directories:
