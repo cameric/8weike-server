@@ -4,9 +4,6 @@
  * Hoop up everything and run the server.
  */
 
-// Set the node environment variable if not set from docker config
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-
 const app = require('./app/index');
 const config = require('./app/config/config');
 

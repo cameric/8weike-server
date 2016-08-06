@@ -10,6 +10,9 @@
 # WebStorm generated file
 .idea
 
+# Webpack generated files
+*.bundle.js
+
 # Logs
 logs
 *.log

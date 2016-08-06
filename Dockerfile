@@ -13,7 +13,7 @@ MAINTAINER Tony Zhang <zhzhangtony@gmail.com>
 
 # First install global packages. Include all
 # global dependencies in this line to reduce layers
-RUN npm install --global nodemon mocha
+RUN npm install --global gulp mocha
 
 # Set up environment variables inside container
 # ONLY write one ENV to keep the layers clean
@@ -44,5 +44,5 @@ COPY ./server /srv/nSERVER
 # Install app dependencies
 RUN npm install
 
-CMD [ "nodemon", "-L", "server.js" ]
-EXPOSE 8080
+CMD [ "npm", "start" ]
+EXPOSE 8080 8888

@@ -7,9 +7,7 @@ class Router {
     }
 
     setup() {
-        this.app.get('/', function (req, res) {
-            res.render('index');
-        })
+        // All server API should be served here
     }
 }
 

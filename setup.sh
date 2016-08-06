@@ -53,6 +53,7 @@ printf "If you don't see image cameric/8weike-server, check the Docker build set
 printf "Initiating server image into Docker container...\n"
 docker run -d --name nSERVER \
            -p 3000:8080 \
+           -p 8888:8888 \
            -v $(pwd)/server:/srv/nSERVER \
            cameric/8weike-server:v1
 command_status_check "initiate docker container\n"

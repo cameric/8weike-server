@@ -1,9 +1,17 @@
+'use strict';
+
 // This is the entry point for React webapp
 
-import 'babel-polyfill';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Router, browserHistory } from 'react-router'
 
-const content = document.createTextNode('This is a placeholder for 8weike server.');
-const container = document.createElement('span');
+import routes from './shared/routes'
 
-container.appendChild(content);
-document.body.appendChild(container);
+// After initial server-side rendering, ReactDOM.render()
+// will be called to update the state and event handlers.
+const appContainer = document.getElementById('8weike-app-container');
+ReactDOM.render(
+    <Router routes={routes} history={browserHistory}/>,
+    appContainer
+);
