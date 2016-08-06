@@ -4,18 +4,18 @@
     "bucket": "8weike-core",
     "key": "dockercfg"
   },
-  "environment": [
-    {
-      "name": "NODE_ENV",
-      "value": "production"
-    }
-  ],
   "containerDefinitions": [
     {
       "name": "nSERVER",
       "image": "cameric8weike/8weike-server-prod:<TAG>",
       "essential": true,
       "memory": 128,
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        }
+      ],
       "portMappings": [
         {
           "hostPort": 80,

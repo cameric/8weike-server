@@ -27,7 +27,7 @@ connection.connect((err) => {
 });
 connection.end();
 
-// Set up view engine
+// Set up ejs view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(config.webapp.source, 'views'));
 

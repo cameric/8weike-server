@@ -8,8 +8,8 @@
     "start:dev": "npm run build:client && gulp run",
     "start:prod": "npm run build && node server.bundle.js",
     "build": "npm run build:client && npm run build:server",
-    "build:client": "webpack",
-    "build:server": "webpack --config webpack.server.config.js"
+    "build:client": "webpack --colors",
+    "build:server": "webpack --config webpack.server.config.js --colors"
   },
   "repository": {
     "type": "git",

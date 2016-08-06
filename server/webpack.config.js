@@ -15,7 +15,9 @@ module.exports = {
     devtool: 'eval-source-map',
     output: {
         path: config.webapp.output,
-        filename: 'webapp.bundle.js',
+        filename: process.env.NODE_ENV === 'production' ?
+            'webapp-[hash].bundle.js' :
+            'webapp.bundle.js',
         publicPath: config.webapp.publicPath
     },
     module: {
