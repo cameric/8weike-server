@@ -14,7 +14,7 @@ dependencies:
   pre:
     - pip install awscli
   override:
-    - cd server && npm install webpack && npm run build
+    - cd server && npm install && npm run build
   post:
     - docker info
     - docker build -t cameric8weike/8weike-server-prod:$CIRCLE_SHA1 .
