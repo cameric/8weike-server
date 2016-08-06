@@ -4,9 +4,9 @@
   "description": "8weike matches talent with opportunities, builds up personal experiences and fulfills individual dreams. ",
   "main": "index.js",
   "scripts": {
-    "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
+    "start": "if [[ \"$NODE_ENV\" == \"production\" ]]; then npm run start:prod; else npm run start:dev; fi",
     "start:dev": "npm run build:client && gulp run",
-    "start:prod": "npm run build && node server.bundle.js",
+    "start:prod": "node server.bundle.js",
     "build": "npm run build:client && npm run build:server",
     "build:client": "webpack --colors",
     "build:server": "webpack --config webpack.server.config.js --colors"
@@ -42,7 +42,6 @@
     "ejs": "^2.5.1",
     "express": "^4.14.0",
     "gulp": "^3.9.1",
-    "if-env": "^1.0.0",
     "jquery": "^3.1.0",
     "mysql": "^2.11.1",
     "nodemon": "^1.10.0",
