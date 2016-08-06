@@ -19,7 +19,9 @@ const GENERAL_CONFIG = {
     webapp: {
         source: path.join(ROOT, '/webapp'),
         output: path.join(ROOT, '/public/build'),
-        publicPath: '/compiled/js'
+        // Make the publicPath same as output for now. If we use CDN
+        // in the future, no need to change every publicPath in webpack
+        publicPath: '/build'
     },
     mysql: {
         user     : process.env.RDS_USERNAME,

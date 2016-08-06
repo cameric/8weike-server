@@ -17,8 +17,7 @@ module.exports = {
         path: config.webapp.output,
         filename: process.env.NODE_ENV === 'production' ?
             'webapp-[hash].bundle.js' :
-            'webapp.bundle.js',
-        publicPath: config.webapp.publicPath
+            'webapp.bundle.js'
     },
     module: {
         loaders: [

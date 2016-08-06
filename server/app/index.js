@@ -32,7 +32,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(config.webapp.source, 'views'));
 
 // Serve static files
-app.use(express.static(config.webapp.output));
+app.use(express.static(path.join(config.root, '/public')));
 
 app.use(cookieParser());
 app.use(bodyParser.json());

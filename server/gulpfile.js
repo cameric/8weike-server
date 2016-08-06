@@ -35,13 +35,16 @@ gulp.task('webpack-dev-server', function () {
     });
 
     var bundler = new WebpackDevServer(compiler, {
+        contentBase: config.webapp.source,
         publicPath: config.webapp.publicPath,
-        noInfo: true,
+        filename: clientWebappConfig.output.filename,
+        historyApiFallback: true,
         stats: {
             colors: true
         },
         proxy: {
-            '*': 'http://localhost:' + config.express.port
+            // Only proxy API calls. Page routing fallback to historyApiFallback
+            'api*': 'http://localhost:' + config.express.port + '/api'
         }
     });
 
