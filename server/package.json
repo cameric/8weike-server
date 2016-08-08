@@ -54,9 +54,12 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
+    "eslint": "^3.2.2",
+    "eslint-config-airbnb": "^10.0.0",
+    "eslint-plugin-react": "^6.0.0",
     "gulp": "^3.9.1",
-    "nodemon": "^1.10.0",
     "http-proxy": "^1.14.0",
+    "nodemon": "^1.10.0",
     "redux-devtools": "^3.3.1",
     "webpack-dev-server": "^1.14.1"
   }
