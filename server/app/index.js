@@ -12,7 +12,7 @@ const config = require('./config/config'),
       passportConfig = require('./config/passport'),
       router = require('./api/router'),
       clientRouter = require('./middlewares/client_router'),
-      errorHandlers = require('./middleWares/errors');
+      errorHandlers = require('./middlewares/errors');
 
 // Express server
 const app = express();
