@@ -20,7 +20,7 @@
     "Communication",
     "Talent"
   ],
-  "author": "Tony Zhang <zhzhangtony@gmail.czom>",
+  "author": "Tony Zhang <zhzhangtony@gmail.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/zhzhang2012/8weike-server/issues"
@@ -54,9 +54,15 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
+    "eslint": "^3.2.2",
+    "eslint-config-airbnb": "^10.0.0",
+    "eslint-plugin-import": "^1.12.0",
+    "eslint-plugin-jsx-a11y": "^2.0.1",
+    "eslint-plugin-react": "^6.0.0",
     "gulp": "^3.9.1",
-    "nodemon": "^1.10.0",
+    "gulp-eslint": "^3.0.1",
     "http-proxy": "^1.14.0",
+    "nodemon": "^1.10.0",
     "redux-devtools": "^3.3.1",
     "webpack-dev-server": "^1.14.1"
   }

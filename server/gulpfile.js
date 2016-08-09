@@ -8,7 +8,8 @@
  * Note: This file needs to be written in ES5
  */
 
-var gulp = require('gulp'),
+var eslint = require('gulp-eslint'),
+    gulp = require('gulp'),
     webpack = require('webpack'),
     nodemon = require('nodemon'),
     path = require('path'),
@@ -17,6 +18,12 @@ var gulp = require('gulp'),
 var config = require('./app/config/config'),
     clientWebappConfig = require('./webpack.config'),
     serverWebappConfig = require('./webpack.server.config');
+
+let SOURCE_GLOBS = [
+    'app/**/*.js',
+    'webapp/shared/**/*.js',
+    'server.js'
+]
 
 gulp.task('webpack-dev-server', function () {
     // Enable debug mode in dev environment
@@ -71,11 +78,7 @@ gulp.task('server-build', function () {
 
 gulp.task('run', ['webpack-dev-server', 'server-build'], function () {
     // First build new server.bundle.js
-    gulp.watch([
-        'app/**/*.js',
-        'webapp/shared/**/*.js',
-        'server.js'
-    ], ['server-build']);
+    gulp.watch(SOURCE_GLOBS, ['server-build']);
 
     // Restart node by listening to server.bundle.js changes
     nodemon({
@@ -87,6 +90,12 @@ gulp.task('run', ['webpack-dev-server', 'server-build'], function () {
         watch: ['server.bundle.js'],
         legacyWatch: true
     })
+});
+
+gulp.task('lint', function () {
+    return gulp.src(SOURCE_GLOBS)
+        .pipe(eslint())
+        .pipe(eslint.format());
 });
 
 gulp.task('default', ['run']);
