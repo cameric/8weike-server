@@ -1,14 +1,33 @@
 'use strict';
 
-// The exported router class
-class Router {
-    constructor(_app) {
-        this.app = _app;
-    }
+/**
+ * This is the top level API router that *assembles* everything.
+ * Note that we should only write top-level routings in
+ * this file (like `/login`). If you create a new routing module,
+ * appending to the end and expose.
+ */
 
-    setup() {
-        // All server API should be served here
-    }
-}
+const express = require('express'),
+      passport = require('passport'),
+      auth = require('../middlewares/auth');
 
-module.exports = Router;
+// All Router modules are imported here
+const UsersRouter = require('./users');
+
+// All controllers are imported here
+const AuthController = require('../controllers/auth');
+
+// this router holds all endpoints of 8Weike app
+let AppRouter = express.Router();
+
+/* Top-level APIs */
+AppRouter.post('/signup', AuthController.signup);
+AppRouter.post('/login/general', passport.authenticate('local'), AuthController.generalLogin);
+AppRouter.post('/login/weixin', passport.authenticate('weixin'), AuthController.weixinLogin);
+AppRouter.post('/login/weibo', passport.authenticate('weibo'), AuthController.weiboLogin);
+AppRouter.get('/logout', auth.requiresLogin, AuthController.logout);
+
+/* User-related APIs */
+AppRouter.use('/users', UsersRouter);
+
+module.exports = AppRouter;

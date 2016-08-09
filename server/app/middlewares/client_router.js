@@ -13,8 +13,7 @@ module.exports = (req, res, next) => {
         // in here we can make some decisions all at once
         if (err) {
             // there was an error somewhere during route matching
-            console.log(`Route matching error: ${err}`);
-            res.status(500).send(err.message);
+            next(`Route matching error: ${err.message}`);
         } else if (redirect) {
             // before a route is entered, it can redirect so handle it first.
             res.redirect(redirect.pathname + redirect.search)
@@ -25,13 +24,8 @@ module.exports = (req, res, next) => {
                 reactContent: ReactDOM.renderToString(context)
             });
         } else {
-            // no errors, no redirect, we just didn't match anything
-            res.status(404).render('error', {
-                errorCode: 404,
-                errorContent: 'PageNot Found'
-            })
+            // We don't match anything. Go on to match API router.
+            next();
         }
     });
-
-    next();
 };
