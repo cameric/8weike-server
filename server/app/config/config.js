@@ -12,6 +12,7 @@ const GENERAL_CONFIG = {
     express: {
         port: process.env.PORT || 8080
     },
+    sessionSecret: '8weike-terces',
     dev: {
         port: 8888,
         path: '/dev'
