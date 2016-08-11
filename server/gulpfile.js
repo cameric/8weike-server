@@ -2,15 +2,14 @@
  * changes, which will trigger webpack to bundle all back-end
  * resource incrementally and compile webapp pages for server-side
  * React rendering.
- *
- * Note: This file needs to be written in ES5
  */
 
 const eslint = require('gulp-eslint');
 const gulp = require('gulp');
-const webpack = require('webpack');
+const jsdoc = require('gulp-jsdoc3');
 const nodemon = require('nodemon');
 const path = require('path');
+const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 
 const config = require('./app/config/config');
@@ -21,7 +20,7 @@ const SOURCE_GLOBS = [
   'app/**/*.js',
   'webapp/shared/**/*.js',
   'server.js',
-]
+];
 
 gulp.task('webpack-dev-server', () => {
   // Enable debug mode in dev environment
@@ -45,7 +44,7 @@ gulp.task('webpack-dev-server', () => {
     filename: clientWebappConfig.output.filename,
     historyApiFallback: true,
     stats: {
-      colors: true
+      colors: true,
     },
     proxy: {
       // Only proxy API calls. Page routing fallback to historyApiFallback
@@ -94,6 +93,12 @@ gulp.task('lint', () => {
   return gulp.src(SOURCE_GLOBS)
       .pipe(eslint())
       .pipe(eslint.format());
+});
+
+gulp.task('doc', () => {
+  const jsdocConfig = require('./.jsdoc.conf.json');
+  return gulp.src(SOURCE_GLOBS, { read: false })
+      .pipe(jsdoc(jsdocConfig));
 });
 
 gulp.task('default', ['run']);
