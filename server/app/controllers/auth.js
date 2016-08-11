@@ -1,31 +1,26 @@
 // This is the controller for app endpoints about user accounts
 
-class AuthController {
-    constructor() {}
-
-    static generalLogin(req, res) {
-        if (!req.user) {
-            res.redirect('/login');
-        } else {
-            res.redirect('/users/' + req.user.id);
-        }
-    }
-
-    static weixinLogin(req, res) {
-
-    }
-
-    static weiboLogin(req, res) {
-
-    }
-
-    static signup(req, res) {
-
-    }
-
-    static logout(req, res) {
-
-    }
+function generalLogin(req, res) {
+  if (!req.user) return res.redirect('/login');
+  else return res.redirect(`/users/${req.user.id}`);
 }
 
-module.exports = AuthController;
+function weixinLogin(req, res) {
+}
+
+function weiboLogin(req, res) {
+}
+
+function signup(req, res) {
+}
+
+function logout(req, res) {
+}
+
+module.exports = {
+  generalLogin,
+  weixinLogin,
+  weiboLogin,
+  signup,
+  logout,
+};

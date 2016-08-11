@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
-    database: '8weike-mysql-test'
+  database: '8weike-mysql-test',
 };
