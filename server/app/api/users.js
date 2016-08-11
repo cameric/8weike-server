@@ -2,6 +2,6 @@
 
 const express = require('express');
 
-let UserRouter = express.Router();
+const userRouter = express.Router(); // eslint-disable-line new-cap
 
-module.exports = UserRouter;
+module.exports = userRouter;

@@ -5,12 +5,9 @@
  * Reason: the NPM version is not compatible with Node V6.
  */
 
-/**
- * Module dependencies.
- */
-var util = require('util')
-    , OAuth2Strategy = require('passport-oauth2')
-    , InternalOAuthError = require('passport-oauth2').InternalOAuthError;
+const util = require('util');
+const OAuth2Strategy = require('passport-oauth2');
+const InternalOAuthError = require('passport-oauth2').InternalOAuthError;
 
 /**
  * `Strategy` constructor.
@@ -50,19 +47,19 @@ var util = require('util')
  * @api public
  */
 function Strategy(options, verify) {
-    options = options || {};
-    options.authorizationURL = options.authorizationURL || 'https://api.weibo.com/oauth2/authorize';
-    options.tokenURL = options.tokenURL || 'https://api.weibo.com/oauth2/access_token';
-    options.scopeSeparator = options.scopeSeparator || ',';
-    options.customHeaders = options.customHeaders || {};
-    if (!options.customHeaders['User-Agent']) {
-        options.customHeaders['User-Agent'] = options.userAgent || 'passport-weibo';
-    }
+  options = options || {};
+  options.authorizationURL = options.authorizationURL || 'https://api.weibo.com/oauth2/authorize';
+  options.tokenURL = options.tokenURL || 'https://api.weibo.com/oauth2/access_token';
+  options.scopeSeparator = options.scopeSeparator || ',';
+  options.customHeaders = options.customHeaders || {};
+  if (!options.customHeaders['User-Agent']) {
+    options.customHeaders['User-Agent'] = options.userAgent || 'passport-weibo';
+  }
 
-    OAuth2Strategy.call(this, options, verify);
-    this.name = 'weibo';
-    this._getuidAPI = options.getuidAPI || 'https://api.weibo.com/2/account/get_uid.json';
-    this._getProfileAPI = options.getProfileAPI || 'https://api.weibo.com/2/users/show.json';
+  OAuth2Strategy.call(this, options, verify);
+  this.name = 'weibo';
+  this._getuidAPI = options.getuidAPI || 'https://api.weibo.com/2/account/get_uid.json';
+  this._getProfileAPI = options.getProfileAPI || 'https://api.weibo.com/2/users/show.json';
 
 }
 
@@ -88,37 +85,37 @@ util.inherits(Strategy, OAuth2Strategy);
  * @param {Function} done
  * @api protected
  */
-Strategy.prototype.userProfile = function(accessToken, callback) {
-    var self = this;
-    this._oauth2.getProtectedResource(this._getuidAPI, accessToken, function(err, body, res) {
+Strategy.prototype.userProfile = function (accessToken, callback) {
+  var self = this;
+  this._oauth2.getProtectedResource(this._getuidAPI, accessToken, function (err, body, res) {
+    if (err) return callback(new InternalOAuthError('', err));
+
+    try {
+      var raw = JSON.parse(body);
+      self._oauth2.getProtectedResource(self._getProfileAPI + '?uid=' + raw.uid, accessToken, function (err, body, res) {
         if (err) return callback(new InternalOAuthError('', err));
 
         try {
-            var raw = JSON.parse(body);
-            self._oauth2.getProtectedResource(self._getProfileAPI + '?uid=' + raw.uid, accessToken, function(err, body, res) {
-                if (err) return callback(new InternalOAuthError('', err));
-
-                try {
-                    callback(null, self.formatProfile(JSON.parse(body))); // this is different with raw.
-                } catch(e) {
-                    callback(e);
-                }
-            })
-        } catch(e) {
-            callback(e);
+          callback(null, self.formatProfile(JSON.parse(body))); // this is different with raw.
+        } catch (e) {
+          callback(e);
         }
-    })
+      })
+    } catch (e) {
+      callback(e);
+    }
+  })
 }
 
-Strategy.prototype.formatProfile = function(raw) {
-    var user = {};
-    user.provider = 'weibo';
-    user.id = raw.idstr;
-    user.displayName = raw.screen_name || raw.name;
-    user._raw = raw;
-    user._json = raw;
+Strategy.prototype.formatProfile = function (raw) {
+  var user = {};
+  user.provider = 'weibo';
+  user.id = raw.idstr;
+  user.displayName = raw.screen_name || raw.name;
+  user._raw = raw;
+  user._json = raw;
 
-    return user;
+  return user;
 };
 
 /**

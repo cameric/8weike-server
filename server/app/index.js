@@ -1,27 +1,25 @@
-'use strict';
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const express = require('express');
+const mysql = require('mysql');
+const path = require('path');
+const passport = require('passport');
+const session = require('express-session');
 
-const bodyParser = require('body-parser'),
-      cookieParser = require('cookie-parser'),
-      express = require('express'),
-      mysql = require('mysql'),
-      path = require('path'),
-      passport = require('passport'),
-      session = require('express-session');
-
-const config = require('./config/config'),
-      passportConfig = require('./config/passport'),
-      router = require('./api/router'),
-      clientRouter = require('./middlewares/client_router'),
-      errorHandlers = require('./middlewares/errors');
+const config = require('./config/config');
+const passportConfig = require('./config/passport');
+const router = require('./api/router');
+const clientRouter = require('./middlewares/client_router');
+const errorHandlers = require('./middlewares/errors');
 
 // Express server
 const app = express();
 
-// Test MySQL Database connection
+// Test MySQL database connection
 const connection = mysql.createConnection(config.mysql);
 connection.connect((err) => {
-    if (err) console.log("Error connecting to MySQL database: " + err);
-    else     console.log("Test MySQL connection successfully.");
+  if (err) console.log(`Error connecting to MySQL database: ${err}`);
+  else console.log('MySQL connection test successful.');
 });
 connection.end();
 
@@ -34,14 +32,14 @@ app.use(express.static(path.join(config.root, '/public')));
 
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Passport authentication
 app.use(session({
-    secret: config.sessionSecret,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true }
+  secret: config.sessionSecret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true },
 }));
 app.use(passport.initialize());
 app.use(passport.session());
