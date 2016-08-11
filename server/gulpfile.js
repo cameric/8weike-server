@@ -1,5 +1,3 @@
-'use strict';
-
 /* This file sets a Gulp task runner to monitor backend
  * changes, which will trigger webpack to bundle all back-end
  * resource incrementally and compile webapp pages for server-side
