@@ -31,9 +31,6 @@ ENV RDS_DB_NAME=cameric8weike_db_prod \
     RDS_PORT=3306 \
     RDS_USERNAME=dbmaster
 
-# Let the app know where its root directory is
-ENV APP_ROOT=/srv/nSERVER
-
 # Create app directory under /srv
 RUN rm -rf /srv/nSERVER
 RUN mkdir -p /srv/nSERVER
