@@ -1,13 +1,11 @@
-// Set the node environment variable if not set from docker config
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-
-const envConfig = require(`./env/${process.env.NODE_ENV}`);
 const path = require('path');
 
-const root = path.normalize(path.join(__dirname, '/../../'));
+// TODO: This still produces a warning in Webpack. See the related Trello card:
+// https://trello.com/c/SlWm4UVn
+const envConfig = require(`./env/${process.env.NODE_ENV || 'development'}`);
 
 const generalConfig = {
-  root,
+  root: process.env.APP_ROOT,
   express: {
     port: process.env.PORT || 8080,
   },
@@ -17,8 +15,8 @@ const generalConfig = {
     path: '/dev',
   },
   webapp: {
-    source: path.join(root, '/webapp'),
-    output: path.join(root, '/public/build'),
+    source: path.join(process.env.APP_ROOT, '/webapp'),
+    output: path.join(process.env.APP_ROOT, '/public/build'),
     // Make the publicPath same as output for now. If we use CDN
     // in the future, no need to change every publicPath in webpack
     publicPath: '/build',

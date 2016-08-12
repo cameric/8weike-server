@@ -10,6 +10,21 @@
 # to run on all three environments.
 
 
+# Symlink app and webapp to node_modules to avoid complex relative
+# require statements like require('../../../config/test'). With this, you
+# can write the above like require('app/config/test') instead.
+#
+# This is recommended by Browserify, see below:
+#   https://github.com/substack/browserify-handbook#avoiding-
+printf "Linking ./server/app to ./server/node_modules/app...\n\n"
+(
+    cd server/node_modules && ln -nsf ../app
+)
+printf "Linking ./server/webapp to ./server/node_modules/webapp...\n\n"
+(
+    cd server/node_modules && ln -nsf ../webapp
+)
+
 # A helper function to check if some command
 # passed or failed. The first parameter should be a
 # message to describe the command.

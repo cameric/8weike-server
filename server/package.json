@@ -10,7 +10,8 @@
     "start:prod": "node server.bundle.js",
     "build": "npm run build:client && npm run build:server",
     "build:client": "webpack --colors",
-    "build:server": "webpack --config webpack.server.config.js --colors"
+    "build:server": "webpack --config webpack.server.config.js --colors",
+    "postinstall": "node symlink-setup.js app webapp"
   },
   "repository": {
     "type": "git",
