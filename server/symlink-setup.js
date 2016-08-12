@@ -6,7 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const toLink = process.argv.slice(1);
+const toLink = process.argv.slice(2);
 toLink.forEach((elem) => {
     const src = path.join('../', elem);
     const dst = path.join('node_modules/', elem);
