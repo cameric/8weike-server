@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const config = require('app/config/config');
+const config = require('./app/config/config');
 const mysql = require('mysql');
 
 const pool = mysql.createPool(config.mysql);

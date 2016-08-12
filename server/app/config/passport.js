@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const db = require('app/services/database');
+const db = require('./app/services/database');
 
 // All passport strategies configuration
 const LocalStrategy = require('passport-local').Strategy;
