@@ -1,14 +1,14 @@
 // This is the controller for app endpoints about user accounts
 
-function generalLogin(req, res) {
+function loginGeneral(req, res) {
   if (!req.user) return res.redirect('/login');
-  else return res.redirect(`/users/${req.user.id}`);
+  return res.redirect(`/users/${req.user.id}`);
 }
 
-function weixinLogin(req, res) {
+function loginWeixin(req, res) {
 }
 
-function weiboLogin(req, res) {
+function loginWeibo(req, res) {
 }
 
 function signup(req, res) {
@@ -18,9 +18,9 @@ function logout(req, res) {
 }
 
 module.exports = {
-  generalLogin,
-  weixinLogin,
-  weiboLogin,
+  loginGeneral,
+  loginWeixin,
+  loginWeibo,
   signup,
   logout,
 };
