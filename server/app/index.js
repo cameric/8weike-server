@@ -6,7 +6,7 @@ const passport = require('passport');
 const session = require('express-session');
 
 const config = require('./config/config');
-const db = require('./services/database');
+const db = require('./database');
 const passportConfig = require('./config/passport');
 const router = require('./api/router');
 const clientRouter = require('./middlewares/client_router');
@@ -16,7 +16,7 @@ const errorHandlers = require('./middlewares/errors');
 const app = express();
 
 // Test MySQL database connection
-db.testConnection((err) => {
+db.getConnection((err, _) => {
   if (err) console.log(`Error connecting to MySQL database: ${err}`);
   else console.log('MySQL connection test successful.');
 });
