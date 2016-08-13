@@ -1,3 +1,8 @@
 module.exports = {
-  database: '8weike-mysql-test',
+  mysql: {
+    database: 'circle_test',
+    host: 'localhost',
+    port: 3306,
+    user: 'ubuntu',
+  },
 };

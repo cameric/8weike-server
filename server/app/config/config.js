@@ -23,14 +23,6 @@ const generalConfig = {
     // in the future, no need to change every publicPath in webpack
     publicPath: '/build',
   },
-  mysql: {
-    user: process.env.RDS_USERNAME,
-    password: process.env.RDS_PASSWORD,
-    host: process.env.RDS_HOSTNAME,
-    port: process.env.RDS_PORT,
-    database: process.env.RDS_DB_NAME,
-    ssl: 'Amazon RDS',
-  },
 };
 
 module.exports = Object.assign({}, generalConfig, envConfig);
