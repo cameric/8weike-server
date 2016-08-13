@@ -1,12 +1,15 @@
 // Set the node environment variable if not set from docker config
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-const envConfig = require(`./env/${process.env.NODE_ENV}`);
 const path = require('path');
 
-const root = path.normalize(path.join(__dirname, '/../../'));
+const development = require('./env/development');
+const production = require('./env/production');
+const test = require('./env/test');
 
-const generalConfig = {
+const root = path.join(__dirname, '/../../');
+
+const defaults = {
   root,
   express: {
     port: process.env.PORT || 8080,
@@ -25,4 +28,13 @@ const generalConfig = {
   },
 };
 
-module.exports = Object.assign({}, generalConfig, envConfig);
+// Merge the defaults with dev/test/prod configs
+const configs = {
+  development: Object.assign({}, defaults, development),
+  test: Object.assign({}, defaults, test),
+  production: Object.assign({}, defaults, production),
+};
+
+// Export only the config specified by NODE_ENV
+module.exports = configs[process.env.NODE_ENV];
+
