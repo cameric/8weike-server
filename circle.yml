@@ -24,7 +24,7 @@ dependencies:
 
 database:
   override:
-    - mysql -u ubuntu circle_test
+    - mysql -u ubuntu circle_test < db/builder.sql
 
 test:
   override:
