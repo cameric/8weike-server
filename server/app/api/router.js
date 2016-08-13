@@ -7,13 +7,14 @@
 
 const express = require('express');
 const passport = require('passport');
-const auth = require('../middlewares/auth');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const auth = require('app/middlewares/auth');
 
 // All Router modules are imported here
 const usersRouter = require('./users');
 
 // All controllers are imported here
-const authController = require('../controllers/auth');
+const authController = require('app/controllers/auth');
 
 // this router holds all endpoints of 8Weike app
 const appRouter = express.Router(); // eslint-disable-line new-cap

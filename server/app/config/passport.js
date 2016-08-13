@@ -1,7 +1,8 @@
 // All passport strategies configuration
 const LocalStrategy = require('passport-local').Strategy;
 const WechatStrategy = require('passport-weixin').Strategy;
-const WeiboStrategy = require('../services/passport-weibo').Strategy;
+// eslint-disable-next-line import/no-extraneous-dependencies
+const WeiboStrategy = require('app/services/passport-weibo').Strategy;
 
 function configurePassport(passport) {
   passport.serializeUser((user, done) => {

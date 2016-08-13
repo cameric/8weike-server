@@ -4,7 +4,8 @@ const react = require('react');
 const reactDOM = require('react-dom/server');
 const router = require('react-router');
 
-const routes = require('../../webapp/shared/routes');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const routes = require('webapp/shared/routes');
 
 function match(req, res, next) {
   router.match({ routes: routes.default, location: req.url }, (err, redirect, props) => {
