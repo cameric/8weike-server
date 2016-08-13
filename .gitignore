@@ -46,6 +46,9 @@ build/Release
 node_modules
 jspm_packages
 
+# DB Data
+mysql-data
+
 # Optional npm cache directory
 .npm
 

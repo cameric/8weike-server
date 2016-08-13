@@ -24,12 +24,8 @@ RUN npm install --global mocha
 # to only one environment (like NODE_ENV), please refer
 # to the paper doc "Docker Setup Guide".
 
-# MySQL configurations
-ENV RDS_DB_NAME=cameric8weike_db_prod \
-    RDS_HOSTNAME=cameric8weike-db.cotvuqysbx1c.us-east-1.rds.amazonaws.com \
-    RDS_PASSWORD="Yn&}5Dz5tS#'K]$." \
-    RDS_PORT=3306 \
-    RDS_USERNAME=dbmaster
+# No environment variable necessary for now
+# ENV foo=bar
 
 # Create app directory under /srv
 RUN rm -rf /srv/nSERVER

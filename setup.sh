@@ -3,12 +3,6 @@
 # This is the general configuration script that runs
 # to configure the dev environment.
 #
-# ALERT(tony): this script is in sync with the CircleCI
-# configuration file that is used to set up the
-# test environment in CircleCI as well as the prod
-# environment on AWS. Any change to this script needs
-# to run on all three environments.
-
 
 # A helper function to check if some command
 # passed or failed. The first parameter should be a
@@ -38,6 +32,28 @@ hash docker 2>/dev/null || {
 #   printf >&2 "docker command does not exist. Aborting."; exit 1;
 # }
 
+# Build Dev MySQL Docker container
+printf "Bootstrapping dev MySQL container with official MySQL image...\n"
+mkdir mysql-data
+docker run -d --name 8weike-db-dev \
+           -e MYSQL_ROOT_PASSWORD=8weike-db-dev-MySQL-SECRET \
+           -e MYSQL_DATABASE=8weike-db-dev \
+           -e MYSQL_USER=dbdevmaster \
+           -e MYSQL_PASSWORD=dbdevmaster \
+           -p 3306:3306 \
+           -v $(pwd)/mysql-data:/var/lib/mysql \
+           mysql:latest
+command_status_check "bootstrap MySQL container"
+printf "Dev MySQL server running at port 3306\n\n"
+
+# Build 8Weike web Docker container
+
+# ALERT(tony): the below configuration section is in sync with the CircleCI
+# configuration file that is used to set up the
+# test environment in CircleCI as well as the prod
+# environment on AWS. Any change to server container config needs
+# to run on all three environments.
+
 if [[ "$(docker images -q cameric/8weike-server:v1 2> /dev/null)" == "" ]]; then
   printf "Start building the Node.js image...\n"
   docker build -t cameric/8weike-server:v1 .
@@ -54,6 +70,7 @@ printf "Initiating server image into Docker container...\n"
 docker run -d --name nSERVER \
            -p 3000:8080 \
            -p 8888:8888 \
+           --link 8weike-db-dev:mysql \
            -v $(pwd)/server:/srv/nSERVER \
            cameric/8weike-server:v1
 command_status_check "initiate docker container\n"
