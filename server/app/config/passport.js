@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const db = require('../services/database');
+const user = require('../models/user');
 
 // All passport strategies configuration
 const LocalStrategy = require('passport-local').Strategy;
@@ -10,24 +10,9 @@ const phoneStrategy = new LocalStrategy({
   usernameField: 'phone',
   passwordField: 'password',
 }, (phone, password, done) => {
-  // Connect to the database
-  db.getConnection((err, conn) => {
+  user.loginWithPhone(phone, password, (err, user) => {
     if (err) return done(err);
-
-    // Select by phone + password
-    const queryString = 'SELECT id FROM user WHERE phone = ? AND password = ?';
-
-    // Query the DB **using a paramaterized query**. This prevents SQL injection.
-    // TODO(spencer): This is OK for now, but consider using a connection pool later.
-    // See https://github.com/mysqljs/mysql#pooling-connections
-    // eslint-disable-next-line no-shadow
-    return conn.query(queryString, [phone, password], (err, res) => {
-      // Close the connection
-      conn.release();
-
-      if (err) return done(err);
-      return done(null, res);
-    });
+    return done(null, user);
   });
 });
 
@@ -35,19 +20,9 @@ const emailStrategy = new LocalStrategy({
   usernameField: 'email',
   passwordField: 'password',
 }, (email, password, done) => {
-  db.getConnection((err, conn) => {
+  user.loginWithEmail(phone, password, (err, user) => {
     if (err) return done(err);
-
-    // Select by email + password
-    const queryString = 'SELECT id FROM user WHERE email = ? AND password = ?';
-
-    // eslint-disable-next-line no-shadow
-    return conn.query(queryString, [email, password], (err, res) => {
-      conn.release();
-
-      if (err) return done(err);
-      return done(null, res);
-    });
+    return done(null, user);
   });
 });
 
