@@ -34,5 +34,5 @@ services:
       - database
     image: hiogawa/flyway
     volumes:
-      - ./mysql:/flyway/sql
+      - ./mysql-data:/flyway/sql
       - ./flyway.conf:/flyway/flyway.conf
