@@ -1,24 +1,38 @@
-server:
-  container_name: 8weike-server-dev
-  build: .
-  command: npm start
-  ports:
-    - "3000:8080"
-    - "8888:8888"
-  volumes:
-    - "./server:/srv/8weike-server"
-  links:
+version: '2'
+
+services:
+  server:
+    container_name: nSERVER
+    build: .
+    command: npm start
+    depends_on:
+      - database
+    ports:
+      - 3000:8080
+      - 8888:8888
+    volumes:
+      - ./server:/srv/8weike-server
+    links:
       - database:mysql
 
-database:
-  container_name: 8weike-db-dev
-  image: mysql:latest
-  environment:
-    - MYSQL_ROOT_PASSWORD=8weike-db-dev-MySQL-SECRET
-    - MYSQL_DATABASE=8weike-db-dev
-    - MYSQL_USER=dbdevmaster
-    - MYSQL_PASSWORD=dbdevmaster
-  ports:
-    - "3306:3306"
-  volumes:
-    - "./mysql-data:/var/lib/mysql"
+  database:
+    container_name: 8weike-db-dev
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=8weike-db-dev-MySQL-SECRET
+      - MYSQL_DATABASE=8weike-db-dev
+      - MYSQL_USER=dbdevmaster
+      - MYSQL_PASSWORD=dbdevmaster
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql:/var/lib/mysql
+
+  flyway:
+    container_name: 8weike-flyway-dev
+    depends_on:
+      - database
+    image: hiogawa/flyway
+    volumes:
+      - ./mysql:/flyway/sql
+      - ./flyway.conf:/flyway/flyway.conf
