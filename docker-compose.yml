@@ -2,7 +2,7 @@ version: '2'
 
 services:
   server:
-    container_name: 8weike-server
+    container_name: nSERVER
     build: .
     image: cameric/8weike-server:v1
     depends_on:
