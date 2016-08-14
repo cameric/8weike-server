@@ -1,6 +1,6 @@
 module.exports = {
   mysql: {
-    database: '8weike-db-dev',
+    database: '8weike_db_dev',
     host: 'database',
     password: 'dbdevmaster',
     port: 3306,
