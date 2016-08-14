@@ -4,7 +4,6 @@ services:
   server:
     container_name: nSERVER
     build: .
-    command: npm start
     depends_on:
       - database
     ports:
@@ -26,7 +25,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ./mysql-data:/var/lib/mysql
 
   flyway:
     container_name: 8weike-flyway-dev

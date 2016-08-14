@@ -39,3 +39,6 @@ COPY ./server /srv/nSERVER
 
 # Install app dependencies
 RUN npm install
+
+CMD [ "npm", "start" ]
+EXPOSE 8080 8888
