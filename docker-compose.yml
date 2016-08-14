@@ -13,7 +13,7 @@ services:
     volumes:
       - ./server:/srv/nSERVER
     links:
-      - database:mysql
+      - database
 
   database:
     container_name: 8weike-db-dev
@@ -34,5 +34,5 @@ services:
       - database
     image: hiogawa/flyway
     volumes:
-      - ./mysql-data:/flyway/sql
+      - ./sql:/flyway/sql
       - ./flyway.conf:/flyway/flyway.conf
