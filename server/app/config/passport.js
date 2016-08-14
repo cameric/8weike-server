@@ -16,35 +16,15 @@ const phoneStrategy = new LocalStrategy({
   });
 });
 
-const emailStrategy = new LocalStrategy({
-  usernameField: 'email',
-  passwordField: 'password',
-}, (email, password, done) => {
-  user.loginWithEmail(phone, password, (err, user) => {
-    if (err) return done(err);
-    return done(null, user);
-  });
-});
-
 function serializeUser(user, done) {
   done(null, user.id);
 }
 
 function deserializeUser(id, done) {
-  // Retrieve user by ID
   // TODO: Are we retrieving all columns in the user row? If not, don't use *.
-  db.getConnection((err, conn) => {
+  user.findById(id, ['*'], (err, res) => {
     if (err) return done(err);
-
-    const queryString = 'SELECT * FROM user WHERE id = ?';
-
-    // eslint-disable-next-line no-shadow
-    return conn.query(queryString, [id], (err, res) => {
-      conn.release();
-
-      if (err) return done(err);
-      return done(null, res);
-    });
+    return done(null, res);
   });
 }
 
@@ -53,7 +33,6 @@ function configurePassport(passport) {
   passport.deserializeUser(deserializeUser);
 
   passport.use(phoneStrategy);
-  passport.use(emailStrategy);
 
   // TODO(tony): Configure third-party login after we have tokens
   passport.use(new WechatStrategy({

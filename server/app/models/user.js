@@ -8,24 +8,21 @@ function loginWithPhone(phone, password, callback) {
   });
 }
 
-function loginWithEmail(email, password, callback) {
-  const queryString = 'SELECT id FROM user WHERE email = ? AND password = ?';
-  db.singleQuery(queryString, [email, password], (err, user) => {
-    if (err) return callback(err);
-    return callback(null, user);
-  });
-}
-
 function updateById(id, columns, callback) {
   db.singleQuery('UPDATE user SET ? WHERE id = ?', [columns, id], callback);
 }
 
-/*function registerWithPhone(user, callback) {
+function findById(id, columns, callback) {
+  db.singleQuery('SELECT ? FROM user WHERE id = ?', [columns, id], callback);
+}
+
+function register(user, callback) {
   db.singleQuery('INSERT INTO user ? VALUES ?', [user.keys(), user.values()], callback);
-}*/
+}
 
 module.exports = {
+  findById,
   loginWithPhone,
-  loginWithEmail,
+  register,
   updateById,
 };
