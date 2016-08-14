@@ -20,7 +20,7 @@ services:
     image: mysql:latest
     environment:
       - MYSQL_ROOT_PASSWORD=8weike-db-dev-MySQL-SECRET
-      - MYSQL_DATABASE=8weike-db-dev
+      - MYSQL_DATABASE=8weike_db_dev
       - MYSQL_USER=dbdevmaster
       - MYSQL_PASSWORD=dbdevmaster
     ports:
@@ -30,9 +30,10 @@ services:
 
   flyway:
     container_name: 8weike-flyway-dev
+    build: ./docker-flyway
     depends_on:
       - database
-    image: hiogawa/flyway
+    image: flyway:v4.0.3
     volumes:
       - ./sql:/flyway/sql
       - ./flyway.conf:/flyway/flyway.conf
