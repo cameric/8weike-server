@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const user = require('../models/user');
+const userModel = require('../models/user');
 
 // All passport strategies configuration
 const LocalStrategy = require('passport-local').Strategy;
@@ -10,21 +10,22 @@ const phoneStrategy = new LocalStrategy({
   usernameField: 'phone',
   passwordField: 'password',
 }, (phone, password, done) => {
-  user.loginWithPhone(phone, password, (err, user) => {
+  userModel.loginWithPhone(phone, password, (err, user) => {
     if (err) return done(err);
     return done(null, user);
   });
 });
 
 function serializeUser(user, done) {
-  done(null, user.id);
+  if (!user.id) return done(new Error('User object does not have id property.'), null);
+  return done(null, user.id);
 }
 
 function deserializeUser(id, done) {
   // TODO: Are we retrieving all columns in the user row? If not, don't use *.
-  user.findById(id, ['*'], (err, res) => {
+  userModel.findById(id, ['*'], (err, user) => {
     if (err) return done(err);
-    return done(null, res);
+    return done(null, user);
   });
 }
 
