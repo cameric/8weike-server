@@ -1,1 +1,0 @@
-/* The entrypoint for building all MySQL schemas */

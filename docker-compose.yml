@@ -26,14 +26,14 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./mysql-data:/var/lib/mysql
+      - ./db/mysql-data:/var/lib/mysql
 
   flyway:
     container_name: 8weike-flyway-dev
-    build: ./docker-flyway
+    build: ./db/docker-flyway
     depends_on:
       - database
     image: flyway:v4.0.3
     volumes:
-      - ./sql:/flyway/sql
-      - ./flyway.conf:/flyway/flyway.conf
+      - ./db/schema:/flyway/sql
+      - ./flyway-dev.conf:/flyway/flyway.conf
