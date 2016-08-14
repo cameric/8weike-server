@@ -2,15 +2,16 @@ version: '2'
 
 services:
   server:
-    container_name: nSERVER
+    container_name: 8weike-server
     build: .
+    image: cameric/8weike-server:v1
     depends_on:
       - database
     ports:
       - 3000:8080
       - 8888:8888
     volumes:
-      - ./server:/srv/8weike-server
+      - ./server:/srv/nSERVER
     links:
       - database:mysql
 
