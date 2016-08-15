@@ -42,41 +42,35 @@ function query(queryString, substitutions) {
  * @returns {Promise.<Object>} A promise to return a query response.
  */
 function truncate(tables) {
-  return getConnection().then((conn) => {
+  const truncateTable = (conn, table) => new Promise((fulfill, reject) => {
     const queryString = 'TRUNCATE TABLE ?';
 
-    // eslint-disable-next-line arrow-body-style new-cap
-    // For all tables
-    return Promise.all(tables.map((table) =>
-      //
-      new Promise((fulfill, reject) => {
-        conn.query(queryString, [table], (err, res) => {
-          if (err) reject(err);
-          else fulfill(res);
-        });
-      })
-    ));
+    conn.query(queryString, [table], (err, res) => {
+      if (err) reject(err);
+      else fulfill(res);
+    });
   });
+
+  return getConnection().then((conn) =>
+      Promise.all(tables.map(truncateTable.bind(null, conn))));
 }
 
 function importFixture(fixture) {
-  const queryString = 'INSERT INTO ? ( ? ) VALUES ( ? )';
+  const insertRow = (conn, tableName, row) => new Promise((fulfill, reject) => {
+    const queryString = 'INSERT INTO ? ( ? ) VALUES ( ? )';
 
+    conn.query(queryString, [tableName, row.keys(), row.values()], (err, res) => {
+      if (err) reject(err);
+      else fulfill(null, res);
+    });
+  });
+
+  // Get a connection
   return getConnection().then((conn) =>
-      // For all table fixtures
+      // For all tables
       Promise.all(Object.keys(fixture.tables).map((tableName) =>
-          // Get each row
-          Promise.all(fixture.tables[tableName].map((row) =>
-              // Insert the row into the corresponding table in the DB
-              new Promise((fulfill, reject) => {
-                conn.query(queryString, [tableName, row.keys(), row.values()], (err, res) => {
-                  if (err) reject(err);
-                  else fulfill(null, res);
-                });
-              })
-          ))
-      ))
-  );
+          // For all rows in the table
+          Promise.all(fixture.tables[tableName].map(insertRow.bind(null, conn, tableName))))));
 }
 
 module.exports = {
