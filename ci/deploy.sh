@@ -30,8 +30,8 @@ construct_prod_configs() {
       < $1 > $2
 }
 
-# Set working directory for the script
-cd "$(dirname "$0")"
+# Set working directory for the script to root
+cd "$(dirname "$(dirname "$0")")"
 
 prinf "Start pushing the new image to Docker Hub...\n"
 # Push a new version onto docker hub
@@ -52,15 +52,15 @@ aws rds create-db-snapshot /
 printf "Finished creating prod DB snapshot\n\n"
 
 printf "Applying migrations to prod DB...\n"
-construct_prod_configs flyway.prod.conf.template flyway.prod.conf
+construct_prod_configs ./ci/flyway.prod.conf.template ./ci/flyway.prod.conf
 docker build -t flyway-worker ./db/docker-flyway
 docker run --rm -v $(pwd)/db/schema:/flyway/sql -v $(pwd)/ci/flyway.prod.conf:/flyway/flyway.conf flyway-worker info
 printf "Finished applying DB migrations\n\n"
 
 # Create new Elastic Beanstalk version
 printf "Creating a new provisioning file for new Docker image...\n"
-construct_prod_configs Dockerrun.aws.json.template $DOCKERRUN_FILE
-aws s3 cp $DOCKERRUN_FILE s3://$EB_BUCKET/$DOCKERRUN_FILE
+construct_prod_configs ./ci/Dockerrun.aws.json.template ./ci/$DOCKERRUN_FILE
+aws s3 cp ./ci/$DOCKERRUN_FILE s3://$EB_BUCKET/$DOCKERRUN_FILE
 printf "Finished uploading provisioning file to S3\n\n"
 
 printf "Start deploying to ElasticBeanstalk..."
