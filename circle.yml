@@ -7,6 +7,7 @@ machine:
     version: 5.5.0
   services:
     - docker
+    - mysql
   environment:
     NODE_ENV: test
 
@@ -22,9 +23,15 @@ dependencies:
     - /home/ubuntu/nvm/versions/node/5.5.0/bin
     - /home/ubuntu/nvm/versions/node/5.5.0/lib/node_modules
 
+database:
+  pre:
+    - docker build -t flyway-worker ./db/docker-flyway
+  override:
+    - docker run --rm --net=host -v $(pwd)/db/schema:/flyway/sql -v $(pwd)/ci/flyway.test.conf:/flyway/flyway.conf flyway-worker -X info
+
 test:
   override:
-    - docker run cameric8weike/8weike-server-prod:$CIRCLE_SHA1 mocha --recursive
+    - docker run --rm cameric8weike/8weike-server-prod:$CIRCLE_SHA1 mocha --recursive
   post:
     - docker run -d -p 8080:8080 --name nSERVER -e NODE_ENV=test cameric8weike/8weike-server-prod:$CIRCLE_SHA1; sleep 10
     - curl --retry 10 --retry-delay 5 -v http://localhost:8080

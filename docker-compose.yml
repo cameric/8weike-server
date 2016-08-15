@@ -36,4 +36,4 @@ services:
     image: flyway:v4.0.3
     volumes:
       - ./db/schema:/flyway/sql
-      - ./flyway-dev.conf:/flyway/flyway.conf
+      - ./flyway.dev.conf:/flyway/flyway.conf
