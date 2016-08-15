@@ -25,7 +25,7 @@ dependencies:
 
 database:
   override:
-    - docker run --rm --net=host -v $(pwd)/db/schema:/flyway/sql -v $(pwd)/ci/flyway.test.conf:/flyway/flyway.conf sxmichaels/flyway -X info
+    - docker run --rm --net=host -v $(pwd)/db/schema:/flyway/sql -v $(pwd)/ci/flyway.test.conf:/flyway/flyway.conf flyway-worker -X migrate
 
 test:
   override:
