@@ -32,8 +32,9 @@ construct_prod_configs() {
 
 # Set working directory for the script to root
 cd "$(dirname "$(dirname "$0")")"
+echo $(pwd)
 
-prinf "Start pushing the new image to Docker Hub...\n"
+printf "Start pushing the new image to Docker Hub...\n"
 # Push a new version onto docker hub
 docker push cameric8weike/8weike-server-prod:$SHA1
 printf "Finished pushing to Docker hub\n\n"
