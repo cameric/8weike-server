@@ -5,6 +5,6 @@ create table USER (
     nickname VARCHAR(255),
     description VARCHAR(255),
     avatar MEDIUMBLOB,
-    sex ENUM('Male', 'Female', 'Not specified')
+    sex ENUM('Male', 'Female', 'Not specified'),
     PRIMARY KEY (id)
 );
