@@ -32,7 +32,7 @@ describe('User Model Tests', () => {
   it('findById', (done) => {
     // Pick a random user from the fixture and try to log in as that user
     const randomUser = randomItem(fixture.tables.user);
-    userModel.findById(randomUser.id, '*').then((results) => {
+    userModel.findById(randomUser.id, ['id']).then((results) => {
       expect(results.length).to.equal(1);
       const user = results[0];
 
@@ -70,7 +70,7 @@ describe('User Model Tests', () => {
     const newUserId = fixture.tables.user.length + 1;
 
     // Register the user, then make sure it shows up in the DB with the expected ID
-    userModel.register(newUser).then((_) => userModel.findById(newUserId, '*'))
+    userModel.register(newUser).then((_) => userModel.findById(newUserId, ['phone', 'password']))
         .then((results) => {
           expect(results.length).to.equal(1);
           const user = results[0];

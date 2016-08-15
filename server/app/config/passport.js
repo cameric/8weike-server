@@ -18,8 +18,8 @@ function serializeUser(user, done) {
 }
 
 function deserializeUser(id, done) {
-  // TODO: Are we retrieving all columns in the user row? If not, don't use *.
-  userModel.findById(id, ['*']).then(done.bind(null, null)).catch(done);
+  // TODO: How do we know what columns we want? SELECT * is apparently bad practice
+  userModel.findById(id, []).then(done.bind(null, null)).catch(done);
 }
 
 function configurePassport(passport) {
