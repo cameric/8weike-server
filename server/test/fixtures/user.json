@@ -1,0 +1,12 @@
+{
+  "tables": {
+    "user": [
+      {"id": 1, "phone": "646-555-0152", "password": "like@b1rdIamSinging", "nickname": "Florence Foster Jenkins",
+        "description": "The world's greatest coloratura soprano.", "sex": "Female"},
+      {"id": 2, "phone": "917-458-0104", "password": "valsecaressante", "nickname": "Cosmé McMoon",
+        "description": "Mme. Florence's long-suffering accompanist.", "sex": "Male"},
+      {"id": 3, "phone": "518-458-0104", "password": "hamlet", "nickname": "St. Clair Bayfield",
+        "description": "Amateur Shakespearean actor.", "sex": "Male"}
+    ]
+  }
+}
