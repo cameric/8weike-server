@@ -19,10 +19,7 @@ function serializeUser(user, done) {
 
 function deserializeUser(id, done) {
   // TODO: Are we retrieving all columns in the user row? If not, don't use *.
-  userModel.findById(id, ['*'], (err, user) => {
-    if (err) return done(err);
-    return done(null, user);
-  });
+  userModel.findById(id, ['*']).then(done.bind(null, null)).catch(done);
 }
 
 function configurePassport(passport) {
