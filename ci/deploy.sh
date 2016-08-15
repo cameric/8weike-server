@@ -47,8 +47,8 @@ printf "Finished configuring awscli\n\n"
 
 # Apply DB migration to production DB
 printf "Creating a new snapshot for production database on RDS...\n"
-aws rds create-db-snapshot /
-    --db-instance-identifier cameric8weike-db /
+aws rds create-db-snapshot \
+    --db-instance-identifier cameric8weike-db \
     --db-snapshot-identifier cameric8weike-db-snapshot-$SHA1
 printf "Finished creating prod DB snapshot\n\n"
 
