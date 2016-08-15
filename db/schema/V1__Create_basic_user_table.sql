@@ -1,4 +1,4 @@
-create table USER (
+create table user (
     id BIGINT NOT NULL AUTO_INCREMENT,
     phone VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
