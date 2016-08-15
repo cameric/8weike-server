@@ -4,6 +4,20 @@
     "bucket": "8weike-core",
     "key": "dockercfg"
   },
+  "volumes": [
+    {
+      "name": "flyway-db-conf",
+      "host": {
+        "sourcePath": "/var/app/current/ci/flyway.prod.conf"
+      }
+    },
+    {
+      "name": "flyway-db-schema",
+      "host": {
+        "sourcePath": "/var/app/current/db/schema"
+      }
+    },
+  ],
   "containerDefinitions": [
     {
       "name": "nSERVER",
@@ -46,6 +60,22 @@
         {
           "sourceVolume": "awseb-logs-nSERVER",
           "containerPath": "/srv/nSERVER/log"
+        }
+      ]
+    },
+    {
+      "name": "flyway-worker",
+      "image": "sxmichaels/flyway:latest",
+      "essential": true,
+      "memory": 128,
+      "mountPoints": [
+        {
+          "sourceVolume": "flyway-db-conf",
+          "containerPath": "/flyway/flyway.conf"
+        },
+        {
+          "sourceVolume": "flyway-db-schema",
+          "containerPath": "/flyway/sql"
         }
       ]
     }

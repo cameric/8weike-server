@@ -30,10 +30,9 @@ services:
 
   flyway:
     container_name: 8weike-flyway-dev
-    build: ./db/docker-flyway
+    image: sxmichaels/flyway:latest
     depends_on:
       - database
-    image: flyway:v4.0.3
     volumes:
       - ./db/schema:/flyway/sql
       - ./flyway.dev.conf:/flyway/flyway.conf
