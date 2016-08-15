@@ -9,12 +9,8 @@ const WeiboStrategy = require('../services/passport-weibo').Strategy;
 const phoneStrategy = new LocalStrategy({
   usernameField: 'phone',
   passwordField: 'password',
-}, (phone, password, done) => {
-  userModel.loginWithPhone(phone, password, (err, user) => {
-    if (err) return done(err);
-    return done(null, user);
-  });
-});
+}, (phone, password, done) =>
+    userModel.loginWithPhone(phone, password).then(done.bind(null, null)).catch(done));
 
 function serializeUser(user, done) {
   if (!user.id) return done(new Error('User object does not have id property.'), null);
