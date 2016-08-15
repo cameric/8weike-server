@@ -16,9 +16,10 @@ const errorHandlers = require('./middlewares/errors');
 const app = express();
 
 // Test MySQL database connection
-db.getConnection((err, _) => {
-  if (err) console.log(`Error connecting to MySQL database: ${err}`);
-  else console.log('MySQL connection test successful.');
+db.getConnection().then((_) => {
+  console.log('MySQL connection test successful.');
+}).catch((err) => {
+  console.log(`Error connecting to MySQL database: ${err}`);
 });
 
 // Set up ejs view engine

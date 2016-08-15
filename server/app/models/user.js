@@ -1,23 +1,23 @@
 const db = require('../database');
 
-function loginWithPhone(phone, password, callback) {
+function findById(id, columns) {
+  const queryString = 'SELECT ? FROM user WHERE id = ?';
+  return db.query(queryString, [columns, id]);
+}
+
+function loginWithPhone(phone, password) {
   const queryString = 'SELECT id FROM user WHERE phone = ? AND password = ?';
-  db.singleQuery(queryString, [phone, password], (err, user) => {
-    if (err) return callback(err);
-    return callback(null, user);
-  });
+  return db.query(queryString, [phone, password]);
 }
 
-function updateById(id, columns, callback) {
-  db.singleQuery('UPDATE user SET ? WHERE id = ?', [columns, id], callback);
+function register(user) {
+  const queryString = 'INSERT INTO user ? VALUES ?';
+  return db.query(queryString, [user.keys(), user.values()]);
 }
 
-function findById(id, columns, callback) {
-  db.singleQuery('SELECT ? FROM user WHERE id = ?', [columns, id], callback);
-}
-
-function register(user, callback) {
-  db.singleQuery('INSERT INTO user ? VALUES ?', [user.keys(), user.values()], callback);
+function updateById(id, columns) {
+  const queryString = 'UPDATE user SET ? WHERE id = ?';
+  return db.query(queryString, [columns, id]);
 }
 
 module.exports = {
