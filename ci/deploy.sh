@@ -5,6 +5,8 @@
 # Note that the server name needs to keep sync
 # between the production server and the local VM
 
+set -e
+
 SHA1=$1
 EB_BUCKET=8weike-core
 DOCKERRUN_FILE=$SHA1-Dockerrun.aws.json
@@ -50,7 +52,7 @@ aws rds create-db-snapshot /
 printf "Finished creating prod DB snapshot\n\n"
 
 printf "Applying migrations to prod DB...\n"
-construct_prod_configs flyway.prod.conf.tenplate flyway.prod.conf
+construct_prod_configs flyway.prod.conf.template flyway.prod.conf
 docker build -t flyway-worker ./db/docker-flyway
 docker run --rm -v ./db/schema:/flyway/sql -v ./ci/flyway.prod.conf:/flyway/flyway.conf flyway-worker info
 printf "Finished applying DB migrations\n\n"
