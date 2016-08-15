@@ -54,7 +54,7 @@ printf "Finished creating prod DB snapshot\n\n"
 printf "Applying migrations to prod DB...\n"
 construct_prod_configs flyway.prod.conf.template flyway.prod.conf
 docker build -t flyway-worker ./db/docker-flyway
-docker run --rm -v ./db/schema:/flyway/sql -v ./ci/flyway.prod.conf:/flyway/flyway.conf flyway-worker info
+docker run --rm -v $(pwd)/db/schema:/flyway/sql -v $(pwd)/ci/flyway.prod.conf:/flyway/flyway.conf flyway-worker info
 printf "Finished applying DB migrations\n\n"
 
 # Create new Elastic Beanstalk version

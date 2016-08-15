@@ -26,7 +26,7 @@ database:
   pre:
     - docker build -t flyway-worker ./db/docker-flyway
   override:
-    - docker run --rm -v ./db/schema:/flyway/sql -v ./ci/flyway.test.conf:/flyway/flyway.conf flyway-worker -X info
+    - docker run --rm -v $(pwd)/db/schema:/flyway/sql -v $(pwd)/ci/flyway.test.conf:/flyway/flyway.conf flyway-worker -X info
 
 test:
   override:
