@@ -5,6 +5,5 @@ module.exports = {
     password: 'dbdevmaster',
     port: 3306,
     user: 'dbdevmaster',
-    debug: true,
   },
 };
