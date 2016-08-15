@@ -19,6 +19,13 @@ describe('User Model Tests', () => {
         .catch(done);
   });
 
+  after((done) => {
+    db.truncate(['user'])
+        .then(done.bind(null, null))
+        .catch(done);
+  });
+
+
   it('findById', (done) => {
     // Pick a random user from the fixture and try to log in as that user
     const randomUser = randomItem(fixture.tables.user);
