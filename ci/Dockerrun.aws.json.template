@@ -16,7 +16,7 @@
       "host": {
         "sourcePath": "/var/app/current/db/schema"
       }
-    },
+    }
   ],
   "containerDefinitions": [
     {
