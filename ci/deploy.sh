@@ -12,7 +12,7 @@ EB_BUCKET=8weike-core
 DOCKERRUN_FILE=$SHA1-Dockerrun.aws.json
 
 # RDS Production DB constants
-RDS_DB_PROD_NAME=cameric8weike_db_prod
+RDS_DB_PROD_NAME=cameric8weike-db-prod
 RDS_DB_PROD_HOST=cameric8weike-db.cotvuqysbx1c.us-east-1.rds.amazonaws.com
 RDS_DB_PROD_PASSWORD="Yn&}5Dz5tS#'K]$."
 RDS_DB_PROD_PORT=3306
@@ -31,7 +31,7 @@ construct_prod_configs() {
 }
 
 # Set working directory for the script to root
-cd "$(dirname "$(dirname "$0")")"
+cd "$(dirname "$0")"
 echo $(pwd)
 
 printf "Start pushing the new image to Docker Hub...\n"
@@ -52,16 +52,14 @@ aws rds create-db-snapshot \
     --db-snapshot-identifier cameric8weike-db-snapshot-$SHA1
 printf "Finished creating prod DB snapshot\n\n"
 
-printf "Applying migrations to prod DB...\n"
-construct_prod_configs ./ci/flyway.prod.conf.template ./ci/flyway.prod.conf
-docker build -t flyway-worker ./db/docker-flyway
-docker run --rm -v $(pwd)/db/schema:/flyway/sql -v $(pwd)/ci/flyway.prod.conf:/flyway/flyway.conf flyway-worker info
-printf "Finished applying DB migrations\n\n"
+printf "Construct DB migration conf from template...\n"
+construct_prod_configs flyway.prod.conf.template flyway.prod.conf
+printf "Finished creating migration files\n\n"
 
 # Create new Elastic Beanstalk version
 printf "Creating a new provisioning file for new Docker image...\n"
-construct_prod_configs ./ci/Dockerrun.aws.json.template ./ci/$DOCKERRUN_FILE
-aws s3 cp ./ci/$DOCKERRUN_FILE s3://$EB_BUCKET/$DOCKERRUN_FILE
+construct_prod_configs Dockerrun.aws.json.template $DOCKERRUN_FILE
+aws s3 cp $DOCKERRUN_FILE s3://$EB_BUCKET/$DOCKERRUN_FILE
 printf "Finished uploading provisioning file to S3\n\n"
 
 printf "Start deploying to ElasticBeanstalk..."
