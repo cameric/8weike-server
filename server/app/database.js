@@ -24,9 +24,6 @@ function getConnection() {
  * @returns {Promise.<Object>} A promise to return a query response.
  */
 function query(queryString, substitutions) {
-  const formattedQuery = mysql.format(queryString, substitutions);
-  console.log(`Performing SQL query: ${formattedQuery}`);
-
   return new Promise((fulfill, reject) => {
     getConnection().then((conn) =>
         conn.query(queryString, substitutions, (err, res) => {
@@ -46,7 +43,7 @@ function query(queryString, substitutions) {
  */
 function truncate(tables) {
   const truncateTable = (conn, table) => new Promise((fulfill, reject) => {
-    const queryString = 'TRUNCATE TABLE ?';
+    const queryString = 'TRUNCATE TABLE ??';
 
     conn.query(queryString, [table], (err, res) => {
       if (err) reject(err);
@@ -60,9 +57,11 @@ function truncate(tables) {
 
 function importFixture(fixture) {
   const insertRow = (conn, tableName, row) => new Promise((fulfill, reject) => {
-    const queryString = 'INSERT INTO ? ( ? ) VALUES ( ? )';
+    const queryString = 'INSERT INTO ?? ( ?? ) VALUES ( ? )';
+    const columnNames = Object.keys(row);
+    const columnValues = columnNames.map((col) => row[col]);
 
-    conn.query(queryString, [tableName, row.keys(), row.values()], (err, res) => {
+    conn.query(queryString, [tableName, columnNames, columnValues], (err, res) => {
       if (err) reject(err);
       else fulfill(null, res);
     });
