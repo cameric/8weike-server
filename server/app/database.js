@@ -24,6 +24,9 @@ function getConnection() {
  * @returns {Promise.<Object>} A promise to return a query response.
  */
 function query(queryString, substitutions) {
+  const formattedQuery = mysql.format(queryString, substitutions);
+  console.log(`Performing SQL query: ${formattedQuery}`);
+
   return new Promise((fulfill, reject) => {
     getConnection().then((conn) =>
         conn.query(queryString, substitutions, (err, res) => {
