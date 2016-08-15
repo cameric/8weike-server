@@ -22,7 +22,7 @@ describe('User Model Tests', function() {
   it('findById', (done) => {
     // Pick a random user from the fixture and try to log in as that user
     const randomUser = randomItem(fixture.tables.user);
-    userModel.findById(randomUser.id).then((user) => {
+    userModel.findById(randomUser.id, ['*']).then((user) => {
       expect(user).to.not.be.null;
       expect(user.id).to.equal(randomUser.id);
       done();
