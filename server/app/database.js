@@ -61,6 +61,7 @@ function importFixture(fixture) {
     const columnNames = Object.keys(row);
     const columnValues = columnNames.map((col) => row[col]);
 
+    console.log('IMPORTED: ' + columnNames + ' ' + columnValues);
     conn.query(queryString, [tableName, columnNames, columnValues], (err, res) => {
       if (err) reject(err);
       else fulfill(null, res);

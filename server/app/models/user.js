@@ -2,6 +2,7 @@ const db = require('../database');
 
 function findById(id, columns) {
   const queryString = 'SELECT ?? FROM user WHERE id = ?';
+
   return db.query(queryString, [columns, id]);
 }
 
