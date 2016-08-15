@@ -13,12 +13,12 @@ function randomItem(array) {
 
 describe('User Model Tests', () => {
   beforeEach((done) => {
+    // Truncate the user table
     db.truncate(['user'])
-        .then(db.importFixture(fixture))
-        .then((res) => {
-          console.log('DONE');
-          done.bind(null, null)(res);
-        })
+        // Import the fixture
+        .then((_) => db.importFixture(fixture))
+        // Finish
+        .then(done.bind(null, null))
         .catch(done);
   });
 
@@ -30,7 +30,6 @@ describe('User Model Tests', () => {
 
 
   it('findById', (done) => {
-    console.log('TEST');
     // Pick a random user from the fixture and try to log in as that user
     const randomUser = randomItem(fixture.tables.user);
     userModel.findById(randomUser.id, '*').then((results) => {
@@ -46,7 +45,6 @@ describe('User Model Tests', () => {
   });
 
   it('loginWithPhone', (done) => {
-    console.log('TEST');
     // Pick a random user from the fixture and try to log in as that user
     const randomUser = randomItem(fixture.tables.user);
     userModel.loginWithPhone(randomUser.phone, randomUser.password).then((results) => {
@@ -63,7 +61,6 @@ describe('User Model Tests', () => {
   });
 
   it('register', (done) => {
-    console.log('TEST');
     // Insert a user into the DB with just the necessary information
     const newUser = {
       phone: '123-456-7890',
@@ -89,7 +86,6 @@ describe('User Model Tests', () => {
   });
 
   it('updateById', (done) => {
-    console.log('TEST');
     // Pick a random user from the fixture and try to update their phone number, adding a '!!!'
     const randomUser = randomItem(fixture.tables.user);
     const newPhone = `${randomUser.phone}!!!`;
