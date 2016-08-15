@@ -29,8 +29,8 @@ describe('User Model Tests', () => {
   it('findById', (done) => {
     // Pick a random user from the fixture and try to log in as that user
     const randomUser = randomItem(fixture.tables.user);
-    userModel.findById(randomUser.id, ['*']).then((results) => {
-      expect(results.length).to.be.equal(1);
+    userModel.findById(randomUser.id, '*').then((results) => {
+      expect(results.length).to.equal(1);
       const user = results[0];
 
       expect(user.id).to.equal(randomUser.id);
@@ -45,11 +45,11 @@ describe('User Model Tests', () => {
     // Pick a random user from the fixture and try to log in as that user
     const randomUser = randomItem(fixture.tables.user);
     userModel.loginWithPhone(randomUser.phone, randomUser.password).then((results) => {
-      expect(results.length).to.be.equal(1);
+      expect(results.length).to.equal(1);
       const user = results[0];
 
       expect(user).to.not.be.null;
-      expect(user.id).to.not.be.null;
+      expect(user.id).to.equal(randomUser.id)
 
       done();
     }).catch((err) => {
@@ -67,9 +67,9 @@ describe('User Model Tests', () => {
     const newUserId = fixture.tables.user.length + 1;
 
     // Register the user, then make sure it shows up in the DB with the expected ID
-    userModel.register(newUser).then((_) => userModel.findById(newUserId, ['*']))
+    userModel.register(newUser).then((_) => userModel.findById(newUserId, '*'))
         .then((results) => {
-          expect(results.length).to.be.equal(1);
+          expect(results.length).to.equal(1);
           const user = results[0];
 
           expect(user).to.be.not.null;
@@ -91,7 +91,7 @@ describe('User Model Tests', () => {
     userModel.updateById(randomUser.id, { phone: newPhone }).then((_) =>
         // Retrieve the updated user from the DB
         userModel.findById(randomUser.id, ['phone']).then((results) => {
-          expect(results.length).to.be.equal(1);
+          expect(results.length).to.equal(1);
           const user = results[0];
 
           // Ensure that the nickname is updated
