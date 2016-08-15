@@ -16,8 +16,9 @@ const errorHandlers = require('./middlewares/errors');
 const app = express();
 
 // Test MySQL database connection
-db.getConnection().then((_) => {
+db.getConnection().then((conn) => {
   console.log('MySQL connection test successful.');
+  conn.release();
 }).catch((err) => {
   console.log(`Error connecting to MySQL database: ${err}`);
 });
