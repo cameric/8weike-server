@@ -66,7 +66,6 @@
     {
       "name": "flyway-worker",
       "image": "sxmichaels/flyway:latest",
-      "essential": true,
       "memory": 128,
       "mountPoints": [
         {

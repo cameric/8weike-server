@@ -14,7 +14,7 @@ DOCKERRUN_FILE=$SHA1-Dockerrun.aws.json
 # RDS Production DB constants
 RDS_DB_PROD_NAME=cameric8weike-db-prod
 RDS_DB_PROD_HOST=cameric8weike-db.cotvuqysbx1c.us-east-1.rds.amazonaws.com
-RDS_DB_PROD_PASSWORD="Yn&}5Dz5tS#'K]$."
+RDS_DB_PROD_PASSWORD="Yn\&}5Dz5tS#'K]$."
 RDS_DB_PROD_PORT=3306
 RDS_DB_PROD_USER=dbmaster
 
