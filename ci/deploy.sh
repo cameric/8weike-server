@@ -7,8 +7,8 @@
 
 set -e
 
-ROOT="$(dirname "$0")/.."
-echo $ROOT
+ROOT="$(dirname "$(pwd)")"
+echo "Root dir is: $ROOT"
 
 SHA1=$1
 EB_BUCKET=8weike-core
