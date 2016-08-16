@@ -7,7 +7,7 @@
 
 set -e
 
-ROOT="$(dirname "$(pwd)")"
+ROOT=$(pwd)
 echo "Root dir is: $ROOT"
 
 SHA1=$1
@@ -45,7 +45,7 @@ construct_prod_configs() {
 
 # Set working directory for the script to /ci
 cd "$(dirname "$0")"
-echo $(pwd)
+echo "CI dir is: $(pwd)"
 
 printf "Start pushing the new image to Docker Hub...\n"
 # Push a new version onto docker hub
