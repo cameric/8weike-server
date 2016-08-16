@@ -7,9 +7,13 @@
 
 set -e
 
+ROOT="$(dirname "$0")/.."
+echo $ROOT
+
 SHA1=$1
 EB_BUCKET=8weike-core
-DOCKERRUN_FILE=$SHA1-Dockerrun.aws.json
+SOURCE_BUNDLE_NAME=8weike-source-bundle
+HASHED_SOURCE_BUNDLE_NAME=$SHA1-$SOURCE_BUNDLE_NAME
 
 # RDS Production DB constants
 RDS_DB_PROD_NAME=cameric8weike-db-prod
@@ -17,6 +21,15 @@ RDS_DB_PROD_HOST=cameric8weike-db.cotvuqysbx1c.us-east-1.rds.amazonaws.com
 RDS_DB_PROD_PASSWORD="Yn\&}5Dz5tS#'K]$."
 RDS_DB_PROD_PORT=3306
 RDS_DB_PROD_USER=dbmaster
+
+# App dependencies (files or directories) that will be mounted to aws.
+# Note that the paths should be relative to root directory
+# and no `/` in the front!
+
+# Files
+SOURCE_BUNDLE_DEPS[0]=ci/flyway.prod.conf
+# Directories
+SOURCE_BUNDLE_DEPS_DIR[0]=db/schema
 
 # Construct production configuration files from
 # production environment variables and templates.
@@ -30,7 +43,7 @@ construct_prod_configs() {
       < $1 > $2
 }
 
-# Set working directory for the script to root
+# Set working directory for the script to /ci
 cd "$(dirname "$0")"
 echo $(pwd)
 
@@ -57,20 +70,40 @@ construct_prod_configs flyway.prod.conf.template flyway.prod.conf
 printf "Finished creating migration files\n\n"
 
 # Create new Elastic Beanstalk version
-printf "Creating a new provisioning file for new Docker image...\n"
-construct_prod_configs Dockerrun.aws.json.template $DOCKERRUN_FILE
-aws s3 cp $DOCKERRUN_FILE s3://$EB_BUCKET/$DOCKERRUN_FILE
-printf "Finished uploading provisioning file to S3\n\n"
+printf "Bundling up app dependencies with Dockerrun file...\n"
+mkdir $SOURCE_BUNDLE_NAME
+construct_prod_configs Dockerrun.aws.json.template $SOURCE_BUNDLE_NAME/Dockerrun.aws.json
+
+# Migrate file dependencies
+for i in "${SOURCE_BUNDLE_DEPS[@]}"
+do
+mkdir -p $(dirname "$SOURCE_BUNDLE_NAME/$i")
+cp $ROOT/$i $(dirname "$SOURCE_BUNDLE_NAME/$i")
+done
+
+# Migrate directory dependencies
+for j in "${SOURCE_BUNDLE_DEPS_DIR[@]}"
+do
+mkdir -p $SOURCE_BUNDLE_NAME/$j
+cp -r $ROOT/$j $SOURCE_BUNDLE_NAME/$j
+done
+
+cd $SOURCE_BUNDLE_NAME && zip -r "$SOURCE_BUNDLE_NAME.zip" *
+printf "Finish bundling\n\n"
+
+printf "Uploading source bundle to S3...\n"
+aws s3 cp "$HASHED_SOURCE_BUNDLE_NAME.zip" s3://$EB_BUCKET/$HASHED_SOURCE_BUNDLE_NAME.zip
+printf "Finished uploading source bundle to S3\n\n"
 
 printf "Start deploying to ElasticBeanstalk..."
 aws elasticbeanstalk create-application-version --application-name 8weike \
-  --version-label $SHA1 --source-bundle S3Bucket=$EB_BUCKET,S3Key=$DOCKERRUN_FILE
+    --version-label $SHA1 --source-bundle S3Bucket=$EB_BUCKET,S3Key=$HASHED_SOURCE_BUNDLE_NAME.zip
 
 # Update Elastic Beanstalk environment to new version
 aws elasticbeanstalk update-environment --environment-name 8weike-nSERVER-prod \
     --version-label $SHA1
 printf "\n\n"
 
-printf "#######################"
-printf "# Finished deployment #"
-printf "#######################"
+printf "#######################\n"
+printf "# Finished deployment #\n"
+printf "#######################\n"
