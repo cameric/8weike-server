@@ -23,8 +23,8 @@ RDS_DB_PROD_PORT=3306
 RDS_DB_PROD_USER=dbmaster
 
 # App dependencies (files or directories) that will be mounted to aws.
-# Note that the paths should be relative to root directory
-# and no `/` in the front!
+# These paths could be found on AWS under `/var/app/current/`.
+# Note that the paths should be relative to root directory and no `/` in the front!
 
 # Files
 SOURCE_BUNDLE_DEPS[0]=ci/flyway.prod.conf
