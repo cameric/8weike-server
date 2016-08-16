@@ -1,12 +1,12 @@
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express = require('express');
-const mysql = require('mysql');
 const path = require('path');
 const passport = require('passport');
 const session = require('express-session');
 
 const config = require('./config/config');
+const db = require('./database');
 const passportConfig = require('./config/passport');
 const router = require('./api/router');
 const clientRouter = require('./middlewares/client_router');
@@ -16,12 +16,12 @@ const errorHandlers = require('./middlewares/errors');
 const app = express();
 
 // Test MySQL database connection
-const connection = mysql.createConnection(config.mysql);
-connection.connect((err) => {
-  if (err) console.log(`Error connecting to MySQL database: ${err}`);
-  else console.log('MySQL connection test successful.');
+db.getConnection().then((conn) => {
+  console.log('MySQL connection test successful.');
+  conn.release();
+}).catch((err) => {
+  console.log(`Error connecting to MySQL database: ${err}`);
 });
-connection.end();
 
 // Set up ejs view engine
 app.set('view engine', 'ejs');

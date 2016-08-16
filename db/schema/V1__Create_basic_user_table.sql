@@ -1,8 +1,10 @@
-create table USER (
-    P_ID BIGINT not null,       -- In case we ever have > 4.3 billion users...
-    phone TINYTEXT not null,    -- 
-    nickname TINYTEXT,
-    description TINYTEXT,
+create table user (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    phone VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    nickname VARCHAR(255),
+    description VARCHAR(255),
     avatar MEDIUMBLOB,
-    sex ENUM('Male', 'Female', 'Other')
+    sex ENUM('Male', 'Female', 'Not specified'),
+    PRIMARY KEY (id)
 );
