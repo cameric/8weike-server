@@ -92,7 +92,7 @@ cd $SOURCE_BUNDLE_NAME && zip -r "$SOURCE_BUNDLE_NAME.zip" *
 printf "Finish bundling\n\n"
 
 printf "Uploading source bundle to S3...\n"
-aws s3 cp "$HASHED_SOURCE_BUNDLE_NAME.zip" s3://$EB_BUCKET/$HASHED_SOURCE_BUNDLE_NAME.zip
+aws s3 cp "$SOURCE_BUNDLE_NAME.zip" s3://$EB_BUCKET/$HASHED_SOURCE_BUNDLE_NAME.zip
 printf "Finished uploading source bundle to S3\n\n"
 
 printf "Start deploying to ElasticBeanstalk..."
