@@ -8,13 +8,13 @@
     {
       "name": "flyway-db-conf",
       "host": {
-        "sourcePath": "/var/app/current/ci/flyway.prod.conf"
+        "sourcePath": "/var/app/current/8weike-server/ci/flyway.prod.conf"
       }
     },
     {
       "name": "flyway-db-schema",
       "host": {
-        "sourcePath": "/var/app/current/db/schema"
+        "sourcePath": "/var/app/current/8weike-server/db/schema"
       }
     }
   ],

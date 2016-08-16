@@ -20,9 +20,9 @@ const appRouter = express.Router(); // eslint-disable-line new-cap
 
 // Top-level APIs
 appRouter.post('/signup', authController.signup);
-appRouter.post('/login/general', passport.authenticate('local'), authController.generalLogin);
-appRouter.post('/login/weixin', passport.authenticate('weixin'), authController.weixinLogin);
-appRouter.post('/login/weibo', passport.authenticate('weibo'), authController.weiboLogin);
+appRouter.post('/login/general', passport.authenticate('local'), authController.loginGeneral);
+appRouter.post('/login/weixin', passport.authenticate('weixin'), authController.loginWeixin);
+appRouter.post('/login/weibo', passport.authenticate('weibo'), authController.loginWeibo);
 appRouter.get('/logout', auth.requiresLogin, authController.logout);
 
 // User-related APIs
