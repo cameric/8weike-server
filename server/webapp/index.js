@@ -2,9 +2,11 @@
 
 // This is the entry point for React webapp
 
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { Router, browserHistory } from 'react-router'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Router, browserHistory } from 'react-router';
+import { Provider } from 'react-redux';
+import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
 
 import routes from './shared/routes'
 
