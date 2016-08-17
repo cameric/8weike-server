@@ -62,21 +62,6 @@
           "containerPath": "/srv/nSERVER/log"
         }
       ]
-    },
-    {
-      "name": "flyway-worker",
-      "image": "sxmichaels/flyway:latest",
-      "memory": 128,
-      "mountPoints": [
-        {
-          "sourceVolume": "flyway-db-conf",
-          "containerPath": "/flyway/flyway.conf"
-        },
-        {
-          "sourceVolume": "flyway-db-schema",
-          "containerPath": "/flyway/sql"
-        }
-      ]
     }
   ]
 }
