@@ -16,7 +16,7 @@ SOURCE_BUNDLE_NAME=8weike-source-bundle
 HASHED_SOURCE_BUNDLE_NAME=$SHA1-$SOURCE_BUNDLE_NAME
 
 # RDS Production DB constants
-RDS_DB_PROD_NAME=cameric8weike-db-prod
+RDS_DB_PROD_NAME=cameric8weike_db_prod
 RDS_DB_PROD_HOST=cameric8weike-db.cotvuqysbx1c.us-east-1.rds.amazonaws.com
 RDS_DB_PROD_PASSWORD="Yn\&}5Dz5tS#'K]$."
 RDS_DB_PROD_PORT=3306
@@ -85,7 +85,7 @@ done
 for j in "${SOURCE_BUNDLE_DEPS_DIR[@]}"
 do
 mkdir -p $SOURCE_BUNDLE_NAME/$j
-cp -r $ROOT/$j $SOURCE_BUNDLE_NAME/$j
+cp -r $ROOT/$j/* $SOURCE_BUNDLE_NAME/$j
 done
 
 cd $SOURCE_BUNDLE_NAME && zip -r "$SOURCE_BUNDLE_NAME.zip" *
