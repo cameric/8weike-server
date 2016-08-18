@@ -1,6 +1,9 @@
 {
     "extends": "airbnb",
     "installedESLint": true,
+    "rules": {
+        "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+    },
     "plugins": [
         "react"
     ]

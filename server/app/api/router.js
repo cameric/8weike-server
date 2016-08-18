@@ -6,11 +6,12 @@
  */
 
 const express = require('express');
+const expressEnforcesSsl = require('express-enforces-ssl');
 const passport = require('passport');
 const auth = require('../middlewares/auth');
 
 // All Router modules are imported here
-const usersRouter = require('./users');
+const userRouter = require('./user');
 
 // All controllers are imported here
 const authController = require('../controllers/auth');
@@ -19,13 +20,24 @@ const authController = require('../controllers/auth');
 const appRouter = express.Router(); // eslint-disable-line new-cap
 
 // Top-level APIs
-appRouter.post('/signup', authController.signup);
-appRouter.post('/login/general', passport.authenticate('local'), authController.loginGeneral);
-appRouter.post('/login/weixin', passport.authenticate('weixin'), authController.loginWeixin);
-appRouter.post('/login/weibo', passport.authenticate('weibo'), authController.loginWeibo);
+/**
+ * Routes that deal with sensitive data (e.g. login and signup) are required to use SSL --- HTTP
+ * requests to these routes will redirect automatically to the correponding HTTPS address.
+ */
+const forceSsl = expressEnforcesSsl();
+/*
+appRouter.post('/signup', forceSsl, authController.signup);
+appRouter.post('/login/general', forceSsl, passport.authenticate('local'),
+    authController.loginGeneral);
+appRouter.post('/login/weixin', forceSsl, passport.authenticate('weixin'),
+    authController.loginWeixin);
+appRouter.post('/login/weibo', forceSsl, passport.authenticate('weibo'),
+    authController.loginWeibo);
+    */
+
 appRouter.get('/logout', auth.requiresLogin, authController.logout);
 
 // User-related APIs
-appRouter.use('/users', usersRouter);
+appRouter.use('/user', userRouter);
 
 module.exports = appRouter;

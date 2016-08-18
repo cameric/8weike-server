@@ -4,14 +4,33 @@
 
 const app = require('./app/index');
 const config = require('./app/config/config');
+const db = require('./app/database');
+const http = require('http');
+const https = require('https');
 
-/* Just start the server. all other configurations
- * are in the individual config files.
- */
-app.listen(config.express.port, (error) => {
-  if (error) {
-    console.error('Unable to listen for connections ', error);
-    process.exit(10);
-  }
-  console.log(`Running Express server on http://localhost:${config.express.port}`);
+// Test MySQL database connection
+db.getConnection().then((conn) => {
+  // Connection OK. Release it and proceed.
+  console.log('MySQL connection test successful.');
+  conn.release();
+}).then((_) => {
+  const listenErrorCallback = (port, err) => {
+    if (err) {
+      console.error('Listening failed: ', err);
+      process.exit(10);
+    }
+    console.log(`Express server listening on http://localhost:${port}`);
+  };
+
+  // Start the server
+  // TODO: Uncomment the HTTPS lines when
+  const server = http.createServer(app);
+  //const secureServer = https.createServer(config.express.httpsOptions, app);
+
+  server.listen(config.express.http.port,
+      listenErrorCallback.bind(null, config.express.http.port));
+  /*secureServer.listen(config.express.https.port,
+      listenErrorCallback.bind(null, config.express.https.port));*/
+}).catch((err) => {
+  console.log(`Error: ${err}`);
 });

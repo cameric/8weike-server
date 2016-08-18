@@ -12,7 +12,16 @@ const root = path.join(__dirname, '/../../');
 const defaults = {
   root,
   express: {
-    port: process.env.PORT || 8080,
+    // NOTE: Many public networks (e.g. hotel wifi) block HTTP/HTTPS on nonstandard ports.
+    // For production, PORT and PORT_SECURE should always be 80 and 443, respectively.
+    http: {
+      port: process.env.PORT || 8080,
+    },
+    https: {
+      port: process.env.PORT_SECURE || 8443,
+      key: null,  // TODO
+      cert: null, // TODO
+    },
   },
   sessionSecret: '8weike-terces',
   dev: {
