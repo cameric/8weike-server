@@ -23,11 +23,12 @@ db.getConnection().then((conn) => {
   conn.release();
 }).then((_) => {
   // Start the server
+  // TODO: Uncomment the HTTPS lines when
   const server = http.createServer(app);
-  const secureServer = https.createServer(config.express.httpsOptions, app);
+  //const secureServer = https.createServer(config.express.httpsOptions, app);
 
-  server.listen(config.express.http.port, errorHandler.bind(config.express.http.port));
-  secureServer.listen(config.express.https.port, errorHandler.bind(config.express.https.port));
+  server.listen(config.express.http.port, errorHandler.bind(null, config.express.http.port));
+  //secureServer.listen(config.express.https.port, errorHandler.bind(null, config.express.https.port));
 }).catch((err) => {
   console.log(`Error: ${err}`);
 });
