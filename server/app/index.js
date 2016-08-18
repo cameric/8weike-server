@@ -9,7 +9,7 @@ const session = require('express-session');
 const config = require('./config/config');
 const passportConfig = require('./config/passport');
 const router = require('./api/router');
-const clientRouter = require('./middlewares/client_router');
+const clientRouter = require('./middlewares/client-router');
 const errorHandlers = require('./middlewares/errors');
 
 const app = express();
