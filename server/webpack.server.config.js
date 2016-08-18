@@ -3,10 +3,12 @@
 
 const fs = require('fs');
 const path = require('path');
+const webpack = require('webpack');
 const config = require('./app/config/config');
 
 module.exports = {
   entry: path.resolve(__dirname, 'server.js'),
+  devtool: 'sourcemap',
   output: {
     filename: 'server.bundle.js',
   },
@@ -31,4 +33,8 @@ module.exports = {
       },
     ],
   },
+  plugins: process.env.NODE_ENV === 'development' ? [
+    new webpack.BannerPlugin('require("source-map-support").install();',
+        { raw: true, entryOnly: false })
+  ] : [],
 };
