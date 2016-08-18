@@ -21,10 +21,10 @@ const app = express();
  * TODO: Some of these fixes cause minor decreases in performance. It shouldn't matter for now,
  * but it may be worth benchmarking later.
  */
-//app.use(helmet());
+app.use(helmet());
 
 // Use whitelists to defend against XSS
-/*app.use(helmet.contentSecurityPolicy({
+app.use(helmet.contentSecurityPolicy({
   directives: {
     // Fallback whitelist for resource policies not listed below
     defaultSrc: ["'self'"],
@@ -47,7 +47,7 @@ const app = express();
   disableAndroid: false,
   // true = Don't globally disable user-agent sniffing
   browserSniff: true,
-}));*/
+}));
 
 /* TODO: Uncomment this when we have certs + their SHA256 hashes in env vars for use below
 app.use(helmet.hpkp({
