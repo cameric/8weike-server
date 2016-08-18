@@ -28,7 +28,7 @@ db.getConnection().then((conn) => {
   //const secureServer = https.createServer(config.express.httpsOptions, app);
 
   server.listen(config.express.http.port,
-      listenErrorCallback().bind(null, config.express.http.port));
+      listenErrorCallback.bind(null, config.express.http.port));
   /*secureServer.listen(config.express.https.port,
       listenErrorCallback.bind(null, config.express.https.port));*/
 }).catch((err) => {
