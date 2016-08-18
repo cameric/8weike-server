@@ -1,4 +1,4 @@
-// This router contains all routes after /users
+// This router contains all routes after /user
 
 const express = require('express');
 

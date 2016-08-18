@@ -1,1 +1,1 @@
-// This is the controller for all endpoints after /users
+// This is the controller for all endpoints after /user
