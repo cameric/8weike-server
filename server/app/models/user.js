@@ -13,7 +13,10 @@ function findById(id, columns) {
 
   // IDs are unique, so we can automatically return the first element in `res` (if any).
   // The response will either be an individual user object, or null
-  return db.query(queryString, [columns, id]).then((res) => res[0]);
+  return db.query(queryString, [columns, id]).then((res) => {
+    if (res) return res[0];
+    return null;
+  });
 }
 
 /**
