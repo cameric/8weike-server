@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const config = require('./config/config');
+const denodeify = require('denodeify');
 const mysql = require('mysql');
 
 const pool = mysql.createPool(config.mysql);
@@ -9,12 +10,7 @@ const pool = mysql.createPool(config.mysql);
  * @returns {Promise.<mysql.Connection>} A promise to return a connection.
  */
 function getConnection() {
-  return new Promise((fulfill, reject) => {
-    pool.getConnection((err, conn) => {
-      if (err) reject(err);
-      else fulfill(conn);
-    });
-  });
+  return denodeify(pool.getConnection.bind(pool))();
 }
 
 /**
@@ -24,15 +20,9 @@ function getConnection() {
  * @returns {Promise.<Object>} A promise to return a query response.
  */
 function query(queryString, substitutions) {
-  return new Promise((fulfill, reject) => {
-    getConnection().then((conn) =>
-        conn.query(queryString, substitutions, (err, res) => {
-          conn.release();
-
-          if (err) reject(err);
-          else fulfill(res);
-        })
-    ).catch(reject);
+  return getConnection().then((conn) => {
+    const q = denodeify(conn.query.bind(conn));
+    return q(queryString, substitutions).then(() => conn.release()).catch(() => conn.release());
   });
 }
 
@@ -42,37 +32,36 @@ function query(queryString, substitutions) {
  * @returns {Promise.<Object>} A promise to return a query response.
  */
 function truncate(tables) {
-  const truncateTable = (conn, table) => new Promise((fulfill, reject) => {
-    const queryString = 'TRUNCATE TABLE ??';
+  // A promise to truncate the given table
+  const queryString = 'TRUNCATE TABLE ??';
+  const truncateTable = (conn, table) => denodeify(conn.query.bind(conn))(queryString, [table]);
 
-    conn.query(queryString, [table], (err, res) => {
-      if (err) reject(err);
-      else fulfill(res);
-    });
-  });
+  // A promise to truncate all tables
+  const truncateAllTables = (conn) => Promise.all(tables.map(truncateTable.bind(null, conn)));
 
-  return getConnection().then((conn) =>
-      Promise.all(tables.map(truncateTable.bind(null, conn))));
+  return getConnection().then(truncateAllTables);
 }
 
 function importFixture(fixture) {
-  const insertRow = (conn, tableName, row) => new Promise((fulfill, reject) => {
-    const queryString = 'INSERT INTO ?? ( ?? ) VALUES ( ? )';
+  // A promise to insert an individual row into the given DB table using the given connection
+  const insertRow = (conn, tableName, row) => {
     const columnNames = Object.keys(row);
     const columnValues = columnNames.map((col) => row[col]);
 
-    conn.query(queryString, [tableName, columnNames, columnValues], (err, res) => {
-      if (err) reject(err);
-      else fulfill(null, res);
-    });
-  });
+    const queryString = 'INSERT INTO ?? ( ?? ) VALUES ( ? )';
+    return denodeify(conn.query.bind(conn))(queryString, [tableName, columnNames, columnValues]);
+  };
+
+  // A promise to insert all rows of the table in the fixture into the corresponding table in the DB
+  const insertAllRows = (conn, tableName) =>
+      Promise.all(fixture.tables[tableName].map(insertRow.bind(null, conn, tableName)));
+
+  // A promise to import rows from all tables specified in the fixture
+  const importAllTables = (conn) =>
+      Promise.all(Object.keys(fixture.tables).map(insertAllRows.bind(null, conn)));
 
   // Get a connection
-  return getConnection().then((conn) =>
-      // For all tables
-      Promise.all(Object.keys(fixture.tables).map((tableName) =>
-          // For all rows in the table
-          Promise.all(fixture.tables[tableName].map(insertRow.bind(null, conn, tableName))))));
+  return getConnection().then(importAllTables);
 }
 
 module.exports = {

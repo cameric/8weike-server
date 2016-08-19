@@ -48,8 +48,7 @@ describe('User Model Tests', () => {
     // Pick a random user from the fixture and try to log in as that user
     const randomUser = randomItem(fixture.tables.user);
     userModel.loginWithPhone(randomUser.phone, randomUser.password).then((results) => {
-      expect(results.length).to.equal(1);
-      const user = results[0];
+      const user = results;
 
       expect(user).to.not.be.null;
       expect(user.id).to.equal(randomUser.id)
@@ -70,11 +69,8 @@ describe('User Model Tests', () => {
     const newUserId = fixture.tables.user.length + 1;
 
     // Register the user, then make sure it shows up in the DB with the expected ID
-    userModel.register(newUser).then((_) => userModel.findById(newUserId, ['phone', 'password']))
-        .then((results) => {
-          expect(results.length).to.equal(1);
-          const user = results[0];
-
+    userModel.registerWithPhone(newUser).then((_) =>
+        userModel.findById(newUserId, ['phone', 'password'])).then((user) => {
           expect(user).to.be.not.null;
           expect(user.phone).to.equal(newUser.phone);
           expect(user.password).to.equal(newUser.password);
@@ -91,13 +87,11 @@ describe('User Model Tests', () => {
     const newPhone = `${randomUser.phone}!!!`;
 
     // Update the user
-    userModel.updateById(randomUser.id, { phone: newPhone }).then((_) =>
+    userModel.updateById(randomUser.id, { phone: newPhone }).then(() =>
         // Retrieve the updated user from the DB
-        userModel.findById(randomUser.id, ['phone']).then((results) => {
-          expect(results.length).to.equal(1);
-          const user = results[0];
-
+        userModel.findById(randomUser.id, ['phone']).then((user) => {
           // Ensure that the nickname is updated
+          expect(user).not.to.be.null;
           expect(user.phone).to.equal(newPhone);
           done();
         })
