@@ -48,7 +48,10 @@ gulp.task('webpack-dev-server', () => {
     },
     proxy: {
       // Only proxy API calls. Page routing fallback to historyApiFallback
-      'api*': `http://localhost:${config.express.port}/api`,
+      '/api/*': {
+        target: `http://localhost:${config.express.http.port}`,
+        secure: false,
+      },
     },
   });
 

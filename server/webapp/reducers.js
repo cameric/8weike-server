@@ -1,10 +1,22 @@
 import { combineReducers } from 'redux'
+import { routerReducer } from 'react-router-redux';
 
 // Reducer components
 import authReducers from './reducers/auth'
 
-const appReducers = combineReducers({
+function stubReducers(state = [], action) {
+  switch (action.type) {
+    case 'STUB':
+      console.log(action.payload);
+      return {};
+    default:
+      return state;
+  }
+}
 
+const appReducers = combineReducers({
+  stubReducers,
+  routing: routerReducer
 });
 
-export default appReducers;
+export default appReducers

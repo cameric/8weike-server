@@ -7,10 +7,11 @@ const config = require('./app/config/config');
 module.exports = {
   entry: [
     'babel-polyfill',
+    'whatwg-fetch',
     `webpack-dev-server/client?http://localhost:${config.dev.port}`,
     path.join(config.webapp.source, '/index'),
   ],
-  devtool: 'eval-source-map',
+  devtool: 'sourcemap',
   output: {
     path: config.webapp.output,
     filename: process.env.NODE_ENV === 'production' ?
