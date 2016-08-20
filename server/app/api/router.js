@@ -36,6 +36,11 @@ appRouter.post('/login/weibo', forceSsl, passport.authenticate('weibo'),
 
 appRouter.get('/logout', auth.requiresLogin, authController.logout);
 
+// Test api
+appRouter.post('/stub', (req, res) => {
+  res.send(JSON.stringify({result: req.body.text}));
+});
+
 // User-related APIs
 appRouter.use('/user', userRouter);
 
