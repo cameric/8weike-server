@@ -22,7 +22,7 @@ function getConnection() {
 function query(queryString, substitutions) {
   const queryPromise = (conn, str, substitution) => {
     denodeify(conn.query.bind(conn), (err, res) => {
-      this.release();
+      conn.release();
       return [err, res];
     })(str, substitution);
   };
