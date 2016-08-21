@@ -20,14 +20,14 @@ function getConnection() {
  * @returns {Promise.<Object>} A promise to return a query response.
  */
 function query(queryString, substitutions) {
-  return getConnection().then((conn) => new Promise((fulfill, reject) => {
-    conn.query(queryString, substitutions, (err, res) => {
-      conn.release();
+  const queryPromise = (conn, str, substitution) => {
+    denodeify(conn.query.bind(conn), (err, res) => {
+      this.release();
+      return [err, res];
+    })(str, substitution);
+  };
 
-      if (err) reject(err);
-      else fulfill(res);
-    });
-  }));
+  return getConnection().then((conn) => queryPromise(conn, queryString, substitutions));
 }
 
 /**
