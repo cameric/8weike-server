@@ -32,8 +32,11 @@ function loginWithPhone(phone, password) {
 
   // Find a user with the given phone number, if any, and check the password.
   const queryString = 'SELECT id, password_hash FROM user WHERE phone = ?';
-  return db.query(queryString, [phone]).then((user) => {
-    if (!user) throw new Error('No user with the given phone number exists.');
+  return db.query(queryString, [phone]).then((results) => {
+    if (!results || !results[0]) throw new Error('No user with the given phone number exists.');
+
+    // password_hash is stored as a binary buffer in the SQL table
+    const user = results[0];
     return check(password, user.password_hash).then((valid) => {
       if (!valid) throw new Error('Invalid password.');
       return { id: user.id };
@@ -49,7 +52,7 @@ function loginWithPhone(phone, password) {
  */
 function registerWithPhone(phone, password) {
   const hashPassword = denodeify(bcrypt.hash);
-  const queryString = 'INSERT INTO pending_user ( ?? ) VALUES ( ? )';
+  const queryString = 'INSERT INTO user ( ?? ) VALUES ( ? )';
   const saltRounds = 12; // TODO: move this somewhere sane
 
   return hashPassword(password, saltRounds).then((hash) => {

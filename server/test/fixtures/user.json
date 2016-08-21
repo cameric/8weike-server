@@ -1,12 +1,16 @@
 {
   "tables": {
     "user": [
-      {"id": 1, "phone": "646-555-0152", "password": "like@b1rdIamSinging", "nickname": "Florence Foster Jenkins",
-        "description": "The world's greatest coloratura soprano.", "sex": "Female"},
-      {"id": 2, "phone": "917-458-0104", "password": "valsecaressante", "nickname": "Cosmé McMoon",
-        "description": "Mme. Florence's long-suffering accompanist.", "sex": "Male"},
-      {"id": 3, "phone": "518-458-0104", "password": "hamlet", "nickname": "St. Clair Bayfield",
-        "description": "Amateur Shakespearean actor.", "sex": "Male"}
+      {"id": 1, "phone": "646-555-0152",
+        "password_hash": "$2a$12$HPkbevGeVrMe6cJKR9aZyO2F5WU/JWqsI9HZhZckvX3hZaUs7Atqa",
+        "nickname": "Florence Foster Jenkins", "description": "The world's greatest coloratura soprano.",
+        "sex": "Female"},
+      {"id": 2, "phone": "917-458-0104",
+        "password_hash": "$2a$12$cuphmEcFscwdzhzMBOFFMegT0wac.es0ZPeELHtGRnSBQ9WRBRXl.",
+        "nickname": "Cosmé McMoon", "description": "Mme. Florence's long-suffering accompanist.", "sex": "Male"},
+      {"id": 3, "phone": "518-183-3817",
+        "password_hash": "$2a$12$KTWlmcsnivV.7sFqTZglvuawcUnHexjae9a8Cr4BahNPR2YLpwCxC",
+        "nickname": "St. Clair Bayfield", "description": "Amateur Shakespearean actor.", "sex": "Male"}
     ]
   }
 }

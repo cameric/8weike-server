@@ -16,7 +16,7 @@ describe('User Model Tests', () => {
     // Truncate the user table
     db.truncate(['user'])
         // Import the fixture
-        .then((_) => db.importFixture(fixture))
+        .then(() => db.importFixture(fixture))
         // Finish
         .then(done.bind(null, null))
         .catch(done);
@@ -36,24 +36,21 @@ describe('User Model Tests', () => {
       expect(user.id).to.equal(randomUser.id);
 
       done();
-    }).catch((err) => {
-      done(err);
-    });
+    }).catch(done);
   });
 
   it('loginWithPhone', (done) => {
     // Pick a random user from the fixture and try to log in as that user
     const randomUser = randomItem(fixture.tables.user);
-    userModel.loginWithPhone(randomUser.phone, randomUser.password).then((results) => {
-      const user = results;
 
+    // NOTE: Passwords are never stored in the user table, and thus, aren't in the table fixtures.
+    // Thus, for convenience in this test, the test users' passwords are just their phone numbers.
+    userModel.loginWithPhone(randomUser.phone, randomUser.phone).then((user) => {
       expect(user).to.not.be.null;
-      expect(user.id).to.equal(randomUser.id)
+      expect(user.id).to.equal(randomUser.id);
 
       done();
-    }).catch((err) => {
-      done(err);
-    });
+    }).catch(done);
   });
 
   it('registerWithPhone', (done) => {
@@ -62,19 +59,17 @@ describe('User Model Tests', () => {
       phone: '123-456-7890',
       password: 'p@55w0rd',
     };
-    // TODO: This is not always true for some types of ID setup, but it's good enough for this test
-    const newUserId = fixture.tables.user.length + 1;
 
-    // Register the user, then make sure it shows up in the DB with the expected ID
-    userModel.registerWithPhone(newUser.phone, newUser.password).then((_) =>
-        userModel.findById(newUserId, ['phone'])).then((user) => {
+    // Register the user, then log in to make sure it shows up in the DB
+    userModel.registerWithPhone(newUser.phone, newUser.password)
+        .then(() => userModel.loginWithPhone(newUser.phone, newUser.password))
+        .then((user) => userModel.findById(user.id, ['phone']))
+        .then((user) => {
           expect(user).to.be.not.null;
           expect(user.phone).to.equal(newUser.phone);
-
           done();
-        }).catch((err) => {
-          done(err);
-        });
+        })
+        .catch(done);
   });
 
   it('updateById', (done) => {
@@ -91,8 +86,6 @@ describe('User Model Tests', () => {
           expect(user.phone).to.equal(newPhone);
           done();
         })
-    ).catch((err) => {
-      done(err);
-    });
+    ).catch(done);
   });
 });

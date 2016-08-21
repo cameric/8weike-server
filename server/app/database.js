@@ -37,8 +37,12 @@ function query(queryString, substitutions) {
  */
 function truncate(tables) {
   // A promise to truncate the given table
-  const queryString = 'TRUNCATE TABLE ??';
-  const truncateTable = (conn, table) => denodeify(conn.query.bind(conn))(queryString, [table]);
+  const truncateTable = (conn, table) => {
+    const queryString = 'TRUNCATE TABLE ??';
+    const queryPromise = denodeify(conn.query.bind(conn));
+
+    return queryPromise(queryString, [table]);
+  };
 
   // A promise to truncate all tables
   const truncateAllTables = (conn) => Promise.all(tables.map(truncateTable.bind(null, conn)));
@@ -47,24 +51,29 @@ function truncate(tables) {
 }
 
 function importFixture(fixture) {
-  // A promise to insert an individual row into the given DB table using the given connection
+  // A promise to insert a given row into a table
   const insertRow = (conn, tableName, row) => {
     const columnNames = Object.keys(row);
     const columnValues = columnNames.map((col) => row[col]);
 
     const queryString = 'INSERT INTO ?? ( ?? ) VALUES ( ? )';
-    return denodeify(conn.query.bind(conn))(queryString, [tableName, columnNames, columnValues]);
+    const queryPromise = denodeify(conn.query.bind(conn));
+
+    return queryPromise(queryString, [tableName, columnNames, columnValues]);
   };
 
-  // A promise to insert all rows of the table in the fixture into the corresponding table in the DB
-  const insertAllRows = (conn, tableName) =>
-      Promise.all(fixture.tables[tableName].map(insertRow.bind(null, conn, tableName)));
+  // A promise to insert an individual row into the given DB table using the given connection
+  const insertAllRows = (conn, tableName) => {
+    const rows = fixture.tables[tableName];
+    return Promise.all(rows.map(insertRow.bind(null, conn, tableName)));
+  };
 
   // A promise to import rows from all tables specified in the fixture
-  const importAllTables = (conn) =>
-      Promise.all(Object.keys(fixture.tables).map(insertAllRows.bind(null, conn)));
+  const importAllTables = (conn) => {
+    const tableNames = Object.keys(fixture.tables);
+    return Promise.all(tableNames.map(insertAllRows.bind(null, conn)));
+  };
 
-  // Get a connection
   return getConnection().then(importAllTables);
 }
 
