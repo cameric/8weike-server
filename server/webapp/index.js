@@ -10,9 +10,10 @@ import { syncHistoryWithStore } from 'react-router-redux';
 
 import configureStore from './shared/store/store';
 import routes from './shared/routes';
-import reducers from './reducers';
+import reducers from './shared/reducers';
 
-const store = configureStore(reducers);
+// Configure universal store with server
+const store = configureStore(reducers, window.__REDUX_INITIAL_STATE__);
 const history = syncHistoryWithStore(browserHistory, store);
 
 // After initial server-side rendering, ReactDOM.render()

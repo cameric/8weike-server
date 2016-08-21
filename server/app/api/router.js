@@ -36,9 +36,12 @@ appRouter.post('/login/weibo', forceSsl, passport.authenticate('weibo'),
 
 appRouter.get('/logout', auth.requiresLogin, authController.logout);
 
-// Test api
-appRouter.post('/stub', (req, res) => {
-  res.send(JSON.stringify({result: req.body.text}));
+// Api for showing global information about the company
+appRouter.get('/global_info', (req, res) => {
+  res.send(JSON.stringify({
+    version: "Alpha",
+    company: 'Cameric'
+  }));
 });
 
 // User-related APIs

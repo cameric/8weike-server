@@ -11,7 +11,7 @@ module.exports = {
     // Fallback whitelist for resource policies not listed below
     defaultSrc: ["'self'"],
     // Valid sources of executable scripts.
-    scriptSrc: ["'self'"],
+    scriptSrc: ["'self'", "*.8weike.com"],
     // Valid sources of styles.
     styleSrc: ["'self'"],
     // Valid sources of images.

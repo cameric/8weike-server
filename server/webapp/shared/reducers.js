@@ -2,20 +2,19 @@ import { combineReducers } from 'redux'
 import { routerReducer } from 'react-router-redux';
 
 // Reducer components
-import authReducers from './reducers/auth'
+import authReducers from '../reducers/auth'
 
-function stubReducers(state = [], action) {
+function pageInitialState(state = {}, action) {
   switch (action.type) {
-    case 'STUB':
-      console.log(action.payload);
-      return {};
+    case 'LOADED_INITIAL_STATE':
+      return Object.assign({}, state, action.payload);
     default:
-      return state;
+      return state
   }
 }
 
 const appReducers = combineReducers({
-  stubReducers,
+  pageInitialState,
   routing: routerReducer
 });
 

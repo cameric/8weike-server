@@ -1,25 +1,15 @@
 import { connect } from 'react-redux'
 
 import IndexPage from '../components/index-page';
-import { webRequestAction, stubAction } from '../../actions/utils';
 
 function mapStateToProps(state) {
-  return {}
+  return {
+    globalInfo: state.pageInitialState
+  }
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
-    onSendRequest: () => {
-      dispatch(webRequestAction({
-        method: 'POST',
-        url: '/api/stub',
-        body: {
-          text: 'test'
-        },
-        nextAction: stubAction,
-      }))
-    }
-  }
+  return {}
 }
 
 export default connect(
