@@ -8,12 +8,17 @@ import webAPIMiddleware from '../../middlewares/api';
 
 // A list of middlewares to be fed into Redux
 // Note that the order of middlewares matters.
-const loggerMiddleware = createLogger();
+
 let middlewares = [
   webAPIMiddleware,
   promiseMiddleware,
-  loggerMiddleware
 ];
+
+// Only log Redux state changes on client side
+if (global.BUNDLE_ID === "8WEIKE_WEB_CLIENT") {
+  const loggerMiddleware = createLogger();
+  middlewares.push(loggerMiddleware);
+}
 
 function configureStore(reducers, initialState) {
   return initialState ?
