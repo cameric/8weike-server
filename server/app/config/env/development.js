@@ -12,7 +12,7 @@ module.exports = {
     defaultSrc: ["'self'"],
     connectSrc: ["'self'", "localhost:*", "ws:"],
     // Valid sources of executable scripts.
-    scriptSrc: ["'self'"],
+    scriptSrc: ["'self'", "'unsafe-inline'"],
     // Valid sources of styles.
     styleSrc: ["'self'"],
     // Valid sources of images.

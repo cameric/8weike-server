@@ -4,9 +4,11 @@ const React = require('react');
 const ReactDOM = require('react-dom/server');
 const router = require('react-router');
 const Redux = require('react-redux');
+const serialize = require('serialize-javascript');
 
 const routes = require('../../webapp/shared/routes').default;
 const configureStore = require('../../webapp/shared/store/store').default;
+const reducers = require('../../webapp/shared/reducers').default;
 
 const ce = React.createElement;
 
@@ -28,14 +30,18 @@ function match(req, res, next) {
       // Before a route is entered, it can redirect so handle it first.
       res.redirect(redirect.pathname + redirect.search);
     } else if (props) {
-      // If we got props then we matched a route and can render
-      const store = configureStore();
+      // Server-side rendering of initial state
+      const store = configureStore(reducers);
       loadReduxInitialState(props, store).then(() => {
-        const reduxInitialPayload = JSON.stringify(store.getState());
-        const context = ce(Redux.Provider, {}, ce(router.RouterContext, props));
+        const reduxInitialState = serialize(store.getState());
+        const context = ce(Redux.Provider, {
+          store: store
+        }, ce(router.RouterContext, props));
+
+        // If we got props then we matched a route and can render
         res.status(200).render('index', {
           reactContent: ReactDOM.renderToString(context),
-          reduxInitialPayload,
+          reduxInitialState,
         });
       });
     } else {

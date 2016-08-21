@@ -34,6 +34,7 @@ module.exports = {
     ],
   },
   plugins: process.env.NODE_ENV === 'development' ? [
+    new webpack.DefinePlugin({ "global.GENTLY": false }),
     new webpack.BannerPlugin('require("source-map-support").install();',
         { raw: true, entryOnly: false })
   ] : [],

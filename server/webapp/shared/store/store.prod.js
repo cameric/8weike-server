@@ -12,11 +12,17 @@ let middlewares = [
   promiseMiddleware,
 ];
 
-function configureStore(reducers) {
-  return createStore(
-      reducers,
-      applyMiddleware(...middlewares)
-  );
+function configureStore(reducers, initialState) {
+  return initialState ?
+      createStore(
+          reducers,
+          JSON.parse(initialState),
+          applyMiddleware(...middlewares)
+      ) :
+      createStore(
+          reducers,
+          applyMiddleware(...middlewares)
+      );
 }
 
 export default configureStore
