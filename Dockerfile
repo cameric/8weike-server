@@ -29,7 +29,7 @@ RUN mkdir -p /srv/nSERVER
 WORKDIR /srv/nSERVER
 
 # Install dependencies
-COPY ./server/package.json /srv/nSERVER
+COPY ./server/package.json /srv/nSERVER/
 RUN npm install
 
 # Bundle app source inside the image
