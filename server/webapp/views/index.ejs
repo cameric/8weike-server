@@ -8,9 +8,9 @@
 <div id="8weike-app-container">
   <% reactContent %>
 </div>
-<script type="text/javascript" charset="utf-8" unsafe-inline>
+<script type="text/javascript" charset="utf-8" nonce="<%= nonceHash %>">
   window.__REDUX_INITIAL_STATE__ = '<%- reduxInitialState %>';
 </script>
-<script src="/build/webapp.bundle.js" charset="utf-8"></script>
+<script src="/build/webapp.bundle.js" charset="utf-8" nonce="<%= nonceHash %>"></script>
 </body>
 </html>

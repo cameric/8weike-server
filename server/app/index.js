@@ -25,7 +25,7 @@ app.use(helmet());
 
 // Use whitelists to defend against XSS
 app.use(helmet.contentSecurityPolicy({
-  directives: config.cspDirectives,
+  directives: config.csp.directives,
   // false = Browsers will block and report violations
   reportOnly: false,
   // false = Don't natively set all CSP headers; the right one will be detected from the user agent

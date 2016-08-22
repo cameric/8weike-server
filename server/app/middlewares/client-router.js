@@ -7,6 +7,8 @@ const router = require('react-router');
 const Redux = require('react-redux');
 const serialize = require('serialize-javascript');
 
+const config = require('../config/config');
+
 const routes = require('../../webapp/shared/routes').default;
 const configureStore = require('../../webapp/shared/store/store').default;
 const reducers = require('../../webapp/shared/reducers').default;
@@ -43,6 +45,7 @@ function match(req, res, next) {
         res.status(200).render('index', {
           reactContent: ReactDOM.renderToString(context),
           reduxInitialState,
+          nonceHash: config.csp.nonceHash,
         });
       });
     } else {
