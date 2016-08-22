@@ -12,9 +12,8 @@
 
 # Webpack generated files
 *.bundle.js
-*.bundle.js.map
 
-# Source maps
+# All source maps
 *.js.map
 
 # Logs
