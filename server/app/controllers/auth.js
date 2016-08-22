@@ -11,7 +11,7 @@ function loginWithWeixin(req, res) {
 function loginWithWeibo(req, res) {
 }
 
-function registerWithPhone(req, res) {
+function signupWithPhone(req, res) {
 }
 
 function logout(req, res) {
@@ -21,6 +21,6 @@ module.exports = {
   loginWithPhone,
   loginWithWeixin,
   loginWithWeibo,
-  registerWithPhone,
+  signupWithPhone,
   logout,
 };

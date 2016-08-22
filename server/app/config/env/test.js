@@ -1,4 +1,4 @@
-const NONCE_HASH = require('../../services/utils').generateHash();
+const NONCE_HASH = require('../../services/utils').generateHashWithDate();
 
 module.exports = {
   mysql: {

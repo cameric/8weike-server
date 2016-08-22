@@ -37,7 +37,7 @@ function match(req, res, next) {
       loadReduxInitialState(props, store).then(() => {
         const reduxInitialState = serialize(store.getState());
         const context = ce(Redux.Provider, {
-          store: store
+          store: store,
         }, ce(router.RouterContext, props));
 
         // If we got props then we matched a route and can render

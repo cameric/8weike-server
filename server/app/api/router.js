@@ -26,8 +26,8 @@ const appRouter = express.Router(); // eslint-disable-line new-cap
  */
 const forceSsl = expressEnforcesSsl();
 
-appRouter.post('/registerWithPhone', forceSsl, authController.registerWithPhone);
-appRouter.post('/login/general', forceSsl, passport.authenticate('local'),
+appRouter.post('/signup/phone', forceSsl, authController.signupWithPhone);
+appRouter.post('/login/phone', forceSsl, passport.authenticate('local'),
     authController.loginWithPhone);
 appRouter.post('/login/weixin', forceSsl, passport.authenticate('weixin'),
     authController.loginWithWeixin);
@@ -39,8 +39,8 @@ appRouter.get('/logout', auth.requiresLogin, authController.logout);
 // Api for showing global information about the company
 appRouter.get('/global_info', (req, res) => {
   res.send(JSON.stringify({
-    version: "Alpha",
-    company: 'Cameric'
+    version: 'Alpha',
+    company: 'Cameric',
   }));
 });
 
