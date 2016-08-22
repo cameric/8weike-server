@@ -8,7 +8,6 @@ const Redux = require('react-redux');
 const serialize = require('serialize-javascript');
 
 const config = require('../config/config');
-
 const routes = require('../../webapp/shared/routes').default;
 const configureStore = require('../../webapp/shared/store/store').default;
 const reducers = require('../../webapp/shared/reducers').default;
