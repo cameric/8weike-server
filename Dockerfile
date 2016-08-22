@@ -24,21 +24,16 @@ RUN npm install --global mocha
 # to only one environment (like NODE_ENV), please refer
 # to the paper doc "Docker Setup Guide".
 
-# No environment variable necessary for now
-# ENV foo=bar
-
-# Create app directory under /srv
-RUN rm -rf /srv/nSERVER
+# Create and move to app directory
 RUN mkdir -p /srv/nSERVER
-
-# Set up workdir so no OS navigation
 WORKDIR /srv/nSERVER
 
-# Bundle app source
-COPY ./server /srv/nSERVER
-
-# Install app dependencies
+# Install dependencies
+COPY ./server/package.json /srv/nSERVER/
 RUN npm install
+
+# Bundle app source inside the image
+COPY ./server /srv/nSERVER
 
 CMD [ "npm", "start" ]
 EXPOSE 8080 8888

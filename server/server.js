@@ -32,5 +32,5 @@ db.getConnection().then((conn) => {
   /*secureServer.listen(config.express.https.port,
       listenErrorCallback.bind(null, config.express.https.port));*/
 }).catch((err) => {
-  console.log(`Error: ${err}`);
+  console.log(err.stack);
 });

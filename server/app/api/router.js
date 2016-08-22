@@ -21,19 +21,18 @@ const appRouter = express.Router(); // eslint-disable-line new-cap
 
 // Top-level APIs
 /**
- * Routes that deal with sensitive data (e.g. login and signup) are required to use SSL --- HTTP
+ * Routes that deal with sensitive data (e.g. login and registerWithPhone) are required to use SSL --- HTTP
  * requests to these routes will redirect automatically to the correponding HTTPS address.
  */
 const forceSsl = expressEnforcesSsl();
-/*
-appRouter.post('/signup', forceSsl, authController.signup);
+
+appRouter.post('/registerWithPhone', forceSsl, authController.registerWithPhone);
 appRouter.post('/login/general', forceSsl, passport.authenticate('local'),
-    authController.loginGeneral);
+    authController.loginWithPhone);
 appRouter.post('/login/weixin', forceSsl, passport.authenticate('weixin'),
-    authController.loginWeixin);
+    authController.loginWithWeixin);
 appRouter.post('/login/weibo', forceSsl, passport.authenticate('weibo'),
-    authController.loginWeibo);
-    */
+    authController.loginWithWeibo);
 
 appRouter.get('/logout', auth.requiresLogin, authController.logout);
 

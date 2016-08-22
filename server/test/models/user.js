@@ -16,7 +16,7 @@ describe('User Model Tests', () => {
     // Truncate the user table
     db.truncate(['user'])
         // Import the fixture
-        .then((_) => db.importFixture(fixture))
+        .then(() => db.importFixture(fixture))
         // Finish
         .then(done.bind(null, null))
         .catch(done);
@@ -32,57 +32,44 @@ describe('User Model Tests', () => {
   it('findById', (done) => {
     // Pick a random user from the fixture and try to log in as that user
     const randomUser = randomItem(fixture.tables.user);
-    userModel.findById(randomUser.id, ['id']).then((results) => {
-      expect(results.length).to.equal(1);
-      const user = results[0];
-
+    userModel.findById(randomUser.id, ['id']).then((user) => {
       expect(user.id).to.equal(randomUser.id);
 
       done();
-    }).catch((err) => {
-      done(err);
-    });
+    }).catch(done);
   });
 
   it('loginWithPhone', (done) => {
     // Pick a random user from the fixture and try to log in as that user
     const randomUser = randomItem(fixture.tables.user);
-    userModel.loginWithPhone(randomUser.phone, randomUser.password).then((results) => {
-      expect(results.length).to.equal(1);
-      const user = results[0];
 
+    // NOTE: Passwords are never stored in the user table, and thus, aren't in the table fixtures.
+    // Thus, for convenience in this test, the test users' passwords are just their phone numbers.
+    userModel.loginWithPhone(randomUser.phone, randomUser.phone).then((user) => {
       expect(user).to.not.be.null;
-      expect(user.id).to.equal(randomUser.id)
+      expect(user.id).to.equal(randomUser.id);
 
       done();
-    }).catch((err) => {
-      done(err);
-    });
+    }).catch(done);
   });
 
-  it('register', (done) => {
+  it('registerWithPhone', (done) => {
     // Insert a user into the DB with just the necessary information
     const newUser = {
       phone: '123-456-7890',
       password: 'p@55w0rd',
     };
-    // TODO: This is not always true for some types of ID setup, but it's good enough for this test
-    const newUserId = fixture.tables.user.length + 1;
 
-    // Register the user, then make sure it shows up in the DB with the expected ID
-    userModel.register(newUser).then((_) => userModel.findById(newUserId, ['phone', 'password']))
-        .then((results) => {
-          expect(results.length).to.equal(1);
-          const user = results[0];
-
+    // Register the user, then log in to make sure it shows up in the DB
+    userModel.registerWithPhone(newUser.phone, newUser.password)
+        .then(() => userModel.loginWithPhone(newUser.phone, newUser.password))
+        .then((user) => userModel.findById(user.id, ['phone']))
+        .then((user) => {
           expect(user).to.be.not.null;
           expect(user.phone).to.equal(newUser.phone);
-          expect(user.password).to.equal(newUser.password);
-
           done();
-        }).catch((err) => {
-          done(err);
-        });
+        })
+        .catch(done);
   });
 
   it('updateById', (done) => {
@@ -91,18 +78,14 @@ describe('User Model Tests', () => {
     const newPhone = `${randomUser.phone}!!!`;
 
     // Update the user
-    userModel.updateById(randomUser.id, { phone: newPhone }).then((_) =>
+    userModel.updateById(randomUser.id, { phone: newPhone }).then(() =>
         // Retrieve the updated user from the DB
-        userModel.findById(randomUser.id, ['phone']).then((results) => {
-          expect(results.length).to.equal(1);
-          const user = results[0];
-
+        userModel.findById(randomUser.id, ['phone']).then((user) => {
           // Ensure that the nickname is updated
+          expect(user).not.to.be.null;
           expect(user.phone).to.equal(newPhone);
           done();
         })
-    ).catch((err) => {
-      done(err);
-    });
+    ).catch(done);
   });
 });
