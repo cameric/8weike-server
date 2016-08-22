@@ -9,7 +9,7 @@ const session = require('express-session');
 const config = require('./config/config');
 const passportConfig = require('./config/passport');
 const router = require('./api/router');
-const clientRouter = require('./middlewares/client_router');
+const clientRouter = require('./middlewares/client-router');
 const errorHandlers = require('./middlewares/errors');
 
 const app = express();
@@ -25,20 +25,7 @@ app.use(helmet());
 
 // Use whitelists to defend against XSS
 app.use(helmet.contentSecurityPolicy({
-  directives: {
-    // Fallback whitelist for resource policies not listed below
-    defaultSrc: ["'self'"],
-    // Valid sources of executable scripts.
-    scriptSrc: ["'self'"],
-    // Valid sources of styles.
-    styleSrc: ["'self'"],
-    // Valid sources of images.
-    imgSrc: ["'self'"],
-    // Valid sources of Flash objects nad other plugins.
-    objectSrc: [],
-    // URL to which browsers will send reports when a content security policy is violated.
-    reportUri: null,
-  },
+  directives: config.csp.directives,
   // false = Browsers will block and report violations
   reportOnly: false,
   // false = Don't natively set all CSP headers; the right one will be detected from the user agent

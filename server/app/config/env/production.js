@@ -1,3 +1,5 @@
+const NONCE_HASH = require('../../services/utils').generateHashWithDate();
+
 module.exports = {
   mysql: {
     database: process.env.MYSQL_RDS_DB_PROD_NAME,
@@ -6,5 +8,22 @@ module.exports = {
     port: process.env.MYSQL_RDS_DB_PROD_PORT,
     user: process.env.MYSQL_RDS_DB_PROD_USER,
     ssl: 'Amazon RDS',
+  },
+  csp: {
+    nonceHash: NONCE_HASH,
+    directives: {
+      // Fallback whitelist for resource policies not listed below
+      defaultSrc: ["'self'"],
+      // Valid sources of executable scripts.
+      scriptSrc: ["'self'", "*.8weike.com", `'nonce-${NONCE_HASH}'`],
+      // Valid sources of styles.
+      styleSrc: ["'self'"],
+      // Valid sources of images.
+      imgSrc: ["'self'"],
+      // Valid sources of Flash objects nad other plugins.
+      objectSrc: [],
+      // URL to which browsers will send reports when a content security policy is violated.
+      reportUri: null,
+    },
   },
 };

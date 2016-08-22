@@ -11,10 +11,6 @@ FROM node:wheezy
 # Authors
 MAINTAINER Tony Zhang <zhzhangtony@gmail.com>
 
-# First install global packages. Include all
-# global dependencies in this line to reduce layers
-RUN npm install --global mocha
-
 # Set up environment variables inside container
 # ONLY write one ENV to keep the layers clean
 #
