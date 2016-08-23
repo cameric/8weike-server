@@ -8,6 +8,8 @@ import { webRequestAction, constructInitialStatePayload } from '../../actions/ut
 import Modal from '../../ui/modal';
 import SignupModalContent from './signup-modal-content';
 
+require('../../stylesheets/modules/index-page.scss');
+
 class IndexPage extends React.Component {
   static fetchData({ store }) {
     return store.dispatch(webRequestAction(constructInitialStatePayload({
@@ -24,7 +26,9 @@ class IndexPage extends React.Component {
           <li><Link to={'/login'}>Login Here</Link></li>
           <span>Version: {this.props.globalInfo.version}</span>
           <span>Company: {this.props.globalInfo.company}</span>
-          <Modal targetButton={<button>Sign Up</button>} title="Sign Up">
+          <Modal targetButton={<button>Sign Up</button>}
+                 title="Sign Up"
+                 classNames="signup-modal">
             <SignupModalContent />
           </Modal>
         </div>

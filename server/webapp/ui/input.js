@@ -1,10 +1,16 @@
 import React from 'react';
+import noop from 'lodash/noop';
 import TextField from 'material-ui/TextField';
 
 class Input extends React.Component {
   render() {
     return (
-      <TextField className={this.props.classNames}
+      <TextField type={this.props.type}
+                 className={this.props.classNames}
+                 style={ {
+                   width: '',
+                   minWidth: '100px',
+                 } }
                  disabled={this.props.disabled}
                  errorText={this.props.errorText}
                  floatingLabelText={this.props.hintText}
@@ -16,11 +22,21 @@ class Input extends React.Component {
 };
 
 Input.propTypes = {
+  type: React.PropTypes.oneOf(['text', 'password']),
   classNames: React.PropTypes.string,
   disabled: React.PropTypes.bool,
   errorText: React.PropTypes.string,
   hintText: React.PropTypes.string,
   onChange: React.PropTypes.func,
+};
+
+Input.defaultProps = {
+  type: 'text',
+  classNames: null,
+  disabled: false,
+  errorText: '',
+  hintText: '',
+  onChange: noop
 };
 
 export default Input;

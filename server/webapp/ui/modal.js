@@ -31,7 +31,10 @@ class Modal extends React.Component {
     return (
       <div>
         {this._createTargetButton()}
-        <Dialog contentClassName={this.props.contentStyle}
+        <Dialog contentClassName={this.props.classNames}
+                contentStyle={ {
+                  width: ''
+                } }
                 open={this.state.isVisible}
                 onRequestClose={this._closeModal.bind(this)}
                 title={this.props.title}
@@ -46,13 +49,13 @@ class Modal extends React.Component {
 Modal.propTypes = {
   targetButton: React.PropTypes.element.isRequired,
   title: React.PropTypes.string,
-  contentStyle: React.PropTypes.string, // No inline style permitted
+  classNames: React.PropTypes.string, // No inline style permitted
   onClose: React.PropTypes.func,
   isContentScrollable: React.PropTypes.bool
 };
 
 Modal.defaultProps = {
-  isContentScrollable: false,
+  isContentScrollable: true,
   onClose: noop,
 };
 

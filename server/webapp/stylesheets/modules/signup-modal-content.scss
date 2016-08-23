@@ -1,0 +1,17 @@
+.signup-modal-content {
+  &__input {
+    width: 100%;
+  }
+
+  &__submit-btn {
+    width: 100%;
+  }
+
+  &__switch-btn {
+    color: #00BCD4;
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}
