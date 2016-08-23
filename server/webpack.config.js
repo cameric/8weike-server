@@ -20,8 +20,10 @@ const defaultPlugins = [
   new webpack.DefinePlugin({
     'global.NODE_ENV': `"${process.env.NODE_ENV}"`,
     'global.BUNDLE_ID': '"8WEIKE_WEB_CLIENT"',
+    // TODO: Implement locale support
+    'global.LOCALE': 'zh-CN',
   }),
-  new ExtractTextPlugin(`${config.webapp.output}/style.css`, {
+  new ExtractTextPlugin('style.bundle.css', {
     allChunks: true
   })
 ];
