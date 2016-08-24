@@ -45,6 +45,10 @@ module.exports = {
         include: [config.webapp.source],
         loader: 'babel-loader',
       },
+      {
+        test: /\.scss$/,
+        loader: 'ignore-loader',
+      }
     ],
   },
   plugins: plugins,

@@ -21,7 +21,7 @@ const defaultPlugins = [
     'global.NODE_ENV': `"${process.env.NODE_ENV}"`,
     'global.BUNDLE_ID': '"8WEIKE_WEB_CLIENT"',
     // TODO: Implement locale support
-    'global.LOCALE': 'zh-CN',
+    'global.LOCALE': '"zh-CN"',
   }),
   new ExtractTextPlugin('style.bundle.css', {
     allChunks: true

@@ -17,7 +17,7 @@ module.exports = {
       // Valid sources of executable scripts.
       scriptSrc: ["'self'", "*.8weike.com", `'nonce-${NONCE_HASH}'`],
       // Valid sources of styles.
-      styleSrc: ["'self'", "https://fonts.googleapis.com"],
+      styleSrc: ["'self'", "https://fonts.googleapis.com", `'nonce-${NONCE_HASH}'`],
       // Valid sources of fonts
       fontSrc: ["https://fonts.gstatic.com"],
       // Valid sources of images.
