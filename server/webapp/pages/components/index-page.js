@@ -6,7 +6,7 @@ import DocumentTitle from 'react-document-title';
 
 import { webRequestAction, constructInitialStatePayload } from '../../actions/utils';
 import Modal from '../../ui/modal';
-import SignupModalContent from './signup-modal-content';
+import SignupModalContent from '../containers/signup-modal-content';
 
 require('../../stylesheets/modules/index-page.scss');
 

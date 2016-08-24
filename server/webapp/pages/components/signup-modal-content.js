@@ -1,7 +1,10 @@
 import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
+import CircularProgress from 'material-ui/CircularProgress';
+import { white } from 'material-ui/styles/colors';
 import validator from 'validator';
 
+import ErrorBanner from '../../ui/error-banner';
 import Input from '../../ui/input';
 import PasswordStrength from './password-strength';
 
@@ -12,6 +15,7 @@ class SignupModalContent extends React.Component {
     super(props);
     this.state = {
       step: 'basicInfo',
+      status: 'stale',
       basicInfo: {
         phone: '',
         password: '',
@@ -43,8 +47,25 @@ class SignupModalContent extends React.Component {
     ];
   }
 
+  // General helpers
+
   getNextStep(step) {
     this.setState({step: step})
+  }
+
+  _renderNextStepButton(info, handleTouchTap) {
+    const buttonMsg = (this.state.status === 'stale') ? info
+        : (<CircularProgress color={white} size={0.3} style={{ marginTop: '-7px' }}/>);
+    return (
+      <FlatButton backgroundColor='#00BCD4'
+                  hoverColor='#0CB6C9'
+                  onTouchTap={handleTouchTap}
+                  style={ {
+                    width: '100%',
+                    margin: '20px 0 20px 0',
+                    color: 'white',
+                  } }>{buttonMsg}</FlatButton>
+    )
   }
 
   // Helpers for the basic info step
@@ -67,42 +88,44 @@ class SignupModalContent extends React.Component {
     this._updatePartialState('basicInfo', { confirmPassword: confirmPassword });
   }
 
+  // Action handlers
+
+  _submitBasicInfo() {
+    this.setState({ status: 'loading'});
+    //this.props.sendBasicInfo(this.state.basicInfo);
+    //this.getNextStep.bind(this, 'TFA')
+  }
+
   renderBasicInfoStep() {
     return (
       <div>
+        <ErrorBanner errorMsg="Cellphone already existed!"/>
         <Input value={this.state.basicInfo.phone}
-               className="signup-modal-content__input"
+               className='signup-modal-content__input'
                isRequired={true}
-               hintText="Phone Number"
+               hintText='Phone Number'
                validators={this._phoneValidators}
                onChange={this._updatePhone.bind(this)}/>
-        <div className="signup-modal-content__password-container">
+        <div className='signup-modal-content__password-container'>
           <PasswordStrength classNames='signup-modal-content__password-strength'
                             password={this.state.basicInfo.password}/>
-          <Input type="password"
+          <Input type='password'
                  value={this.state.basicInfo.password}
                  isRequired={true}
-                 className="signup-modal-content__input"
-                 hintText="Password"
+                 className='signup-modal-content__input'
+                 hintText='Password'
                  validators={this._passwordValidators}
                  onChange={this._updatePassword.bind(this)}/>
         </div>
         <Input type="password"
                value={this.state.basicInfo.confirmPassword}
                isRequired={true}
-               className="signup-modal-content__input"
-               hintText="Confirm Password"
+               className='signup-modal-content__input'
+               hintText='Confirm Password'
                validators={this._confirmPasswordValidators}
                onChange={this._updateConfirmPassword.bind(this)}/>
-        <FlatButton backgroundColor="#00BCD4"
-                    hoverColor="#0CB6C9"
-                    onClick={this.getNextStep.bind(this, 'TFA')}
-                    style={ {
-                      width: '100%',
-                      margin: '20px 0 20px 0',
-                      color: 'white',
-                    } }>Sign Up</FlatButton>
-        <span>Already a member? <a className="signup-modal-content__switch-btn">Sign in</a></span>
+        {this._renderNextStepButton('Sign Up', this._submitBasicInfo.bind(this))}
+        <span>Already a member? <a className='signup-modal-content__switch-btn'>Sign in</a></span>
       </div>
     )
   }
@@ -114,9 +137,9 @@ class SignupModalContent extends React.Component {
           display: 'block',
           marginTop: '30px',
         } }>A passcode has been sent to your phone</span>
-        <Input className="signup-modal-content__input" hintText="6-digit Passcode"/>
-        <FlatButton backgroundColor="#00BCD4"
-                    hoverColor="#0CB6C9"
+        <Input className='signup-modal-content__input' hintText='6-digit Passcode'/>
+        <FlatButton backgroundColor='#00BCD4'
+                    hoverColor='#0CB6C9'
                     onClick={this.getNextStep.bind(this, 'username')}
                     style={ {
                   width: '100%',
@@ -130,9 +153,9 @@ class SignupModalContent extends React.Component {
   renderUsernameStep() {
     return (
       <div>
-        <Input className="signup-modal-content__input" hintText="Nickname"/>
-        <FlatButton backgroundColor="#00BCD4"
-                    hoverColor="#0CB6C9"
+        <Input className='signup-modal-content__input' hintText='Nickname'/>
+        <FlatButton backgroundColor='#00BCD4'
+                    hoverColor='#0CB6C9'
                     onClick={this.getNextStep.bind(this, 'finished')}
                     style={ {
                   width: '100%',
@@ -159,5 +182,11 @@ class SignupModalContent extends React.Component {
     }
   }
 }
+
+SignupModalContent.propTypes = {
+  sendBasicInfo: React.PropTypes.func,
+  sendTFACode: React.PropTypes.func,
+  sendUsernameInfo: React.PropTypes.func,
+};
 
 export default SignupModalContent;

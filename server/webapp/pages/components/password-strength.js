@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import FlatButton from 'material-ui/FlatButton';
 import Popover from 'material-ui/Popover';
 import LinearProgress from 'material-ui/LinearProgress';
-import Divider from 'material-ui/Divider'
+import Divider from 'material-ui/Divider';
 import zxcvbn from 'zxcvbn';
 
 require('../../stylesheets/modules/password-strength.scss');
@@ -66,7 +66,7 @@ class PasswordStrengthMeter extends React.Component {
   _renderWarning() {
     if (this.strength.warning !== '') {
       return (
-        <p className="password-strength__warning">
+        <p className='password-strength__warning'>
           <b>Explanation: </b>
           {this.strength.warning}
         </p>
@@ -93,10 +93,10 @@ class PasswordStrengthMeter extends React.Component {
                  onRequestClose={this._closeStrengthMeter.bind(this)}
                  open={this.state.isVisible}
                  targetOrigin={ { vertical: 'top', horizontal: 'left' } }>
-          <div className="password-strength">
-            <h4 className="password-strength__title">Password Strength Meter</h4>
+          <div className='password-strength'>
+            <h4 className='password-strength__title'>Password Strength Meter</h4>
             <Divider />
-            <span className="password-strength__label">
+            <span className='password-strength__label'>
               Your password is: {this.strengthMappings[this.strength.score].label}
             </span>
             <LinearProgress mode='determinate'
