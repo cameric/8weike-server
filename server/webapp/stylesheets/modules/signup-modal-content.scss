@@ -1,0 +1,29 @@
+.signup-modal-content {
+  &__input {
+    width: 100%;
+  }
+
+  &__password-container {
+    position: relative;
+  }
+
+  &__password-strength {
+    position: relative;
+    float: right;
+    top: 30px;
+    margin-bottom: -45px;
+    z-index: 1;
+  }
+
+  &__submit-btn {
+    width: 100%;
+  }
+
+  &__switch-btn {
+    color: #00BCD4;
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}

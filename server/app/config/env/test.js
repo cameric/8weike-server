@@ -16,7 +16,9 @@ module.exports = {
       // Valid sources of executable scripts.
       scriptSrc: ["'self'", `'nonce-${NONCE_HASH}'`],
       // Valid sources of styles.
-      styleSrc: ["'self'"],
+      styleSrc: ["'self'", "https://fonts.googleapis.com", `'nonce-${NONCE_HASH}'`],
+      // Valid sources of fonts
+      fontSrc: ["https://fonts.gstatic.com"],
       // Valid sources of images.
       imgSrc: ["'self'"],
       // Valid sources of Flash objects nad other plugins.

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import DocumentTitle from 'react-document-title';
 import IndexPage from '../pages/containers/index-page';
@@ -13,7 +14,9 @@ class App extends React.Component {
   render() {
     return (
       <DocumentTitle title="8WeiKe">
-        { this.props.children }
+        <MuiThemeProvider>
+          { this.props.children }
+        </MuiThemeProvider>
       </DocumentTitle>
     )
   }
