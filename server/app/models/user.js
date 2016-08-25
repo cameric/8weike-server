@@ -51,12 +51,12 @@ function loginWithPhone(phone, password) {
 }
 
 /**
- * Returns a promise to register a new user in the database.
+ * Returns a promise to signup a new user in the database.
  * @param phone {string} - The new user's phone number.
  * @param password {string} - The new user's password.
  * @returns {Promise.<TResult>} - A promise that fulfills when the user is successfully reigstered.
  */
-function registerWithPhone(phone, password) {
+function signupWithPhone(phone, password) {
   // TODO: Move password length and locale to config
   if ((phone == null) || !validator.isMobilePhone(phone, 'zh-CN')) {
     return Promise.reject(new Error('Invalid phone number.'));
@@ -103,6 +103,6 @@ function updateById(id, columns) {
 module.exports = {
   findById,
   loginWithPhone,
-  registerWithPhone,
+  signupWithPhone,
   updateById,
 };
