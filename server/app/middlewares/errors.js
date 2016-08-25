@@ -1,5 +1,45 @@
 // The middlewares serve all error handling
 
+// This small helper function binds an error object
+// with a string identifier that could be fed into
+// parseErrors.
+function bindErrorWithIdentifier(err, identifier) {
+  return Object.assign({}, err, { identifier })
+}
+
+// This function parse all types of error messages and
+// re-organize them in a structured way such that
+// they have the following signature:
+// {
+//    status: <status code [int]>,
+//    message: <error message [string]>
+// }
+function parseErrors(err, req, res, next) {
+  const errorsInfo = {
+    mysql: {
+      ER_DUP_ENTRY: {
+        status: 409,
+        messages: {
+          phone: 'Phone number already exists!'
+        },
+      },
+    },
+  };
+
+  let error = {
+    status: '',
+    message: '',
+  };
+
+  // Parse MySQL errors
+  if (err.code) {
+    error.status = errorsInfo.mysql[err.code].status;
+    error.message = errorsInfo.mysql[err.code].messages[err.identifier];
+  }
+
+  next(error);
+}
+
 // Log error messages to the console.
 // Will only be applied in development environment.
 function logErrors(err, req, res, next) {
@@ -42,6 +82,8 @@ function notFoundError(req, res) {
 }
 
 module.exports = {
+  bindErrorWithIdentifier,
+  parseErrors,
   logErrors,
   clientErrorHandler,
   serverErrorHandler,
