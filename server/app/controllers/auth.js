@@ -18,7 +18,7 @@ function signupWithPhone(req, res, next) {
   const { phone, password } = req.body;
   registerWithPhone(phone, password)
     .then((data) => { res.status(200).send({ data }); })
-    .catch((err) => { next(bindErrorWithIdentifier(err, 'phone')) });
+    .catch((err) => { bindErrorWithIdentifier(err, 'signupWithPhone', next) });
 }
 
 function logout(req, res) {

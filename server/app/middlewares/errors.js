@@ -3,8 +3,16 @@
 // This small helper function binds an error object
 // with a string identifier that could be fed into
 // parseErrors.
-function bindErrorWithIdentifier(err, identifier) {
-  return Object.assign({}, err, { identifier })
+function bindErrorWithIdentifier(err, identifier, next) {
+  Error.prototype.errorIdentifier = identifier;
+  next(err);
+}
+
+// Log raw error messages to the console.
+// Will only be applied in development environment.
+function logErrors(err, req, res, next) {
+  console.error(err.stack);
+  next(err);
 }
 
 // This function parse all types of error messages and
@@ -20,7 +28,7 @@ function parseErrors(err, req, res, next) {
       ER_DUP_ENTRY: {
         status: 409,
         messages: {
-          phone: 'Phone number already exists!'
+          signupWithPhone: 'Phone number already exists!'
         },
       },
     },
@@ -34,17 +42,10 @@ function parseErrors(err, req, res, next) {
   // Parse MySQL errors
   if (err.code) {
     error.status = errorsInfo.mysql[err.code].status;
-    error.message = errorsInfo.mysql[err.code].messages[err.identifier];
+    error.message = errorsInfo.mysql[err.code].messages[err.errorIdentifier];
   }
 
   next(error);
-}
-
-// Log error messages to the console.
-// Will only be applied in development environment.
-function logErrors(err, req, res, next) {
-  console.error(err.stack);
-  next(err);
 }
 
 // Handle errors produced by Ajax requests
@@ -83,8 +84,8 @@ function notFoundError(req, res) {
 
 module.exports = {
   bindErrorWithIdentifier,
-  parseErrors,
   logErrors,
+  parseErrors,
   clientErrorHandler,
   serverErrorHandler,
   notFoundError,
