@@ -14,13 +14,10 @@ const loginRouter = require('./auth/login');
 const userRouter = require('./user');
 
 // All controllers are imported here
-const authController = require('../controllers/auth');
+const logout = require('../controllers/auth').logout;
 
 // this router holds all endpoints of 8Weike app
 const appRouter = express.Router(); // eslint-disable-line new-cap
-
-// Top-level APIs
-appRouter.get('/logout', auth.requiresLogin, authController.logout);
 
 // Api for showing global information about the company
 appRouter.get('/global_info', (req, res) => {
@@ -33,6 +30,7 @@ appRouter.get('/global_info', (req, res) => {
 // Authentication-related APIs
 appRouter.use('/signup', signupRouter);
 appRouter.use('/login', loginRouter);
+appRouter.get('/logout', auth.requiresLogin, logout);
 
 // User-related APIs
 appRouter.use('/user', userRouter);
