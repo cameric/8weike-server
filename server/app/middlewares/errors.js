@@ -5,7 +5,18 @@ function logErrors(err, req, res, next) {
   next(err);
 }
 
-function serverErrors(err, req, res, next) {
+function clientErrorHandler(err, req, res, next) {
+  if (req.xhr) {
+    res.status(err.status || 500).send({
+      message: err.message,
+      statusCode: (err.status || 500),
+    });
+  } else {
+    next(err);
+  }
+}
+
+function serverErrorHandler(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
@@ -26,6 +37,7 @@ function notFoundError(req, res) {
 
 module.exports = {
   logErrors,
-  serverErrors,
+  clientErrorHandler,
+  serverErrorHandler,
   notFoundError,
 };
