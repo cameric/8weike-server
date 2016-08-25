@@ -80,6 +80,8 @@ if (process.env.NODE_ENV === 'development') {
   // Only log errors in dev
   app.use(errorHandlers.logErrors);
 }
+
+app.use(errorHandlers.parseErrors);
 app.use(errorHandlers.clientErrorHandler);
 app.use(errorHandlers.serverErrorHandler);
 
