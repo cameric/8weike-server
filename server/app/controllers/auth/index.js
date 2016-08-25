@@ -1,3 +1,11 @@
-/**
- * Created by spencer on 2016/8/25.
- */
+const login = require('./login')
+const signup = require('./signup')
+
+function logout(req, res) {
+}
+
+module.exports = {
+  logout,
+  login,
+  signup,
+};
