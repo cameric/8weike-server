@@ -76,8 +76,12 @@ app.use(clientRouter);
 app.use('/api', router);
 
 // Error handling
-app.use(errorHandlers.logErrors);
-app.use(errorHandlers.serverErrors);
+if (process.env.NODE_ENV === 'development') {
+  // Only log errors in dev
+  app.use(errorHandlers.logErrors);
+}
+app.use(errorHandlers.clientErrorHandler);
+app.use(errorHandlers.serverErrorHandler);
 
 // Unmatched routes, report a 404
 app.use(errorHandlers.notFoundError);
