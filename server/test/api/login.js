@@ -27,44 +27,44 @@ describe('Login Routing', () => {
         .catch(done);
   });
 
-  describe('POST /login/phone', () => {
-    describe('success', () => {
+  describe('POST /api/login/phone', () => {
+    describe('valid input', () => {
       const randomUser = randomItem(fixture.tables.user);
 
-      it('should redirect to /user/* when given valid credentials', (done) => {
+      it('redirects to /api/user/* when given valid credentials', (done) => {
         const data = {
           phone: randomUser.phone,
           password: randomUser.password,
         };
 
         request(app)
-            .post('/login/phone')
+            .post('/api/login/phone')
             .send(data)
-            .expect(301)
+            .expect(302)
             .end((err, res) => {
               if (err) done(err);
 
-              expect(res.header.location).to.include('/user/');
+              expect(res.header.location).to.include('/api/user/');
               done();
             });
       });
     });
 
-    describe('failure', () => {
-      it('should redirect to /login when given invalid credentials', (done) => {
+    describe('invalid input', () => {
+      it('redirects to /api/login when given invalid credentials', (done) => {
         const data = {
           phone: '123a456b7890',
           password: 'password',
         };
 
         request(app)
-            .post('/login/phone')
+            .post('/api/login/phone')
             .send(data)
-            .expect(301)
+            .expect(302)
             .end((err, res) => {
               if (err) done(err);
 
-              expect(res.header.location).to.include('/login/phone');
+              expect(res.header.location).to.include('/api/login/phone');
               done();
             });
       });

@@ -30,7 +30,7 @@ describe('User Model', () => {
 
   describe('findById', () => {
     describe('success', () => {
-      it('should find and return a user with an ID known to be in the table', (done) => {
+      it('finds and returns a user with an ID known to be in the table', (done) => {
         // Pick a random user from the fixture and try to find that user by ID
         const randomUser = randomItem(fixture.tables.user);
         userModel.findById(randomUser.id, ['id']).then((user) => {
@@ -42,7 +42,7 @@ describe('User Model', () => {
     });
 
     describe('failure', () => {
-      it('should fail when given an ID known not to be in the table', (done) => {
+      it('fails when given an ID known not to be in the table', (done) => {
         // Pick an ID known not to be in the table
         // TODO: there's not a better (constant-time) way to guarantee this, is there?
         userModel.findById(99999999999, ['id']).then(() => {
@@ -56,7 +56,7 @@ describe('User Model', () => {
 
   describe('loginWithPhone', () => {
     describe('success', () => {
-      it('should return user X\'s ID when the given credentials match those of user X', (done) => {
+      it('returns user X\'s ID when the given credentials match those of user X', (done) => {
         // Pick a random user from the fixture and try to log in as that user
         const randomUser = randomItem(fixture.tables.user);
 
@@ -72,7 +72,7 @@ describe('User Model', () => {
     });
 
     describe('failure', () => {
-      it('should fail when given a valid phone number but an invalid password', (done) => {
+      it('fails when given a valid phone number but an invalid password', (done) => {
         const randomUser = randomItem(fixture.tables.user);
 
         userModel.loginWithPhone(randomUser.phone, 'not randomUser\'s password').then(() => {
@@ -82,7 +82,7 @@ describe('User Model', () => {
         });
       });
 
-      it('should fail when given an invalid phone number', (done) => {
+      it('fails when given an invalid phone number', (done) => {
         userModel.loginWithPhone('this is definitely not a phone number', 'password').then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
@@ -106,7 +106,7 @@ describe('User Model', () => {
 
   describe('signupWithPhone', () => {
     describe('success', () => {
-      it('should add a new user when given a valid phone number and password', (done) => {
+      it('adds a new user when given a valid phone number and password', (done) => {
         const newUser = {
           phone: '18610322136',
           password: 'p@55w0rd',
@@ -126,7 +126,7 @@ describe('User Model', () => {
     });
 
     describe('failure', () => {
-      it('should fail when given an existing phone number and password', (done) => {
+      it('fails when given an existing phone number and password', (done) => {
         const randomUser = randomItem(fixture.tables.user);
 
         userModel.signupWithPhone(randomUser.phone, 'password').then(() => {
@@ -136,7 +136,7 @@ describe('User Model', () => {
         });
       });
 
-      it('should fail when given an invalid phone number', (done) => {
+      it('fails when given an invalid phone number', (done) => {
         const newUser = {
           phone: '123a456b7890',
           password: 'p@55w0rd',
@@ -149,7 +149,7 @@ describe('User Model', () => {
         });
       });
 
-      it('should fail when given an invalid password', (done) => {
+      it('fails when given an invalid password', (done) => {
         const newUser = {
           phone: '123a456b7890',
           password: 'a',
@@ -162,7 +162,7 @@ describe('User Model', () => {
         });
       });
 
-      it('should fail when not given a phone number', (done) => {
+      it('fails when not given a phone number', (done) => {
         const newUser = {
           password: 'p@55w0rd',
         };
@@ -174,7 +174,7 @@ describe('User Model', () => {
         });
       });
 
-      it('should fail when not given a password', (done) => {
+      it('fails when not given a password', (done) => {
         const newUser = {
           phone: '1234567890',
         };
@@ -190,7 +190,7 @@ describe('User Model', () => {
 
   describe('updateById', () => {
     describe('success', () => {
-      it('should successfully update the phone number of an existing user', (done) => {
+      it('updates the phone number of an existing user', (done) => {
         // Pick a random user from the fixture and try to update their phone number, adding a '!!!'
         const randomUser = randomItem(fixture.tables.user);
         const newPhone = `${randomUser.phone}!!!`;
@@ -209,7 +209,7 @@ describe('User Model', () => {
     });
 
     describe('failure', () => {
-      it('should fail to update a nonexistent user', (done) => {
+      it('fails to update a nonexistent user', (done) => {
         userModel.updateById(9999999, {phone: '1234567890'}).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
@@ -217,7 +217,7 @@ describe('User Model', () => {
         });
       });
 
-      it('should fail to update a nonexistent column of an existing user', (done) => {
+      it('fails to update a nonexistent column of an existing user', (done) => {
         const randomUser = randomItem(fixture.tables.user);
 
         userModel.updateById(randomUser.id, {asdfghjkl: 3.14159}).then(() => {

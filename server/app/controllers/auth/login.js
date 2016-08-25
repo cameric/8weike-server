@@ -1,6 +1,6 @@
 function loginWithPhone(req, res) {
-  if (!req.user) return res.redirect('/login/phone');
-  return res.redirect(`/user/${req.user.id}`);
+  if (!req.user) return res.redirect('/api/login/phone');
+  return res.redirect(`/api/user/${req.user.id}`);
 }
 
 function loginWithWeixin(req, res) {
