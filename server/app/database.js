@@ -45,7 +45,8 @@ function truncate(tables) {
   };
 
   // A promise to truncate all tables
-  const truncateAllTables = (conn) => Promise.all(tables.map(truncateTable.bind(null, conn)));
+  const truncateAllTables = (conn) => Promise.all(tables.map(truncateTable.bind(null, conn)))
+      .then(() => conn.release());
 
   return getConnection().then(truncateAllTables);
 }
@@ -71,7 +72,8 @@ function importFixture(fixture) {
   // A promise to import rows from all tables specified in the fixture
   const importAllTables = (conn) => {
     const tableNames = Object.keys(fixture.tables);
-    return Promise.all(tableNames.map(insertAllRows.bind(null, conn)));
+    return Promise.all(tableNames.map(insertAllRows.bind(null, conn)))
+        .then(conn.release());
   };
 
   return getConnection().then(importAllTables);
