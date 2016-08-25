@@ -43,9 +43,13 @@ function parseErrors(err, req, res, next) {
   if (err.code) {
     error.status = errorsInfo.mysql[err.code].status;
     error.message = errorsInfo.mysql[err.code].messages[err.errorIdentifier];
+    next(error);
+  } else if (err.statusCode) {
+    // Potential customized errors
+  } else {
+    // Default to original error
+    next(err);
   }
-
-  next(error);
 }
 
 // Handle errors produced by Ajax requests
