@@ -7,39 +7,46 @@ class Input extends React.Component {
     super(props);
     this.state = {
       errorText: '',
-    }
+    };
+    this.value = '';
+  }
+
+  validate() {
+    return this._validateInput(this.value);
   }
 
   _validateInput(inputValue) {
     if (this.props.isRequired && inputValue === '') {
       this.setState({
         errorText: 'This field is required!',
-      })
+      });
+      return false;
     } else {
       for (const v of this.props.validators) {
         if (!v.validator(inputValue)) {
           this.setState({
             errorText: v.errorText,
           });
-          return;
+          return false;
         }
       }
       this.setState({
         errorText: '',
       });
+      return true;
     }
   }
 
   _handleInputChange(event) {
-    const inputValue = event.target.value.toString();
-    this._validateInput(inputValue);
-    this.props.onChange(inputValue);
+    this.value = event.target.value.toString();
+    this._validateInput(this.value);
+    this.props.onChange(this.value);
   }
 
   _handleInputBlur(event) {
-    const inputValue = event.target.value.toString();
-    this._validateInput(inputValue);
-    this.props.onBlur(inputValue);
+    this.value = event.target.value.toString();
+    this._validateInput(this.value);
+    this.props.onBlur(this.value);
   }
 
   render() {

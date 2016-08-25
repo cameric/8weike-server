@@ -6,8 +6,10 @@ import { signupWithPhoneBasicInfoAction,
          signupWithPhoneUsernameAction } from '../../actions/auth';
 import SignupModalContent from '../components/signup-modal-content';
 
-function mapStateToProps() {
-  return {}
+function mapStateToProps(state) {
+  return {
+    signupState: state.auth.signup
+  }
 }
 
 function mapDispatchToProps(dispatch) {

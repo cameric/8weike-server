@@ -15,12 +15,14 @@ class SignupModalContent extends React.Component {
     super(props);
     this.state = {
       step: 'basicInfo',
-      status: 'stale',
+      status: 'waiting',
       basicInfo: {
         phone: '',
         password: '',
         confirmPassword: '',
-      }
+      },
+      tfaCode: '',
+      username: '',
     };
 
     this._phoneValidators = [
@@ -45,20 +47,49 @@ class SignupModalContent extends React.Component {
         errorText: 'Passwords do not match!',
       }
     ];
+    this._tfaValidators = [
+      {
+        validator: (tfaCode) => validator.isNumeric(tfaCode) &&
+          validator.isLength(tfaCode, {min: 6, max: 6}),
+        errorText: 'Code should contain 6 digits!',
+      }
+    ];
+  }
+
+  componentDidUpdate(prevState, prevProps) {
+    if (this.state.status === 'loading' &&
+        prevProps.signupState !== this.props.signupState) {
+      if (this.props.signupState.status === 'error') {
+        // Reset user input if error
+        this.setState({ status: 'waiting' });
+      } else if (this.props.signupState.status === 'success') {
+        this.setState({
+          status: 'waiting',
+          step: this.props.signupState.nextStep
+        });
+      }
+    }
   }
 
   // General helpers
 
-  getNextStep(step) {
-    this.setState({step: step})
+  _renderErrorMsg() {
+    if (this.props.signupState && this.props.signupState.error) {
+      return (
+        <ErrorBanner errorMsg={this.props.signupState.error}/>
+      );
+    } else {
+      return null;
+    }
   }
 
   _renderNextStepButton(info, handleTouchTap) {
-    const buttonMsg = (this.state.status === 'stale') ? info
+    const buttonMsg = (this.state.status === 'waiting') ? info
         : (<CircularProgress color={white} size={0.3} style={{ marginTop: '-7px' }}/>);
     return (
       <FlatButton backgroundColor='#00BCD4'
                   hoverColor='#0CB6C9'
+                  disabled={this.state.status === 'loading'}
                   onTouchTap={handleTouchTap}
                   style={ {
                     width: '100%',
@@ -77,31 +108,53 @@ class SignupModalContent extends React.Component {
   }
 
   _updatePhone(phone) {
-    this._updatePartialState('basicInfo', { phone: phone });
+    this._updatePartialState('basicInfo', { phone });
   }
 
   _updatePassword(password) {
-    this._updatePartialState('basicInfo', { password: password });
+    this._updatePartialState('basicInfo', { password });
   }
 
   _updateConfirmPassword(confirmPassword) {
-    this._updatePartialState('basicInfo', { confirmPassword: confirmPassword });
+    this._updatePartialState('basicInfo', { confirmPassword });
+  }
+
+  // Helpers for TFA step
+
+  _updateTFACode(tfaCode) {
+    this._updatePartialState('tfaCode', tfaCode);
   }
 
   // Action handlers
 
   _submitBasicInfo() {
+    const isPhoneValid = this.refs.phoneInput.validate();
+    const isPasswordValid = this.refs.passwordInput.validate();
+    const isConfirmPasswordValid = this.refs.confirmPasswordInput.validate();
+    if (isPhoneValid && isPasswordValid && isConfirmPasswordValid) {
+      this.setState({ status: 'loading' });
+      this.props.sendBasicInfo(this.state.basicInfo);
+    }
+  }
+
+  _submitTFACode() {
     this.setState({ status: 'loading'});
-    //this.props.sendBasicInfo(this.state.basicInfo);
-    //this.getNextStep.bind(this, 'TFA')
+    this.props.sendTFACode(this.state.tfaCode);
+  }
+
+  _submitUsername() {
+    this.setState({ status: 'loading'});
+    this.props.sendUsernameInfo(this.state.username);
   }
 
   renderBasicInfoStep() {
     return (
       <div>
-        <ErrorBanner errorMsg="Cellphone already existed!"/>
-        <Input value={this.state.basicInfo.phone}
+        {this._renderErrorMsg()}
+        <Input ref="phoneInput"
+               value={this.state.basicInfo.phone}
                className='signup-modal-content__input'
+               disabled={this.state.status === 'loading'}
                isRequired={true}
                hintText='Phone Number'
                validators={this._phoneValidators}
@@ -109,18 +162,22 @@ class SignupModalContent extends React.Component {
         <div className='signup-modal-content__password-container'>
           <PasswordStrength classNames='signup-modal-content__password-strength'
                             password={this.state.basicInfo.password}/>
-          <Input type='password'
+          <Input ref="passwordInput"
+                 type='password'
                  value={this.state.basicInfo.password}
                  isRequired={true}
                  className='signup-modal-content__input'
+                 disabled={this.state.status === 'loading'}
                  hintText='Password'
                  validators={this._passwordValidators}
                  onChange={this._updatePassword.bind(this)}/>
         </div>
-        <Input type="password"
+        <Input ref="confirmPasswordInput"
+               type="password"
                value={this.state.basicInfo.confirmPassword}
                isRequired={true}
                className='signup-modal-content__input'
+               disabled={this.state.status === 'loading'}
                hintText='Confirm Password'
                validators={this._confirmPasswordValidators}
                onChange={this._updateConfirmPassword.bind(this)}/>
@@ -137,15 +194,13 @@ class SignupModalContent extends React.Component {
           display: 'block',
           marginTop: '30px',
         } }>A passcode has been sent to your phone</span>
-        <Input className='signup-modal-content__input' hintText='6-digit Passcode'/>
-        <FlatButton backgroundColor='#00BCD4'
-                    hoverColor='#0CB6C9'
-                    onClick={this.getNextStep.bind(this, 'username')}
-                    style={ {
-                  width: '100%',
-                  margin: '20px 0 0 0',
-                  color: 'white',
-                } }>Confirm Phone Number</FlatButton>
+        <Input value={this.state.tfaCode}
+               className='signup-modal-content__input'
+               isRequired={true}
+               hintText='6-digit Passcode'
+               validators={this._tfaValidators}
+               onChange={this._updateTFACode.bind(this)}/>
+        {this._renderNextStepButton('Confirm Phone Number', this._submitTFACode.bind(this))}
       </div>
     )
   }
@@ -154,14 +209,7 @@ class SignupModalContent extends React.Component {
     return (
       <div>
         <Input className='signup-modal-content__input' hintText='Nickname'/>
-        <FlatButton backgroundColor='#00BCD4'
-                    hoverColor='#0CB6C9'
-                    onClick={this.getNextStep.bind(this, 'finished')}
-                    style={ {
-                  width: '100%',
-                  margin: '20px 0 0 0',
-                  color: 'white',
-                } }>Finish</FlatButton>
+        {this._renderNextStepButton('Finish', this._submitUsername.bind(this))}
       </div>
     )
   }
@@ -170,7 +218,7 @@ class SignupModalContent extends React.Component {
     switch (this.state.step) {
       case 'basicInfo':
         return this.renderBasicInfoStep();
-      case 'TFA':
+      case 'tfa':
         return this.renderTFAStep();
       case 'username':
         return this.renderUsernameStep();
@@ -184,6 +232,7 @@ class SignupModalContent extends React.Component {
 }
 
 SignupModalContent.propTypes = {
+  signupState: React.PropTypes.object,
   sendBasicInfo: React.PropTypes.func,
   sendTFACode: React.PropTypes.func,
   sendUsernameInfo: React.PropTypes.func,

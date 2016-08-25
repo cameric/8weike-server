@@ -15,6 +15,7 @@ function pageInitialState(state = {}, action) {
 
 const appReducers = combineReducers({
   pageInitialState,
+  auth: authReducers,
   routing: routerReducer
 });
 

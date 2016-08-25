@@ -29,7 +29,9 @@ export default store => next => action => {
       })
       .send(JSON.stringify(body || {}))
       .then((response) => {
-        fulfill(JSON.parse(response.res.text));
+        // Client-side rendering goes through `response.text`
+        // Server-side rendering goes through `response.res.text`
+        fulfill(JSON.parse(response.text || response.res.text));
       }, (error) => {
         reject(error);
       });
