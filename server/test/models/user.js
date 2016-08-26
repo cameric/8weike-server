@@ -1,14 +1,10 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
-
 const db = require('../../app/database');
 const expect = require('chai').expect;
 const fixture = require('../fixtures/user');
+const randomItem = require('../utils').randomItem;
 const userModel = require('../../app/models/user');
-
-function randomItem(array) {
-  return array[Math.floor(Math.random() * array.length)];
-}
 
 describe('User Model', () => {
   beforeEach((done) => {
@@ -26,7 +22,6 @@ describe('User Model', () => {
         .then(done.bind(null, null))
         .catch(done);
   });
-
 
   describe('findById', () => {
     describe('success', () => {
@@ -93,22 +88,18 @@ describe('User Model', () => {
   });
 
   describe('loginWithWeixin', () => {
-    it('should be tested later...', (done) => {
-      done();
-    });
+    // TODO
   });
 
   describe('loginWithWeibo', () => {
-    it('should be tested later...', (done) => {
-      done();
-    });
+    // TODO
   });
 
   describe('signupWithPhone', () => {
     describe('success', () => {
       it('adds a new user when given a valid phone number and password', (done) => {
         const newUser = {
-          phone: '18610322136',
+          phone: '18610322136', // Known-valid Chinese phone number
           password: 'p@55w0rd',
         };
 

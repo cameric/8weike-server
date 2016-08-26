@@ -9,10 +9,8 @@ const http = require('http');
 const https = require('https');
 
 // Test MySQL database connection
-db.getConnection().then((conn) => {
-  // Connection OK. Release it and proceed.
+db.testConnection().then(() => {
   console.log('MySQL connection test successful.');
-  conn.release();
 }).then((_) => {
   const listenErrorCallback = (port, err) => {
     if (err) {
@@ -34,3 +32,4 @@ db.getConnection().then((conn) => {
 }).catch((err) => {
   console.log(err.stack);
 });
+

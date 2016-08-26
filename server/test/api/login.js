@@ -4,11 +4,8 @@ const app = require('../../app');
 const db = require('../../app/database');
 const expect = require('chai').expect;
 const fixture = require('../fixtures/user');
+const randomItem = require('../utils').randomItem;
 const request = require('supertest');
-
-function randomItem(array) {
-  return array[Math.floor(Math.random() * array.length)];
-}
 
 describe('Login Routing', () => {
   beforeEach((done) => {
@@ -29,12 +26,13 @@ describe('Login Routing', () => {
 
   describe('POST /api/login/phone', () => {
     describe('valid input', () => {
-      const randomUser = randomItem(fixture.tables.user);
+      it('(302) Redirects to /api/user/* when given valid credentials', (done) => {
+        const randomUser = randomItem(fixture.tables.user);
 
-      it('redirects to /api/user/* when given valid credentials', (done) => {
         const data = {
           phone: randomUser.phone,
-          password: randomUser.password,
+          // In the fixture, all users' phone numbers are their passwords
+          password: randomUser.phone,
         };
 
         request(app)
@@ -51,7 +49,7 @@ describe('Login Routing', () => {
     });
 
     describe('invalid input', () => {
-      it('redirects to /api/login when given invalid credentials', (done) => {
+      it('(401) responds with Unauthorized when given invalid credentials', (done) => {
         const data = {
           phone: '123a456b7890',
           password: 'password',
@@ -60,26 +58,20 @@ describe('Login Routing', () => {
         request(app)
             .post('/api/login/phone')
             .send(data)
-            .expect(302)
-            .end((err, res) => {
+            .expect(401)
+            .end((err, _) => {
               if (err) done(err);
-
-              expect(res.header.location).to.include('/api/login/phone');
-              done();
+              else done();
             });
       });
     });
   });
 
   describe('Weixin', () => {
-    it('should be tested later...', (done) => {
-      done();
-    });
+    // TODO
   });
 
   describe('Weibo', () => {
-    it('should be tested later...', (done) => {
-      done();
-    });
+    // TODO
   });
 });
