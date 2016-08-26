@@ -36,10 +36,11 @@ class SignupModalContent extends React.Component {
         validator: (password) => validator.isLength(password, {min: 8, max: undefined}),
         errorText: 'Password should be at least 8 characters!',
       },
-      {
-        validator: (password) => !(validator.isNumeric(password) || validator.isAlpha(password)),
-        errorText: 'Password must contain both letters and digits!',
-      }
+      // TODO: Find a better way to handle password requirement
+      //{
+      //  validator: (password) => !(validator.isNumeric(password) || validator.isAlpha(password)),
+      //  errorText: 'Password must contain both letters and digits!',
+      //}
     ];
     this._confirmPasswordValidators = [
       {
@@ -56,27 +57,30 @@ class SignupModalContent extends React.Component {
     ];
   }
 
-  componentDidUpdate(prevState, prevProps) {
+  // Handle signup state updates
+
+  componentWillReceiveProps(nextProps) {
     if (this.state.status === 'loading' &&
-        prevProps.signupState !== this.props.signupState) {
-      if (this.props.signupState.status === 'error') {
+        nextProps.signupState != this.props.signupState) {
+      if (nextProps.signupState.status === 'error') {
         // Reset user input if error
         this.setState({ status: 'waiting' });
-      } else if (this.props.signupState.status === 'success') {
+      } else if (nextProps.signupState.status === 'success') {
+        // Proceed to next step
         this.setState({
           status: 'waiting',
-          step: this.props.signupState.nextStep
+          step: nextProps.signupState.nextStep
         });
       }
     }
   }
 
-  // General helpers
+  // Helpers for conditional rendering
 
   _renderErrorMsg() {
-    if (this.props.signupState && this.props.signupState.error) {
+    if (this.props.signupState && this.props.signupState.status === 'error') {
       return (
-        <ErrorBanner errorMsg={this.props.signupState.error}/>
+        <ErrorBanner errorMsg={this.props.signupState.error.message}/>
       );
     } else {
       return null;
@@ -123,6 +127,10 @@ class SignupModalContent extends React.Component {
 
   _updateTFACode(tfaCode) {
     this._updatePartialState('tfaCode', tfaCode);
+  }
+
+  _updateUsername(username) {
+    this._updatePartialState('username', username);
   }
 
   // Action handlers
@@ -208,7 +216,11 @@ class SignupModalContent extends React.Component {
   renderUsernameStep() {
     return (
       <div>
-        <Input className='signup-modal-content__input' hintText='Nickname'/>
+        <Input value={this.state.username}
+               className='signup-modal-content__input'
+               isRequired={true}
+               hintText='Nickname'
+               onChange={this._updateUsername.bind(this)}/>
         {this._renderNextStepButton('Finish', this._submitUsername.bind(this))}
       </div>
     )

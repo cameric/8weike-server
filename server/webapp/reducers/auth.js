@@ -9,7 +9,7 @@ function authReducers(state = {}, action) {
           signup: {
             currentStep: 'basicInfo',
             status: 'error',
-            error: action.payload.errorMsg,
+            error: action.payload.parsedError,
           }
         });
       } else {

@@ -24,6 +24,7 @@ export default store => next => action => {
   return next(nextAction(new Promise((fulfill, reject) => {
     superagent(method, url)
       .set({
+        'X-Requested-With': 'XMLHttpRequest',
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       })

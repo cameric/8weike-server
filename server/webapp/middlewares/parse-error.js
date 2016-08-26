@@ -6,10 +6,10 @@ export default store => next => action => {
 
   if (action.payload.response.body) {
     // Normal error thrown by res.send()
-    action.payload.errorMsg = action.payload.response.body.error
+    action.payload.parsedError = action.payload.response.body
   } else {
     // Fallback to default error message
-    action.payload.errorMsg = action.payload.message
+    action.payload.parsedError = action.payload
   }
 
   next(action);
