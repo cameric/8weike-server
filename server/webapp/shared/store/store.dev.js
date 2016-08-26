@@ -5,6 +5,7 @@ import createLogger from 'redux-logger';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 
 import webAPIMiddleware from '../../middlewares/api';
+import parseErrorMiddleware from '../../middlewares/parse-error';
 
 // A list of middlewares to be fed into Redux
 // Note that the order of middlewares matters.
@@ -12,6 +13,7 @@ import webAPIMiddleware from '../../middlewares/api';
 let middlewares = [
   webAPIMiddleware,
   promiseMiddleware,
+  parseErrorMiddleware,
 ];
 
 // Only log Redux state changes on client side

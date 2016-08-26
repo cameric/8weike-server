@@ -24,12 +24,15 @@ export default store => next => action => {
   return next(nextAction(new Promise((fulfill, reject) => {
     superagent(method, url)
       .set({
+        'X-Requested-With': 'XMLHttpRequest',
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       })
       .send(JSON.stringify(body || {}))
       .then((response) => {
-        fulfill(JSON.parse(response.res.text));
+        // Client-side rendering goes through `response.text`
+        // Server-side rendering goes through `response.res.text`
+        fulfill(JSON.parse(response.text || response.res.text));
       }, (error) => {
         reject(error);
       });
