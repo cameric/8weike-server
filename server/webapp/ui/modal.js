@@ -37,9 +37,9 @@ class Modal extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className={this.props.containerClassNames}>
         {this._createTargetButton()}
-        <Dialog contentClassName={this.props.classNames}
+        <Dialog contentClassName={this.props.contentClassNames}
                 contentStyle={ {
                   width: ''
                 } }
@@ -57,7 +57,8 @@ class Modal extends React.Component {
 Modal.propTypes = {
   targetButton: React.PropTypes.element.isRequired,
   title: React.PropTypes.string,
-  classNames: React.PropTypes.string, // No inline style permitted
+  containerClassNames: React.PropTypes.string, // No inline style permitted
+  contentClassNames: React.PropTypes.string, // No inline style permitted
   onClose: React.PropTypes.func,
   isContentScrollable: React.PropTypes.bool
 };

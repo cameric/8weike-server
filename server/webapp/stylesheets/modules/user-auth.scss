@@ -1,0 +1,18 @@
+.user-auth {
+  font-size: 16px;
+  float: right;
+
+  &__modal {
+    float: left;
+  }
+
+  &__button {
+    padding: 0 15px;
+    height: 60px;
+    line-height: 60px;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
