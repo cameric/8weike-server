@@ -1,13 +1,12 @@
 // The index page
 
 import React from 'react';
-import { Link } from 'react-router';
 import DocumentTitle from 'react-document-title';
 
 import { webRequestAction, constructInitialStatePayload } from '../../actions/utils';
 import Modal from '../../ui/modal';
-import SignupModalContent from '../containers/signup-modal-content';
-import LoginModalContent from '../containers/login-modal-content';
+import SignupModalContent from './nav-bar/signup-modal/signup-modal-content.component';
+import LoginModalContent from './nav-bar/login-modal/login-modal-content';
 
 require('../../stylesheets/modules/index-page.scss');
 
@@ -19,35 +18,47 @@ class IndexPage extends React.Component {
     })))
   }
 
-  _onLoginTransitToSignup() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      uid: null,
+    }
+  }
+
+  _handleLoginTransitToSignup() {
     this.refs.loginModal.hideModal();
     this.refs.signupModal.showModal();
   }
 
-  _onSignupTransitToLogin() {
+  _handleSignupTransitToLogin() {
     this.refs.signupModal.hideModal();
     this.refs.loginModal.showModal();
+  }
+
+  _handleLoginSuccess() {
+    this.refs.loginModal.hideModal();
+    this.props.loadUserById();
   }
 
   render() {
     return (
       <DocumentTitle title="8WeiKe - Index">
         <div>
-          This is the index page of 8weike website.
-          <li><Link to={'/login'}>Login Here</Link></li>
+          This is the index page of 8weike website. UserId: {this.state.uid}
           <span>Version: {this.props.globalInfo.version}</span>
           <span>Company: {this.props.globalInfo.company}</span>
           <Modal ref="signupModal"
                  targetButton={<button>Sign Up</button>}
                  title="Sign Up"
                  classNames="signup-modal">
-            <SignupModalContent transitToLogin={this._onSignupTransitToLogin.bind(this)}/>
+            <SignupModalContent transitToLogin={this._handleSignupTransitToLogin.bind(this)}/>
           </Modal>
           <Modal ref="loginModal"
                  targetButton={<button>Login</button>}
                  title="Login"
                  classNames="login-modal">
-            <LoginModalContent transitToSignup={this._onLoginTransitToSignup.bind(this)}/>
+            <LoginModalContent transitToSignup={this._handleLoginTransitToSignup.bind(this)}
+                               onLoginSuccess={this._handleLoginSuccess.bind(this)}/>
           </Modal>
         </div>
       </DocumentTitle>
@@ -56,7 +67,8 @@ class IndexPage extends React.Component {
 }
 
 IndexPage.propTypes = {
-  globalInfo: React.PropTypes.object
+  globalInfo: React.PropTypes.object,
+  loadUserById: React.PropTypes.func,
 };
 
 export default IndexPage

@@ -4,12 +4,12 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { white } from 'material-ui/styles/colors';
 import validator from 'validator';
 
-import ErrorBanner from '../../ui/error-banner';
-import Input from '../../ui/input';
+import ErrorBanner from '../../../../ui/error-banner';
+import Input from '../../../../ui/input';
 import PasswordStrength from './password-strength';
 
-require('../../stylesheets/modules/signup-modal-content.scss');
-require('../../stylesheets/utils/button.scss');
+require('../../../../stylesheets/modules/signup-modal-content.scss');
+require('../../../../stylesheets/utils/button.scss');
 
 class SignupModalContent extends React.Component {
   constructor(props) {

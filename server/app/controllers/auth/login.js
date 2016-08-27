@@ -4,7 +4,7 @@ function loginWithPhone(req, res, next) {
     error.status = 400;
     next(error);
   }
-  return res.status(302).send(JSON.stringify({ id: req.user.id }));
+  return res.status(200).send(JSON.stringify({ id: req.user.id }));
 }
 
 function loginWithWeixin(req, res) {
