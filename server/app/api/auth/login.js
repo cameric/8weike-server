@@ -12,7 +12,7 @@ const forceSsl = expressEnforcesSsl();
 
 const loginRouter = express.Router(); // eslint-disable-line new-cap
 
-loginRouter.post('/phone', passport.authenticate('local'),
+loginRouter.post('/phone', forceSsl, passport.authenticate('local'),
     authController.loginWithPhone);
 loginRouter.post('/weixin', forceSsl, passport.authenticate('weixin'),
     authController.loginWithWeixin);
