@@ -9,6 +9,7 @@ import Input from '../../ui/input';
 import PasswordStrength from './password-strength';
 
 require('../../stylesheets/modules/signup-modal-content.scss');
+require('../../stylesheets/utils/button.scss');
 
 class SignupModalContent extends React.Component {
   constructor(props) {
@@ -190,7 +191,11 @@ class SignupModalContent extends React.Component {
                validators={this._confirmPasswordValidators}
                onChange={this._updateConfirmPassword.bind(this)}/>
         {this._renderNextStepButton('Sign Up', this._submitBasicInfo.bind(this))}
-        <span>Already a member? <a className='signup-modal-content__switch-btn'>Sign in</a></span>
+        <span className="signup-modal-content__options">
+          Already a member?
+          <button className='signup-modal-content__switch-btn button-as-link'
+                  onClick={this.props.transitToLogin}>Login</button>
+        </span>
       </div>
     )
   }
@@ -245,6 +250,7 @@ class SignupModalContent extends React.Component {
 
 SignupModalContent.propTypes = {
   signupState: React.PropTypes.object,
+  transitToLogin: React.PropTypes.func,
   sendBasicInfo: React.PropTypes.func,
   sendTFACode: React.PropTypes.func,
   sendUsernameInfo: React.PropTypes.func,

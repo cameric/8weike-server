@@ -12,6 +12,14 @@ class Modal extends React.Component {
     };
   }
 
+  showModal() {
+    this.setState({ isVisible: true });
+  }
+
+  hideModal() {
+    this.setState({ isVisible: false });
+  }
+
   _createTargetButton() {
     return React.cloneElement(this.props.targetButton, {
       onClick: () => this._toggleVisibility()

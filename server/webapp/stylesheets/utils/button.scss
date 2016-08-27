@@ -1,0 +1,13 @@
+.button-as-link {
+  padding: 0;
+  background-color: white;
+  border: 0;
+  box-sizing: content-box;
+  align-items: baseline;
+  font-size: inherit;
+
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
