@@ -1,6 +1,8 @@
-const bcrypt = require('bcrypt');
+const Promise = require('bluebird');
+
+const bcrypt = Promise.promisifyAll(require('bcrypt'));
 const db = require('../database');
-const denodeify = require('denodeify');
+const validator = require('validator');
 
 /**
  *
@@ -14,8 +16,13 @@ function findById(id, columns) {
   // IDs are unique, so we can automatically return the first element in `res` (if any).
   // The response will either be an individual user object, or null
   return db.query(queryString, [columns, id]).then((res) => {
-    if (res) return res[0];
-    return null;
+    if (res.length < 1) {
+      return Promise.reject(new Promise.OperationalError('No user with the given ID exists.'));
+    } else if (res.length > 1) {
+      return Promise.reject(new Promise.OperationalError(
+          'Multiple users with the same ID exist. This should never occur!'));
+    }
+    return res[0];
   });
 }
 
@@ -27,35 +34,46 @@ function findById(id, columns) {
  * @returns {Promise.<TResult>}
  */
 function loginWithPhone(phone, password) {
-  // Promise to check a plaintext password against a user's current password hash
-  const check = denodeify(bcrypt.compare);
-
   // Find a user with the given phone number, if any, and check the password.
   const queryString = 'SELECT id, password_hash FROM user WHERE phone = ?';
   return db.query(queryString, [phone]).then((results) => {
-    if (!results || !results[0]) throw new Error('No user with the given phone number exists.');
+    if (!results || !results[0]) {
+      return Promise.reject(
+          new Promise.OperationalError('No user with the given phone number exists.'));
+    }
 
     // password_hash is stored as a binary buffer in the SQL table
     const user = results[0];
-    return check(password, user.password_hash).then((valid) => {
-      if (!valid) throw new Error('Invalid password.');
+    return bcrypt.compareAsync(password, user.password_hash).then((valid) => {
+      if (!valid) {
+        return Promise.reject(
+            new Promise.OperationalError('Invalid password.'));
+      }
+
       return { id: user.id };
     });
   });
 }
 
 /**
- * Returns a promise to register a new user in the database.
+ * Returns a promise to signup a new user in the database.
  * @param phone {string} - The new user's phone number.
  * @param password {string} - The new user's password.
- * @returns {Promise.<TResult>} - A promise that fulfills when the user is successfully reigstered.
+ * @returns {Promise.<TResult>} - A promise that fulfills when the user is successfully registered.
  */
-function registerWithPhone(phone, password) {
-  const hashPassword = denodeify(bcrypt.hash);
-  const queryString = 'INSERT INTO user ( ?? ) VALUES ( ? )';
-  const saltRounds = 12; // TODO: move this somewhere sane
+function signupWithPhone(phone, password) {
+  // TODO: Move password length and locale to config
+  if ((phone == null) || !validator.isMobilePhone(phone, 'zh-CN')) {
+    return Promise.reject(new Promise.OperationalError('Invalid phone number.'));
+  } else if ((password == null) || !validator.isLength(password, { min: 8 })) {
+    return Promise.reject(new Promise.OperationalError('Password too short.'));
+  }
 
-  return hashPassword(password, saltRounds).then((hash) => {
+  // Hash the password and create the new user
+  const queryString = 'INSERT INTO user ( ?? ) VALUES ( ? )';
+  const saltRounds = 12; // TODO: move this to config
+
+  const prom = bcrypt.hashAsync(password, saltRounds).then((hash) => {
     const user = {
       phone,
       password_hash: hash,
@@ -65,6 +83,7 @@ function registerWithPhone(phone, password) {
 
     return db.query(queryString, [columnNames, columnValues]);
   });
+  return prom;
 }
 
 /**
@@ -75,12 +94,20 @@ function registerWithPhone(phone, password) {
  */
 function updateById(id, columns) {
   const queryString = 'UPDATE user SET ? WHERE id = ?';
-  return db.query(queryString, [columns, id]);
+  return db.query(queryString, [columns, id]).then((okPacket) => {
+    if (okPacket.affectedRows < 1) {
+      return Promise.reject(new Promise.OperationalError('No user with the given ID exists.'));
+    } else if (okPacket.affectedRows > 1) {
+      return Promise.reject(new Promise.OperationalError(
+          'Multiple users with the same ID exist. This should never occur!'));
+    }
+    return Promise.resolve();
+  });
 }
 
 module.exports = {
   findById,
   loginWithPhone,
-  registerWithPhone,
+  signupWithPhone,
   updateById,
 };

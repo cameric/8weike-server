@@ -1,0 +1,75 @@
+/* eslint-env node, mocha */
+/* eslint-disable no-unused-expressions */
+const app = require('../../app');
+const db = require('../../app/database');
+const expect = require('chai').expect;
+const fixture = require('../fixtures/user');
+const randomItem = require('../utils').randomItem;
+const request = require('supertest');
+
+describe('Login Routing', () => {
+  beforeEach((done) => {
+    // Truncate the user table
+    db.truncate(['user'])
+    // Import the fixture
+        .then(() => db.importFixture(fixture))
+        // Finish
+        .then(done.bind(null, null))
+        .catch(done);
+  });
+
+  after((done) => {
+    db.truncate(['user'])
+        .then(done.bind(null, null))
+        .catch(done);
+  });
+
+  describe('POST /api/login/phone', () => {
+    describe('valid input', () => {
+      it('(302) Redirects to /api/user/* when given valid credentials', (done) => {
+        const randomUser = randomItem(fixture.tables.user);
+
+        const data = {
+          phone: randomUser.phone,
+          // In the fixture, all users' phone numbers are their passwords
+          password: randomUser.phone,
+        };
+
+        request(app)
+            .post('/api/login/phone')
+            .send(data)
+            .expect(302)
+            .end((err, res) => {
+              if (err) done(err);
+              done();
+            });
+      });
+    });
+
+    describe('invalid input', () => {
+      it('(401) responds with Unauthorized when given invalid credentials', (done) => {
+        const data = {
+          phone: '123a456b7890',
+          password: 'password',
+        };
+
+        request(app)
+            .post('/api/login/phone')
+            .send(data)
+            .expect(401)
+            .end((err, _) => {
+              if (err) done(err);
+              else done();
+            });
+      });
+    });
+  });
+
+  describe('Weixin', () => {
+    // TODO
+  });
+
+  describe('Weibo', () => {
+    // TODO
+  });
+});

@@ -16,7 +16,7 @@ const defaultPlugins = [
 const plugins = process.env.NODE_ENV === 'development' ?
     _.concat(defaultPlugins, [
       new webpack.BannerPlugin('require("source-map-support").install();',
-          { raw: true, entryOnly: false })
+          { raw: true, entryOnly: false }),
     ]) :
     defaultPlugins;
 
