@@ -1,6 +1,10 @@
 function loginWithPhone(req, res, next) {
-  if (!req.user) next(new Promise.OperationalError('req.user is null'));
-  return res.status(200).send(JSON.stringify({ id: req.user.id }));
+  if (!req.user) {
+    const error = new Promise.OperationalError('req.user is null');
+    error.status = 400;
+    next(error);
+  }
+  return res.status(302).send(JSON.stringify({ id: req.user.id }));
 }
 
 function loginWithWeixin(req, res) {
