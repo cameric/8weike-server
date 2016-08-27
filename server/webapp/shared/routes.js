@@ -5,8 +5,8 @@ import { Route, IndexRoute } from 'react-router';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import DocumentTitle from 'react-document-title';
-import IndexPage from '../pages/containers/index-page';
-import LoginPage from '../pages/containers/login-page';
+import IndexPage from '../modules/containers/index-page';
+import LoginPage from '../modules/containers/login-page';
 
 // App component is a top-level virtual container that
 // doesn't belong to any page.
