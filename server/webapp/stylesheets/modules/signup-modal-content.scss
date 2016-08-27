@@ -19,11 +19,12 @@
     width: 100%;
   }
 
+  &__options {
+    font-size: 14px;
+  }
+
   &__switch-btn {
     color: #00BCD4;
-    &:hover {
-      text-decoration: underline;
-      cursor: pointer;
-    }
+    margin-left: 5px;
   }
 }

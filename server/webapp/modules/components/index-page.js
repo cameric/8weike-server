@@ -7,6 +7,7 @@ import DocumentTitle from 'react-document-title';
 import { webRequestAction, constructInitialStatePayload } from '../../actions/utils';
 import Modal from '../../ui/modal';
 import SignupModalContent from '../containers/signup-modal-content';
+import LoginModalContent from '../containers/login-modal-content';
 
 require('../../stylesheets/modules/index-page.scss');
 
@@ -18,6 +19,16 @@ class IndexPage extends React.Component {
     })))
   }
 
+  _onLoginTransitToSignup() {
+    this.refs.loginModal.hideModal();
+    this.refs.signupModal.showModal();
+  }
+
+  _onSignupTransitToLogin() {
+    this.refs.signupModal.hideModal();
+    this.refs.loginModal.showModal();
+  }
+
   render() {
     return (
       <DocumentTitle title="8WeiKe - Index">
@@ -26,10 +37,17 @@ class IndexPage extends React.Component {
           <li><Link to={'/login'}>Login Here</Link></li>
           <span>Version: {this.props.globalInfo.version}</span>
           <span>Company: {this.props.globalInfo.company}</span>
-          <Modal targetButton={<button>Sign Up</button>}
+          <Modal ref="signupModal"
+                 targetButton={<button>Sign Up</button>}
                  title="Sign Up"
                  classNames="signup-modal">
-            <SignupModalContent />
+            <SignupModalContent transitToLogin={this._onSignupTransitToLogin.bind(this)}/>
+          </Modal>
+          <Modal ref="loginModal"
+                 targetButton={<button>Login</button>}
+                 title="Login"
+                 classNames="login-modal">
+            <LoginModalContent transitToSignup={this._onLoginTransitToSignup.bind(this)}/>
           </Modal>
         </div>
       </DocumentTitle>

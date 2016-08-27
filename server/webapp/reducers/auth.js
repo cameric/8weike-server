@@ -21,7 +21,22 @@ function authReducers(state = {}, action) {
           }
         });
       }
-
+    case 'LOGIN_WITH_PHONE':
+      if (action.error) {
+        return Object.assign({}, state, {
+          login: {
+            status: 'error',
+            error: action.payload.parsedError,
+          }
+        });
+      } else {
+        return Object.assign({}, state, {
+          login: {
+            status: 'success',
+            user: action.payload.user,
+          }
+        });
+      }
     default:
       return state;
   }
