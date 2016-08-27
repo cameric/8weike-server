@@ -41,8 +41,6 @@ describe('Login Routing', () => {
             .expect(302)
             .end((err, res) => {
               if (err) done(err);
-
-              expect(res.header.location).to.include('/api/user/');
               done();
             });
       });
