@@ -6,7 +6,7 @@ import LinearProgress from 'material-ui/LinearProgress';
 import Divider from 'material-ui/Divider';
 import zxcvbn from 'zxcvbn';
 
-require('../../stylesheets/modules/password-strength.scss');
+require('../../../../stylesheets/modules/password-strength.scss');
 
 class PasswordStrengthMeter extends React.Component {
   constructor(props) {

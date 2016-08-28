@@ -13,10 +13,21 @@ function pageInitialState(state = {}, action) {
   }
 }
 
+function loadUserById(state = {}, action) {
+  if (action.type === 'LOAD_USER_BY_ID') {
+    return Object.assign({}, state, {
+      user: action.payload
+    })
+  } else {
+    return state
+  }
+}
+
 const appReducers = combineReducers({
   pageInitialState,
+  loadUserById,
   auth: authReducers,
-  routing: routerReducer
+  routing: routerReducer,
 });
 
 export default appReducers

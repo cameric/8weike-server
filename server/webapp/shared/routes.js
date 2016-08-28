@@ -5,8 +5,7 @@ import { Route, IndexRoute } from 'react-router';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import DocumentTitle from 'react-document-title';
-import IndexPage from '../modules/containers/index-page';
-import LoginPage from '../modules/containers/login-page';
+import IndexPage from '../modules/index/index-page';
 
 // App component is a top-level virtual container that
 // doesn't belong to any page.
@@ -25,6 +24,5 @@ class App extends React.Component {
 export default (
   <Route path="/" component={App}>
     <IndexRoute component={IndexPage}/>
-    <Route path="login" component={LoginPage}/>
   </Route>
 );

@@ -31,9 +31,9 @@ function authReducers(state = {}, action) {
         });
       } else {
         return Object.assign({}, state, {
+          uid: action.payload.id,
           login: {
             status: 'success',
-            user: action.payload.user,
           }
         });
       }

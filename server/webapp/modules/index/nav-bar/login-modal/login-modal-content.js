@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 
-import { webRequestAction } from '../../actions/utils';
-import { loginWithPhoneAction } from '../../actions/auth';
-import LoginModalContent from '../components/login-modal-content';
+import { webRequestAction } from '../../../../actions/utils';
+import { loginWithPhoneAction } from '../../../../actions/auth';
+import LoginModalContent from './login-modal-content.component';
 
 function mapStateToProps(state) {
   return {

@@ -4,11 +4,11 @@ import Checkbox from 'material-ui/Checkbox';
 import CircularProgress from 'material-ui/CircularProgress';
 import { white, grey100 } from 'material-ui/styles/colors';
 
-import ErrorBanner from '../../ui/error-banner';
-import Input from '../../ui/input';
+import ErrorBanner from '../../../../ui/error-banner';
+import Input from '../../../../ui/input';
 
-require('../../stylesheets/modules/login-modal-content.scss');
-require('../../stylesheets/utils/button.scss');
+require('../../../../stylesheets/modules/login-modal-content.scss');
+require('../../../../stylesheets/utils/button.scss');
 
 class LoginModalContent extends React.Component {
   constructor(props) {
@@ -30,11 +30,7 @@ class LoginModalContent extends React.Component {
         // Reset user input if error
         this.setState({ status: 'waiting' });
       } else if (nextProps.loginState.status === 'success') {
-        // Proceed to next step
-        console.log(nextProps.loginState.user);
-        this.setState({
-          status: 'waiting',
-        });
+        this.props.onLoginSuccess();
       }
     }
   }
@@ -169,6 +165,7 @@ class LoginModalContent extends React.Component {
 LoginModalContent.propTypes = {
   loginState: React.PropTypes.object,
   loginWithPhone: React.PropTypes.func,
+  onLoginSuccess: React.PropTypes.func,
   transitToSignup: React.PropTypes.func,
   transitToForgetPassword: React.PropTypes.func,
 };

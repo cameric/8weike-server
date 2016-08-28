@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 
-import { webRequestAction } from '../../actions/utils';
+import { webRequestAction } from '../../../../actions/utils';
 import { signupWithPhoneBasicInfoAction,
          signupWithPhoneTFAAction,
-         signupWithPhoneUsernameAction } from '../../actions/auth';
-import SignupModalContent from '../components/signup-modal-content';
+         signupWithPhoneUsernameAction } from '../../../../actions/auth';
+import SignupModalContent from './signup-modal-content.component';
 
 function mapStateToProps(state) {
   return {
