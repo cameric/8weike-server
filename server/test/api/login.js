@@ -38,7 +38,7 @@ describe('Login Routing', () => {
         request(app)
             .post('/api/login/phone')
             .send(data)
-            .expect(302)
+            .expect(200)
             .end((err, res) => {
               if (err) done(err);
               done();
