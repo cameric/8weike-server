@@ -27,4 +27,11 @@ module.exports = {
       reportUri: null,
     },
   },
+  authy: {
+    email: 'user@cameric.cn',
+    apiKey: 'f45ec9af9dcb7419dc52b05889c858e9',
+    host: 'http://sandbox-api.authy.com',
+    // TODO: Let user choose countrycode or change to China in production
+    countryCode: 1,
+  },
 };

@@ -11,7 +11,7 @@
     "build": "npm run build:client && npm run build:server",
     "build:client": "webpack --colors",
     "build:server": "webpack --config webpack.server.config.js --colors",
-    "test": "mocha --require ignore-styles --compilers js:babel-register --recursive"
+    "test": "NODE_ENV=test mocha --require ignore-styles --compilers js:babel-register --recursive"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/zhzhang2012/8weike-server#readme",
   "dependencies": {
+    "authy": "^1.2.0",
     "babel-core": "^6.11.4",
     "babel-loader": "^6.2.4",
     "babel-plugin-react-transform": "^2.0.2",

@@ -28,4 +28,11 @@ module.exports = {
       reportUri: null,
     },
   },
+  authy: {
+    email: 'test_user@cameric.cn',
+    apiKey: 'YzoieV7tS4xwJpNn4cr0Ks3eB5Un0oKZ',
+    host: 'http://api.authy.com',
+    // TODO: Let user choose countrycode or change to China in production
+    countryCode: 1,
+  },
 };
