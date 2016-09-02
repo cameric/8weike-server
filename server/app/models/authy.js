@@ -46,7 +46,7 @@ function sendCodeWithAuthy(authyId) {
  * use a dummy Cameric email instead.
  * @param authyId {string} the cellphone number to be registered
  * @param otp {string} the TFA code
- * @return {Promise.<TResult>} If success, a status message will be sent.
+ * @return {Promise.<TResult>} Whether the code is verified or not
  */
 function verifyWithAuthy(authyId, otp) {
   return authy.verifyAsync(authyId, otp).then((res) => {
@@ -55,7 +55,7 @@ function verifyWithAuthy(authyId, otp) {
         new Promise.OperationalError('Error verifying TFA code.')
       );
     }
-    return res;
+    return Promise.resolve();
   });
 }
 
