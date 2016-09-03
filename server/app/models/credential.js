@@ -1,4 +1,5 @@
 const Promise = require('bluebird');
+const speakeasy = require('speakeasy');
 
 const bcrypt = Promise.promisifyAll(require('bcrypt'));
 const db = require('../database');
@@ -11,7 +12,7 @@ const validator = require('validator');
  * @returns {Promise.<user>} A promise that returns a user if fulfilled.
  */
 function findById(id, columns) {
-  const queryString = 'SELECT ?? FROM user WHERE id = ?';
+  const queryString = 'SELECT ?? FROM credential WHERE id = ?';
 
   // IDs are unique, so we can automatically return the first element in `res` (if any).
   // The response will either be an individual user object, or null
@@ -35,7 +36,7 @@ function findById(id, columns) {
  */
 function loginWithPhone(phone, password) {
   // Find a user with the given phone number, if any, and check the password.
-  const queryString = 'SELECT id, password_hash FROM user WHERE phone = ?';
+  const queryString = 'SELECT id, password_hash FROM credential WHERE phone = ?';
   return db.query(queryString, [phone]).then((results) => {
     if (!results || !results[0]) {
       return Promise.reject(
@@ -70,20 +71,20 @@ function signupWithPhone(phone, password) {
   }
 
   // Hash the password and create the new user
-  const queryString = 'INSERT INTO user ( ?? ) VALUES ( ? )';
+  const queryString = 'INSERT INTO credential ( ?? ) VALUES ( ? )';
   const saltRounds = 12; // TODO: move this to config
 
-  const prom = bcrypt.hashAsync(password, saltRounds).then((hash) => {
+  return bcrypt.hashAsync(password, saltRounds).then((hash) => {
     const user = {
       phone,
       password_hash: hash,
+      tfa_secret: speakeasy.generateSecret({ length: 32 }), // TODO: move length to config
     };
     const columnNames = Object.keys(user);
     const columnValues = columnNames.map((col) => user[col]);
 
     return db.query(queryString, [columnNames, columnValues]);
   });
-  return prom;
 }
 
 /**
@@ -93,7 +94,7 @@ function signupWithPhone(phone, password) {
  * @returns {Promise.<Object>}
  */
 function updateById(id, columns) {
-  const queryString = 'UPDATE user SET ? WHERE id = ?';
+  const queryString = 'UPDATE credential SET ? WHERE id = ?';
   return db.query(queryString, [columns, id]).then((okPacket) => {
     if (okPacket.affectedRows < 1) {
       return Promise.reject(new Promise.OperationalError('No user with the given ID exists.'));

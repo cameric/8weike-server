@@ -15,6 +15,6 @@ const tfaRouter = express.Router(); // eslint-disable-line new-cap
 // tfaRouter.post('/get', forceSsl, tfa.getCode);
 tfaRouter.post('/get', tfa.getCode);
 // tfaRouter.post('/verify', forceSsl, tfa.verify);
-tfaRouter.post('/verify', tfa.verify);
+tfaRouter.post('/verify', tfa.verifyCode);
 
 module.exports = tfaRouter;
