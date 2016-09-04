@@ -78,7 +78,7 @@ function signupWithPhone(phone, password) {
     const user = {
       phone,
       password_hash: hash,
-      tfa_secret: speakeasy.generateSecret({ length: 37 }).base32, // TODO: move length to config
+      tfa_secret: speakeasy.generateSecret({ length: 20 }).base32, // TODO: move length to config
     };
     const columnNames = Object.keys(user);
     const columnValues = columnNames.map((col) => user[col]);
