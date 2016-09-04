@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-const userModel = require('../models/user');
+const credentialModel = require('../models/credential');
 
 // All passport strategies configuration
 const LocalStrategy = require('passport-local').Strategy;
@@ -10,7 +10,7 @@ const phoneStrategy = new LocalStrategy({
   usernameField: 'phone',
   passwordField: 'password',
 }, (phone, password, done) =>
-    userModel.loginWithPhone(phone, password).then((user) => {
+    credentialModel.loginWithPhone(phone, password).then((user) => {
       done(null, user);
     }).error((err) => {
       done(null, false, err);
@@ -25,7 +25,7 @@ function serializeUser(user, done) {
 
 function deserializeUser(id, done) {
   // TODO: How do we know what columns we want? SELECT * is apparently bad practice
-  userModel.findById(id, []).then(done.bind(null, null)).catch(done);
+  credentialModel.findById(id, []).then(done.bind(null, null)).catch(done);
 }
 
 function configurePassport(passport) {

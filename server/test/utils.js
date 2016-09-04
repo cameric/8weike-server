@@ -4,4 +4,4 @@ function randomItem(array) {
 
 module.exports = {
   randomItem,
-}
+};

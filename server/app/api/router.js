@@ -10,6 +10,7 @@ const auth = require('../middlewares/auth');
 
 // All Router modules are imported here
 const signupRouter = require('./auth/signup');
+const tfaRouter = require('./auth/tfa');
 const loginRouter = require('./auth/login');
 const userRouter = require('./user');
 
@@ -31,6 +32,7 @@ appRouter.get('/global_info', (req, res) => {
 appRouter.use('/signup', signupRouter);
 appRouter.use('/login', loginRouter);
 appRouter.get('/logout', auth.requiresLogin, logout);
+appRouter.use('/tfa', tfaRouter);
 
 // User-related APIs
 appRouter.use('/user', userRouter);

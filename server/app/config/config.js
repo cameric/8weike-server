@@ -28,6 +28,10 @@ const defaults = {
     port: 8888,
     path: '/dev',
   },
+  sms: {
+    url: 'https://sms.yunpian.com/v1',
+    apiKey: '2847caf78d61a130bb058962d18bac8c',
+  },
   webapp: {
     source: path.join(root, '/webapp'),
     output: path.join(root, '/public/build'),
