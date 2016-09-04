@@ -1,9 +1,10 @@
 const Promise = require('bluebird');
 const speakeasy = require('speakeasy');
+const validator = require('validator');
 
 const bcrypt = Promise.promisifyAll(require('bcrypt'));
+const config = require('../config/config');
 const db = require('../database');
-const validator = require('validator');
 
 /**
  *
@@ -72,9 +73,8 @@ function signupWithPhone(phone, password) {
 
   // Hash the password and create the new credential
   const queryString = 'INSERT INTO credential ( ?? ) VALUES ( ? )';
-  const saltRounds = 12; // TODO: move this to config
 
-  return bcrypt.hashAsync(password, saltRounds).then((hash) => {
+  return bcrypt.hashAsync(password, config.encypt.bcryptSaltRounds).then((hash) => {
     const user = {
       phone,
       password_hash: hash,

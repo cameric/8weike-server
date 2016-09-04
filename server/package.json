@@ -40,6 +40,7 @@
     "bcrypt": "^0.8.7",
     "bluebird": "^3.4.3",
     "body-parser": "^1.15.2",
+    "ccap": "^0.6.10",
     "chai": "^3.5.0",
     "classnames": "^2.2.5",
     "cookie-parser": "^1.4.3",

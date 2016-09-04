@@ -148,7 +148,7 @@ class SignupModalContent extends React.Component {
 
   _submitTFACode() {
     this.setState({ status: 'loading'});
-    this.props.sendTFACode(this.state.tfaCode);
+    this.props.verifyTFACode(this.state.uid, this.state.tfaCode);
   }
 
   _submitUsername() {
@@ -253,6 +253,7 @@ SignupModalContent.propTypes = {
   transitToLogin: React.PropTypes.func,
   sendBasicInfo: React.PropTypes.func,
   sendTFACode: React.PropTypes.func,
+  verifyTFACode: React.PropTypes.func,
   sendUsernameInfo: React.PropTypes.func,
 };
 

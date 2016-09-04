@@ -25,11 +25,18 @@ function mapDispatchToProps(dispatch) {
         nextAction: signupWithPhoneBasicInfoAction,
       }))
     },
-    sendTFACode: (code) => {
+    sendTFACode: (uid) => {
       dispatch(new webRequestAction({
-        url: '/api/signup/tfa',
+        url: '/api/tfa/send',
         method: 'POST',
-        body: { code },
+        body: { uid },
+      }))
+    },
+    verifyTFACode: (uid, code) => {
+      dispatch(new webRequestAction({
+        url: '/api/tfa/verify',
+        method: 'POST',
+        body: { uid, code },
         nextAction: signupWithPhoneTFAAction,
       }))
     },
