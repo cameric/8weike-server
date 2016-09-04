@@ -4,13 +4,13 @@ const Promise = require('bluebird');
 const credentialModel = require('../../models/credential');
 const smsService = require('../../services/sms');
 
-function getCode(req, res, next) {
+function sendCode(req, res, next) {
   const uid = req.body.uid;
 
   credentialModel.findById(uid, ['phone', 'tfa_secret']).then((credential) => {
     // Send TFA code
-    return smsService.sendSmsMessage(credential.phone, {
-      '#code#': generateTfaCode(credential.tfa_secret),
+    return smsService.send(credential.phone, {
+      '#code#': generateCode(credential.tfa_secret),
     })
   }).then(() => {
     res.status(200).send({ success: true });
@@ -25,7 +25,14 @@ function verifyCode(req, res, next) {
   const { uid, code } = req.body;
 
   const matchCodePromise = credentialModel.findById(uid, ['tfa_secret']).then((credential) => {
-    if (code !== generateTfaCode(credential.tfa_secret)) {
+    // Verify the given 6-digit code
+    const isCodeCorrent = speakeasy.totp.verify({
+      secret: credential.tfa_secret,
+      encoding: 'base32',
+      token: code,
+    });
+
+    if (!isCodeCorrent) {
       return Promise.reject(new Promise.OperationalError('Code is incorrect!'));
     } else {
       return Promise.resolve();
@@ -44,15 +51,15 @@ function verifyCode(req, res, next) {
   }).catch(next);
 }
 
-function generateTfaCode(secret) {
+function generateCode(secret) {
   return speakeasy.totp({
-    secret: secret.base32,
+    secret: secret,
     encoding: 'base32',
   });
 }
 
 module.exports = {
-  getCode,
+  sendCode,
   verifyCode,
-  generateTfaCode, // For testing purpose
+  generateCode, // For testing purpose
 };

@@ -11,7 +11,7 @@ describe('Credential Model', () => {
     // Truncate the user table
     db.truncate(['credential', 'profile'])
         // Import the fixture
-        .then(() => db.importFixture(fixture, ['profile', 'credential']))
+        .then(() => db.importTablesFromFixture(fixture, ['profile', 'credential']))
         // Finish
         .then(done.bind(null, null))
         .catch(done);

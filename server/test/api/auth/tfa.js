@@ -18,7 +18,7 @@ describe('TFA Routing', () => {
     // Truncate the user table
     db.truncate(['credential', 'profile'])
       // Import the fixture
-      .then(() => db.importFixture(fixture, ['profile', 'credential']))
+      .then(() => db.importTablesFromFixture(fixture, ['profile', 'credential']))
       // Finish
       .then(done.bind(null, null))
       .catch(done);
@@ -30,9 +30,9 @@ describe('TFA Routing', () => {
       .catch(done);
   });
 
-  describe('POST /api/tfa/get', () => {
+  describe('POST /api/tfa/send', () => {
     // Mock out send sms so that it actually won't be called
-    let stub = sinon.stub(sms, 'sendSmsMessage');
+    let stub = sinon.stub(sms, 'send');
     stub.returns(Promise.resolve());
 
     afterEach(() => {
@@ -40,7 +40,7 @@ describe('TFA Routing', () => {
     });
 
     after(() => {
-      sms.sendSmsMessage.restore();
+      sms.send.restore();
     });
 
     it('(200) Return success: true when user exists', (done) => {
@@ -51,7 +51,7 @@ describe('TFA Routing', () => {
       };
 
       request(app)
-        .post('/api/tfa/get')
+        .post('/api/tfa/send')
         .send(data)
         .expect(200)
         .end((err, res) => {
@@ -68,7 +68,7 @@ describe('TFA Routing', () => {
       };
 
       request(app)
-        .post('/api/tfa/get')
+        .post('/api/tfa/send')
         .send(data)
         .expect(400)
         .end((err, _) => {
@@ -92,7 +92,7 @@ describe('TFA Routing', () => {
 
       const data = {
         uid: testUser.id,
-        code: tfa.generateTfaCode(testUser.tfa_secret),
+        code: tfa.generateCode(testUser.tfa_secret),
       };
 
       request(app)

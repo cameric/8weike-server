@@ -50,6 +50,7 @@ function query(queryString, substitutions) {
  * @returns {Promise.<Object>} A promise to return a query response.
  */
 function truncate(tables) {
+  // Temporarily disable constraints to enable truncate action
   const disableConstraints = (conn) => {
     const queryString = 'SET FOREIGN_KEY_CHECKS = 0';
     return Connection.queryAsync.call(conn, queryString);
@@ -60,15 +61,11 @@ function truncate(tables) {
     return Connection.queryAsync.call(conn, queryString);
   };
 
-  const performTruncate = (conn, table) => {
-    const queryString = 'TRUNCATE TABLE ??';
-    return Connection.queryAsync.call(conn, queryString, [table]);
-  };
-
+  const truncateQueryString = 'TRUNCATE TABLE ??';
   // A promise to truncate the given table
   const truncateTable = (conn, table) => {
     return disableConstraints(conn)
-      .then(performTruncate.bind(null, conn, table))
+      .then(() => { return Connection.queryAsync.call(conn, truncateQueryString, [table]); })
       .then(enableConstraints.bind(null, conn))
   };
 
@@ -79,12 +76,12 @@ function truncate(tables) {
 }
 
 /**
- * Import fixture data into database.
+ * Import fixture data for specific tables into database.
  * @param fixture {Array.<String>} - Fixture data.
  * @param tables {Array.<String>} - A list of table names to import fixture.
  * @returns {Promise.<Object>} A promise to return a query response.
  */
-function importFixture(fixture, tables) {
+function importTablesFromFixture(fixture, tables) {
   // A promise to insert a given row into a table
   const insertRow = (conn, tableName, row) => {
     const columnNames = Object.keys(row);
@@ -115,7 +112,7 @@ function importFixture(fixture, tables) {
 
 module.exports = {
   getConnection,
-  importFixture,
+  importTablesFromFixture,
   query,
   testConnection,
   truncate,

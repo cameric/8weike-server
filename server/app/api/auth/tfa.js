@@ -12,8 +12,8 @@ const forceSsl = expressEnforcesSsl();
 const tfaRouter = express.Router(); // eslint-disable-line new-cap
 
 // TODO: Uncomment this line once we have HTTPS working
-// tfaRouter.post('/get', forceSsl, tfa.getCode);
-tfaRouter.post('/get', tfa.getCode);
+// tfaRouter.post('/send', forceSsl, tfa.getCode);
+tfaRouter.post('/send', tfa.sendCode);
 // tfaRouter.post('/verify', forceSsl, tfa.verify);
 tfaRouter.post('/verify', tfa.verifyCode);
 

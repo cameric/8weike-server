@@ -70,7 +70,7 @@ function signupWithPhone(phone, password) {
     return Promise.reject(new Promise.OperationalError('Password too short.'));
   }
 
-  // Hash the password and create the new user
+  // Hash the password and create the new credential
   const queryString = 'INSERT INTO credential ( ?? ) VALUES ( ? )';
   const saltRounds = 12; // TODO: move this to config
 
@@ -78,7 +78,7 @@ function signupWithPhone(phone, password) {
     const user = {
       phone,
       password_hash: hash,
-      tfa_secret: speakeasy.generateSecret({ length: 32 }), // TODO: move length to config
+      tfa_secret: speakeasy.generateSecret({ length: 37 }).base32, // TODO: move length to config
     };
     const columnNames = Object.keys(user);
     const columnValues = columnNames.map((col) => user[col]);

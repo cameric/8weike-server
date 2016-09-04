@@ -12,7 +12,7 @@ const config = require('../config/config');
  * @param tplId {int} the code to be sent to user
  * @return {Promise.<TResult>} Whether the code is sent successfully
  */
-function sendSmsMessage(phone, content, tplId=1) {
+function send(phone, content, tplId=1) {
   return request.postAsync(`${config.sms.url}/sms/tpl_send.json`, {
     apikey: config.sms.apiKey,
     mobile: phone,
@@ -29,5 +29,5 @@ function sendSmsMessage(phone, content, tplId=1) {
 }
 
 module.exports = {
-  sendSmsMessage,
+  send,
 };
