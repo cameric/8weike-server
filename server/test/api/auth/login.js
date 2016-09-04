@@ -1,25 +1,25 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
-const app = require('../../app');
-const db = require('../../app/database');
+const app = require('../../../app');
+const db = require('../../../app/database');
 const expect = require('chai').expect;
-const fixture = require('../fixtures/user');
-const randomItem = require('../utils').randomItem;
+const fixture = require('../../fixtures/user');
+const randomItem = require('../../utils').randomItem;
 const request = require('supertest');
 
 describe('Login Routing', () => {
   beforeEach((done) => {
     // Truncate the user table
-    db.truncate(['user'])
+    db.truncate(['credential', 'profile'])
     // Import the fixture
-        .then(() => db.importFixture(fixture))
+        .then(() => db.importFixture(fixture, ['profile', 'credential']))
         // Finish
         .then(done.bind(null, null))
         .catch(done);
   });
 
   after((done) => {
-    db.truncate(['user'])
+    db.truncate(['credential', 'profile'])
         .then(done.bind(null, null))
         .catch(done);
   });
@@ -27,7 +27,7 @@ describe('Login Routing', () => {
   describe('POST /api/login/phone', () => {
     describe('valid input', () => {
       it('(302) Redirects to /api/user/* when given valid credentials', (done) => {
-        const randomUser = randomItem(fixture.tables.user);
+        const randomUser = randomItem(fixture.tables.credential);
 
         const data = {
           phone: randomUser.phone,

@@ -1,24 +1,24 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
-const app = require('../../app');
-const db = require('../../app/database');
-const fixture = require('../fixtures/user');
-const randomItem = require('../utils').randomItem;
+const app = require('../../../app');
+const db = require('../../../app/database');
+const fixture = require('../../fixtures/user');
+const randomItem = require('../../utils').randomItem;
 const request = require('supertest');
 
 describe('Signup Routing', () => {
   beforeEach((done) => {
     // Truncate the user table
-    db.truncate(['user'])
+    db.truncate(['credential', 'profile'])
     // Import the fixture
-        .then(() => db.importFixture(fixture))
+        .then(() => db.importFixture(fixture, ['profile', 'credential']))
         // Finish
         .then(done.bind(null, null))
         .catch(done);
   });
 
   after((done) => {
-    db.truncate(['user'])
+    db.truncate(['credential', 'profile'])
         .then(done.bind(null, null))
         .catch(done);
   });
@@ -90,7 +90,7 @@ describe('Signup Routing', () => {
       });
 
       it('(400) Responds Bad Request when given the phone number of an existing user', (done) => {
-        const randomUser = randomItem(fixture.tables.user);
+        const randomUser = randomItem(fixture.tables.credential);
 
         const data = {
           phone: randomUser.phone,

@@ -1,4 +1,5 @@
 const speakeasy = require('speakeasy');
+const Promise = require('bluebird');
 
 const credentialModel = require('../../models/credential');
 const smsService = require('../../services/sms');
@@ -12,7 +13,7 @@ function getCode(req, res, next) {
       '#code#': generateTfaCode(credential.tfa_secret),
     })
   }).then(() => {
-    res.status(200).send({success: true});
+    res.status(200).send({ success: true });
   }).error((err) => {
     const errWithStatus = err;
     errWithStatus.status = 400;
@@ -35,7 +36,7 @@ function verifyCode(req, res, next) {
   matchCodePromise.then(() => {
     return credentialModel.updateById(uid, { is_verified: true });
   }).then(() => {
-    res.status(200).send({success: true});
+    res.status(200).send({ success: true });
   }).error((err) => {
     const errWithStatus = err;
     errWithStatus.status = 400;
@@ -53,4 +54,5 @@ function generateTfaCode(secret) {
 module.exports = {
   getCode,
   verifyCode,
+  generateTfaCode, // For testing purpose
 };

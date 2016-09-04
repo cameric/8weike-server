@@ -12,7 +12,7 @@ create table credential (
     id BIGINT NOT NULL AUTO_INCREMENT,
     phone VARCHAR(255) NOT NULL,
     password_hash CHAR(60) NOT NULL,
-    tfa_secret CHAR(30) NOT NULL,
+    tfa_secret CHAR(32) NOT NULL,
     is_verified BOOLEAN NOT NULL DEFAULT FALSE,
     profile_id BIGINT,
     PRIMARY KEY (id),

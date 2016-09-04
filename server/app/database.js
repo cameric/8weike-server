@@ -50,10 +50,26 @@ function query(queryString, substitutions) {
  * @returns {Promise.<Object>} A promise to return a query response.
  */
 function truncate(tables) {
-  // A promise to truncate the given table
-  const truncateTable = (conn, table) => {
+  const disableConstraints = (conn) => {
+    const queryString = 'SET FOREIGN_KEY_CHECKS = 0';
+    return Connection.queryAsync.call(conn, queryString);
+  };
+
+  const enableConstraints = (conn) => {
+    const queryString = 'SET FOREIGN_KEY_CHECKS = 1';
+    return Connection.queryAsync.call(conn, queryString);
+  };
+
+  const performTruncate = (conn, table) => {
     const queryString = 'TRUNCATE TABLE ??';
     return Connection.queryAsync.call(conn, queryString, [table]);
+  };
+
+  // A promise to truncate the given table
+  const truncateTable = (conn, table) => {
+    return disableConstraints(conn)
+      .then(performTruncate.bind(null, conn, table))
+      .then(enableConstraints.bind(null, conn))
   };
 
   // A promise to truncate all tables
@@ -62,7 +78,13 @@ function truncate(tables) {
   return Promise.using(getConnection(), truncateAllTables);
 }
 
-function importFixture(fixture) {
+/**
+ * Import fixture data into database.
+ * @param fixture {Array.<String>} - Fixture data.
+ * @param tables {Array.<String>} - A list of table names to import fixture.
+ * @returns {Promise.<Object>} A promise to return a query response.
+ */
+function importFixture(fixture, tables) {
   // A promise to insert a given row into a table
   const insertRow = (conn, tableName, row) => {
     const columnNames = Object.keys(row);
@@ -80,12 +102,15 @@ function importFixture(fixture) {
   };
 
   // A promise to import rows from all tables specified in the fixture
-  const importAllTables = (conn) => {
+  const importTables = (tables, conn) => {
     const tableNames = Object.keys(fixture.tables);
-    return Promise.all(tableNames.map(insertAllRows.bind(null, conn)));
+    for (const table of tables) {
+      if (!tableNames.includes(table)) return Promise.reject('Table name does not exist!');
+    }
+    return Promise.all(tables.map(insertAllRows.bind(null, conn)));
   };
 
-  return Promise.using(getConnection(), importAllTables);
+  return Promise.using(getConnection(), importTables.bind(null, tables));
 }
 
 module.exports = {

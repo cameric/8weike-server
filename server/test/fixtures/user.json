@@ -1,0 +1,32 @@
+{
+  "tables": {
+    "credential": [
+      {
+        "id": 1, "phone": "646-555-0152",
+        "password_hash": "$2a$12$HPkbevGeVrMe6cJKR9aZyO2F5WU/JWqsI9HZhZckvX3hZaUs7Atqa",
+        "tfa_secret": "FLiEu7zzsqIoLNLkJposrUkYwh3OlfCj",
+        "is_verified": false, "profile_id": null
+      },
+      {
+        "id": 2, "phone": "917-458-0104",
+        "password_hash": "$2a$12$cuphmEcFscwdzhzMBOFFMegT0wac.es0ZPeELHtGRnSBQ9WRBRXl.",
+        "tfa_secret": "MOVGQwmxTEQrLTnWRA1j269itaDBWcYA",
+        "is_verified": true, "profile_id": null
+      },
+      {
+        "id": 3, "phone": "518-183-3817",
+        "password_hash": "$2a$12$KTWlmcsnivV.7sFqTZglvuawcUnHexjae9a8Cr4BahNPR2YLpwCxC",
+        "tfa_secret": "ZicVxYCScFJIUs4NqHc0qRj9zVAKnX6k",
+        "is_verified": true, "profile_id": 1
+      }
+    ],
+    "profile": [
+      {
+        "id": 1,
+        "nickname": "Florence Foster Jenkins",
+        "description": "The world's greatest coloratura soprano.",
+        "sex": "Female"
+      }
+    ]
+  }
+}
