@@ -5,7 +5,13 @@ function signupWithPhone(req, res, next) {
   credentialModel.signupWithPhone(phone, password)
     .then((data) => { res.status(200).send({ data }); })
     .error((err) => {
-      const errWithStatus = err;
+      let errMsg = '';
+      if (err.code === 'ER_DUP_ENTRY') {
+        errMsg = 'User already exists!';
+      } else {
+        errMsg = 'An error occurred during signup!';
+      }
+      const errWithStatus = new Error(errMsg);
       errWithStatus.status = 400;
       next(errWithStatus);
     })
