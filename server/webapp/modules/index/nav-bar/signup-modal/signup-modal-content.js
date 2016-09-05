@@ -3,7 +3,9 @@ import { connect } from 'react-redux'
 import { webRequestAction } from '../../../../actions/utils';
 import { signupWithPhoneBasicInfoAction,
          signupWithPhoneTFAAction,
-         signupWithPhoneUsernameAction } from '../../../../actions/auth';
+         signupWithPhoneUsernameAction,
+         renderCaptchaInSignupAction,
+         verifyCaptchaAction } from '../../../../actions/auth';
 import SignupModalContent from './signup-modal-content.component';
 
 function mapStateToProps(state) {
@@ -14,6 +16,31 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    generateCaptcha: () => {
+      dispatch(new webRequestAction({
+        url: '/api/captcha/get',
+        method: 'POST',
+        body: {
+          width: 130,
+          height: 35,
+          offset: 20,
+          fontsize: 25,
+          quality: 80,
+        },
+        nextAction: renderCaptchaInSignupAction,
+      }))
+    },
+    verifyCaptcha: (captcha, hash) => {
+      dispatch(new webRequestAction({
+        url: '/api/captcha/verify',
+        method: 'POST',
+        body: {
+          captcha,
+          hash,
+        },
+        nextAction: verifyCaptchaAction,
+      }))
+    },
     sendBasicInfo: (basicInfo) => {
       dispatch(new webRequestAction({
         url: '/api/signup/phone',

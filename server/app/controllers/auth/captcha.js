@@ -10,16 +10,14 @@ const ccap = require('ccap');
 const config = require('../../config/config');
 
 function get(req, res, next) {
-  const [ text, picture ] = ccap({
-    width: req.body.width ? req.body.width : 256,
-    height: req.body.height ? req.body.height : 60,
-  }).get();
+  const [ text, picture ] = ccap(req.body).get();
 
   // Send back hashed text and picture
-  bcrypt.hashAsync(text, config.encypt.bcryptSaltRounds).then((hash) => {
+  bcrypt.hashAsync(text, config.encrypt.bcryptSaltRounds).then((hash) => {
     return {
       hash,
-      picture,
+      // picture: new Buffer(String.fromCharCode(...new Uint8Array(picture))).toString('base64'),
+      picture: picture.toString('base64'),
     }
   }).then((data) => {
     res.status(200).send(data);
@@ -30,7 +28,7 @@ function verify(req, res, next) {
   const { captcha, origHash } = req.body;
 
   // Verify user response against original hash
-  bcrypt.hashAsync(captcha, config.encypt.bcryptSaltRounds).then((hash) => {
+  bcrypt.hashAsync(captcha, config.encrypt.bcryptSaltRounds).then((hash) => {
     if (hash === origHash) {
       return Promise.resolve();
     } else {

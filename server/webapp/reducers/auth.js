@@ -21,6 +21,18 @@ function authReducers(state = {}, action) {
           }
         });
       }
+    case 'RENDER_CAPTCHA_IN_SIGNUP':
+      if (action.error) {
+        return Object.assign({}, state, {
+          signup: { captcha: null }
+        });
+      } else {
+        return Object.assign({}, state, {
+          signup: {
+            captcha: action.payload
+          }
+        });
+      }
     case 'LOGIN_WITH_PHONE':
       if (action.error) {
         return Object.assign({}, state, {

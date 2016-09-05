@@ -74,7 +74,7 @@ function signupWithPhone(phone, password) {
   // Hash the password and create the new credential
   const queryString = 'INSERT INTO credential ( ?? ) VALUES ( ? )';
 
-  return bcrypt.hashAsync(password, config.encypt.bcryptSaltRounds).then((hash) => {
+  return bcrypt.hashAsync(password, config.encrypt.bcryptSaltRounds).then((hash) => {
     const user = {
       phone,
       password_hash: hash,

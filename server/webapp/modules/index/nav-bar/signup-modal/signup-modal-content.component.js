@@ -60,6 +60,10 @@ class SignupModalContent extends React.Component {
 
   // Handle signup state updates
 
+  componentWillMount() {
+    this.props.generateCaptcha();
+  }
+
   componentWillReceiveProps(nextProps) {
     if (this.state.status === 'loading' &&
         nextProps.signupState != this.props.signupState) {
@@ -82,6 +86,18 @@ class SignupModalContent extends React.Component {
     if (this.props.signupState && this.props.signupState.status === 'error') {
       return (
         <ErrorBanner errorMsg={this.props.signupState.error.message}/>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  _renderCaptcha() {
+    if (this.props.signupState && this.props.signupState.captcha.picture) {
+      return (
+          <div>
+            <img src={ `data:image/png;base64,${this.props.signupState.captcha.picture}` } />
+          </div>
       );
     } else {
       return null;
@@ -190,6 +206,7 @@ class SignupModalContent extends React.Component {
                hintText='Confirm Password'
                validators={this._confirmPasswordValidators}
                onChange={this._updateConfirmPassword.bind(this)}/>
+        {this._renderCaptcha()}
         {this._renderNextStepButton('Sign Up', this._submitBasicInfo.bind(this))}
         <span className="signup-modal-content__options">
           Already a member?
@@ -251,6 +268,10 @@ class SignupModalContent extends React.Component {
 SignupModalContent.propTypes = {
   signupState: React.PropTypes.object,
   transitToLogin: React.PropTypes.func,
+
+  // Container-provided props
+  generateCaptcha: React.PropTypes.func,
+  verifyCaptcha: React.PropTypes.func,
   sendBasicInfo: React.PropTypes.func,
   sendTFACode: React.PropTypes.func,
   verifyTFACode: React.PropTypes.func,
