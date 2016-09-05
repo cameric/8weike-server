@@ -10,6 +10,10 @@ export const signupWithPhoneTFAAction = createAction('SIGNUP_WITH_PHONE_TFA');
 
 export const signupWithPhoneUsernameAction = createAction('SIGNUP_WITH_PHONE_USERNAME');
 
+export const renderCaptchaInSignupAction = createAction('RENDER_CAPTCHA_IN_SIGNUP');
+
+export const verifyCaptchaInSignupAction = createAction('VERIFY_CAPTCHA_IN_SIGNUP');
+
 // Login action creators
 
 export const loginWithPhoneAction = createAction('LOGIN_WITH_PHONE');

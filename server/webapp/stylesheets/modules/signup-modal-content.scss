@@ -3,6 +3,11 @@
     width: 100%;
   }
 
+  &__captcha-input {
+    width: 50%;
+    margin-right: 20px;
+  }
+
   &__password-container {
     position: relative;
   }

@@ -24,6 +24,9 @@ const defaults = {
     },
   },
   sessionSecret: '8weike-terces',
+  encrypt: {
+    bcryptSaltRounds: 12,
+  },
   dev: {
     port: 8888,
     path: '/dev',

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Modal from '../../../ui/modal';
-import SignupModalContent from './signup-modal/signup-modal-content.component';
+import SignupModalContent from './signup-modal/signup-modal-content';
 import LoginModalContent from './login-modal/login-modal-content';
 
 require('../../../stylesheets/modules/user-auth.scss');
