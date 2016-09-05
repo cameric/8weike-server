@@ -21,6 +21,7 @@ class SignupModalContent extends React.Component {
         phone: '',
         password: '',
         confirmPassword: '',
+        captcha: '',
       },
       tfaCode: '',
       username: '',
@@ -69,7 +70,12 @@ class SignupModalContent extends React.Component {
         nextProps.signupState != this.props.signupState) {
       if (nextProps.signupState.status === 'error') {
         // Reset user input if error
-        this.setState({ status: 'waiting' });
+        this.setState({status: 'waiting'});
+        // Regenerate a new captcha if anything fails
+        this.props.generateCaptcha();
+      } else if(nextProps.signupState.status === 'captchaVerified') {
+        // Send user info after captcha is verified
+        this.props.sendBasicInfo(this.state.basicInfo);
       } else if (nextProps.signupState.status === 'success') {
         // Proceed to next step
         this.setState({
@@ -93,12 +99,25 @@ class SignupModalContent extends React.Component {
   }
 
   _renderCaptcha() {
-    if (this.props.signupState && this.props.signupState.captcha.picture) {
-      return (
-          <div>
-            <img src={ `data:image/png;base64,${this.props.signupState.captcha.picture}` } />
-          </div>
-      );
+    if (this.props.signupState && this.props.signupState.captcha) {
+      if (this.props.signupState.captcha.picture) {
+        return (
+            <div>
+              <Input ref="captchaInput"
+                     value={this.state.basicInfo.captcha}
+                     isRequired={true}
+                     className='signup-modal-content__captcha-input'
+                     disabled={this.state.status === 'loading'}
+                     hintText='Captcha Numbers'
+                     onChange={this._updateCaptcha.bind(this)}/>
+              <img src={ `data:image/png;base64,${this.props.signupState.captcha.picture}` }/>
+            </div>
+        )
+      } else {
+        return (
+            <div>Unable to load Captcha!</div>
+        )
+      }
     } else {
       return null;
     }
@@ -140,6 +159,10 @@ class SignupModalContent extends React.Component {
     this._updatePartialState('basicInfo', { confirmPassword });
   }
 
+  _updateCaptcha(captcha) {
+    this._updatePartialState('basicInfo', { captcha });
+  }
+
   // Helpers for TFA step
 
   _updateTFACode(tfaCode) {
@@ -156,9 +179,11 @@ class SignupModalContent extends React.Component {
     const isPhoneValid = this.refs.phoneInput.validate();
     const isPasswordValid = this.refs.passwordInput.validate();
     const isConfirmPasswordValid = this.refs.confirmPasswordInput.validate();
-    if (isPhoneValid && isPasswordValid && isConfirmPasswordValid) {
+    const isCaptchaValid = this.refs.captchaInput.validate();
+    if (isPhoneValid && isPasswordValid && isConfirmPasswordValid && isCaptchaValid) {
       this.setState({ status: 'loading' });
-      this.props.sendBasicInfo(this.state.basicInfo);
+      this.props.verifyCaptcha(this.state.basicInfo.captcha,
+                               this.props.signupState.captcha.hash);
     }
   }
 

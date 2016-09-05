@@ -25,14 +25,14 @@ function get(req, res, next) {
 }
 
 function verify(req, res, next) {
-  const { captcha, origHash } = req.body;
+  const { captcha, hash } = req.body;
 
   // Verify user response against original hash
-  bcrypt.hashAsync(captcha, config.encrypt.bcryptSaltRounds).then((hash) => {
-    if (hash === origHash) {
+  bcrypt.compareAsync(captcha, hash).then((valid) => {
+    if (valid) {
       return Promise.resolve();
     } else {
-      return Promise.reject('Incorrect captcha response!');
+      return Promise.reject(new Promise.OperationalError('Incorrect captcha response!'));
     }
   }).then(() => {
     res.status(200).send({ success: true });

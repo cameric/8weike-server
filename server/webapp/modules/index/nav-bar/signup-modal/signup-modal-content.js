@@ -5,7 +5,7 @@ import { signupWithPhoneBasicInfoAction,
          signupWithPhoneTFAAction,
          signupWithPhoneUsernameAction,
          renderCaptchaInSignupAction,
-         verifyCaptchaAction } from '../../../../actions/auth';
+         verifyCaptchaInSignupAction } from '../../../../actions/auth';
 import SignupModalContent from './signup-modal-content.component';
 
 function mapStateToProps(state) {
@@ -38,7 +38,7 @@ function mapDispatchToProps(dispatch) {
           captcha,
           hash,
         },
-        nextAction: verifyCaptchaAction,
+        nextAction: verifyCaptchaInSignupAction,
       }))
     },
     sendBasicInfo: (basicInfo) => {
