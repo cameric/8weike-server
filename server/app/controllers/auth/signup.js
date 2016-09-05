@@ -1,31 +1,18 @@
+const Promise = require('bluebird');
+
 const credentialModel = require('../../models/credential');
 const tfaService = require('../../services/tfa');
 const captchaService = require('../../services/captcha');
 
 // Note(tony): have two versions of signup endpoints because
 // Mobile devices do not need captcha verification
-function signupWithPhoneOnMobile(req, res, next) {
+function signupWithPhone(req, res, next, needsCaptcha) {
   const { phone, password } = req.body;
-  credentialModel.signupWithPhone(phone, password)
-    .then((data) => { res.status(200).send({ data }); })
-    .error((err) => {
-      let errMsg = '';
-      if (err.code === 'ER_DUP_ENTRY') {
-        errMsg = 'User already exists!';
-      } else {
-        errMsg = 'An error occurred during signup!';
-      }
-      const errWithStatus = new Error(errMsg);
-      errWithStatus.status = 400;
-      next(errWithStatus);
-    })
-    .catch(next);
-}
+  const captcha = req.body.captcha ? req.body.captcha : null;
+  const hash = req.body.hash ? req.body.hash : null;
 
-function signupWithPhoneOnWeb(req, res, next) {
-  const { phone, password, captcha, hash } = req.body;
-
-  captchaService.verify(captcha, hash).then(() => {
+  const verifyCaptcha = needsCaptcha ? captchaService.verify(captcha, hash) : Promise.resolve();
+  verifyCaptcha.then(() => {
     return credentialModel.signupWithPhone(phone, password);
   }).then((data) => { res.status(200).send({ data }); })
     .error((err) => {
@@ -40,7 +27,15 @@ function signupWithPhoneOnWeb(req, res, next) {
     .catch(next);
 }
 
-function verifyWithTFA(req, res, next) {
+function signupWithPhoneNoCaptcha(req, res, next) {
+  signupWithPhone(req, res, next, false);
+}
+
+function signupWithPhoneWithCaptcha(req, res, next) {
+  signupWithPhone(req, res, next, true);
+}
+
+function verify(req, res, next) {
   const { uid, code } = req.body;
 
   tfaService.verifyCode(uid, code).then(() => {
@@ -56,7 +51,7 @@ function verifyWithTFA(req, res, next) {
 }
 
 module.exports = {
-  phoneOnMobile: signupWithPhoneOnMobile,
-  phoneOnWeb: signupWithPhoneOnWeb,
-  verify: verifyWithTFA,
+  phoneNoCaptcha: signupWithPhoneNoCaptcha,
+  phoneWithCaptcha: signupWithPhoneWithCaptcha,
+  verify,
 };

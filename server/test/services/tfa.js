@@ -40,7 +40,7 @@ describe('TFA Services', () => {
       sms.send.restore();
     });
 
-    it('Success when user exists', (done) => {
+    it('Success when credential exists', (done) => {
       const randomUser = randomItem(fixture.tables.credential);
 
       tfa.sendCode(randomUser.id).then(() => {
@@ -49,7 +49,7 @@ describe('TFA Services', () => {
       }).catch(done);
     });
 
-    it('Error when user does not exist', (done) => {
+    it('Error when credential does not exist', (done) => {
       const randomId = 104324;
 
       tfa.sendCode(randomId).then(() => {
@@ -62,7 +62,7 @@ describe('TFA Services', () => {
   });
 
   describe('Verify TFA code', () => {
-    it('Success when valid non-verified user with valid code', (done) => {
+    it('Success when valid non-verified credential with valid code', (done) => {
       const testUser = fixture.tables.credential[0];
 
       tfa.verifyCode(testUser.id, tfa.generateCode(testUser.tfa_secret)).then(() => {
@@ -70,7 +70,7 @@ describe('TFA Services', () => {
       }).catch(done);
     });
 
-    it('Error when non-verified user with invalid code', (done) => {
+    it('Error when non-verified credential with invalid code', (done) => {
       const testUser = fixture.tables.credential[0];
 
       tfa.verifyCode(testUser.id, '123456').then(() => {
