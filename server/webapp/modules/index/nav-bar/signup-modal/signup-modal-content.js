@@ -4,8 +4,7 @@ import { webRequestAction } from '../../../../actions/utils';
 import { signupWithPhoneBasicInfoAction,
          signupWithPhoneTFAAction,
          signupWithPhoneUsernameAction,
-         renderCaptchaInSignupAction,
-         verifyCaptchaInSignupAction } from '../../../../actions/auth';
+         renderCaptchaInSignupAction } from '../../../../actions/auth';
 import SignupModalContent from './signup-modal-content.component';
 
 function mapStateToProps(state) {
@@ -30,24 +29,15 @@ function mapDispatchToProps(dispatch) {
         nextAction: renderCaptchaInSignupAction,
       }))
     },
-    verifyCaptcha: (captcha, hash) => {
+    sendBasicInfo: (basicInfo, captchaHash) => {
       dispatch(new webRequestAction({
-        url: '/api/captcha/verify',
-        method: 'POST',
-        body: {
-          captcha,
-          hash,
-        },
-        nextAction: verifyCaptchaInSignupAction,
-      }))
-    },
-    sendBasicInfo: (basicInfo) => {
-      dispatch(new webRequestAction({
-        url: '/api/signup/phone',
+        url: '/api/signup/phone/web',
         method: 'POST',
         body: {
           phone: basicInfo.phone,
           password: basicInfo.password,
+          captcha: basicInfo.captcha,
+          hash: captchaHash,
         },
         nextAction: signupWithPhoneBasicInfoAction,
       }))
@@ -61,7 +51,7 @@ function mapDispatchToProps(dispatch) {
     },
     verifyTFACode: (uid, code) => {
       dispatch(new webRequestAction({
-        url: '/api/tfa/verify',
+        url: '/api/signup/verify',
         method: 'POST',
         body: { uid, code },
         nextAction: signupWithPhoneTFAAction,
