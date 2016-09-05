@@ -23,7 +23,7 @@ module.exports = {
       // Valid sources of fonts
       fontSrc: ["https://fonts.gstatic.com"],
       // Valid sources of images.
-      imgSrc: ["'self'"],
+      imgSrc: ["'self'", "localhost:*", "data:"],
       // Valid sources of Flash objects nad other plugins.
       objectSrc: [],
       // URL to which browsers will send reports when a content security policy is violated.
