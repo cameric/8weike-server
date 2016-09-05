@@ -73,9 +73,6 @@ class SignupModalContent extends React.Component {
         this.setState({status: 'waiting'});
         // Regenerate a new captcha if anything fails
         this.props.generateCaptcha();
-      } else if(nextProps.signupState.status === 'captchaVerified') {
-        // Send user info after captcha is verified
-        this.props.sendBasicInfo(this.state.basicInfo);
       } else if (nextProps.signupState.status === 'success') {
         // Proceed to next step
         this.setState({
@@ -182,7 +179,7 @@ class SignupModalContent extends React.Component {
     const isCaptchaValid = this.refs.captchaInput.validate();
     if (isPhoneValid && isPasswordValid && isConfirmPasswordValid && isCaptchaValid) {
       this.setState({ status: 'loading' });
-      this.props.verifyCaptcha(this.state.basicInfo.captcha,
+      this.props.sendBasicInfo(this.state.basicInfo,
                                this.props.signupState.captcha.hash);
     }
   }

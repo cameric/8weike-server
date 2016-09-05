@@ -34,23 +34,6 @@ function authReducers(state = {}, action) {
           }
         });
       }
-    case 'VERIFY_CAPTCHA_IN_SIGNUP':
-      if (action.error) {
-        return _.merge({}, state, {
-          signup: {
-            currentStep: 'basicInfo',
-            status: 'error',
-            error: action.payload.parsedError,
-          }
-        });
-      } else {
-        return _.merge({}, state, {
-          signup: {
-            currentStep: 'basicInfo',
-            status: 'captchaVerified',
-          }
-        });
-      }
     case 'LOGIN_WITH_PHONE':
       if (action.error) {
         return Object.assign({}, state, {
