@@ -9,6 +9,12 @@ const ccap = require('ccap');
 
 const config = require('../config/config');
 
+/**
+ * Generate a Captcha image and corresponding encrypted value.
+ * @param options {object} an object of options fed into ccap.
+ *        see https://github.com/DoubleSpout/ccap for more info.
+ * @return {Promise.<TResult>} Whether the captcha is generated successfully
+ */
 function get(options) {
   const [ text, picture ] = ccap(options).get();
 
@@ -21,6 +27,12 @@ function get(options) {
   });
 }
 
+/**
+ * Verify a Captcha against its encrypted original value.
+ * @param captcha {string} the user-inputed captcha.
+ * @param hash {string} the original hash.
+ * @return {Promise.<TResult>} Whether the user put in the correct captcha value.
+ */
 function verify(captcha, hash) {
   // Verify user response against original hash
   return bcrypt.compareAsync(captcha, hash).then((valid) => {
