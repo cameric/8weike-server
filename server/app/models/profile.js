@@ -11,13 +11,13 @@ const credentialModel = require('./credential');
  * @returns {Promise.<user>} A promise inidicating whether user has a profile.
  */
 function checkWithUid(uid) {
-  return credentialModel.findById(uid, ['profile_id']).then((pid) => {
-    if (!pid) {
+  return credentialModel.findById(uid, ['profile_id']).then((profile) => {
+    if (!profile.profile_id) {
       return Promise.reject(new Promise.OperationalError(
         'User has not set up a profile yet!'
       ))
     }
-    return Promise.resolve();
+    return Promise.resolve(profile.profile_id);
   });
 }
 
@@ -55,11 +55,20 @@ function findByUid(uid, columns) {
 function createProfileWithName(uid, nickname) {
   const queryString = 'INSERT INTO profile ( ?? ) values ( ? )';
 
-  return credentialModel.findById(uid, ['profile_id']).then((pid) => {
-    if (pid) {
+  return credentialModel.findById(uid, ['is_verified', 'profile_id']).then((credential) => {
+    if (!credential.is_verified) {
+      return Promise.reject(new Promise.OperationalError(
+          'User credential has not been verified!'
+      ));
+    } else if (credential.profile_id) {
       return Promise.reject(new Promise.OperationalError(
           'User profile already exists!'
       ));
+    } else if (!nickname) {
+      return Promise.reject(new Promise.OperationalError(
+          'Nickname is not provided!'
+      ));
+      // TODO: add additional validation for nickname
     }
     return db.query(queryString, [['nickname'], [nickname]]);
   });

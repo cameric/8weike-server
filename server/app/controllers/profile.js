@@ -4,9 +4,9 @@ const profileModel = require('../models/profile');
 function create(req, res, next) {
   const { nickname } = req.body;
 
-  profileModel.createProfileWithName(req.user, nickname).then((profile) => {
+  profileModel.createProfileWithName(req.user.id, nickname).then((profile) => {
     // Update profile_id field after profile is created
-    return credentialModel.updateById(req.user, {
+    return credentialModel.updateById(req.user.id, {
       profile_id: profile.insertId,
     })
   }).then(() => {
