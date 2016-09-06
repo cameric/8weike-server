@@ -13,7 +13,8 @@ const signupRouter = require('./auth/signup');
 const tfaRouter = require('./auth/tfa');
 const captchaRouter = require('./auth/captcha');
 const loginRouter = require('./auth/login');
-const userRouter = require('./user');
+
+const profileRouter = require('./profile');
 
 // All controllers are imported here
 const logout = require('../controllers/auth').logout;
@@ -36,7 +37,7 @@ appRouter.get('/logout', auth.requiresLogin, logout);
 appRouter.use('/tfa', tfaRouter);
 appRouter.use('/captcha', captchaRouter);
 
-// User-related APIs
-appRouter.use('/user', userRouter);
+// Profile-related APIs
+appRouter.use('/profile', profileRouter);
 
 module.exports = appRouter;

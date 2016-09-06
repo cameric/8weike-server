@@ -176,7 +176,7 @@ describe('Signup Routing', () => {
       const testUser = fixture.tables.credential[0];
 
       const data = {
-        uid: testUser.id,
+        user: testUser,
         code: tfa.generateCode(testUser.tfa_secret),
       };
 
@@ -195,7 +195,7 @@ describe('Signup Routing', () => {
       const testUser = fixture.tables.credential[0];
 
       const data = {
-        uid: testUser.id,
+        user: testUser,
         code: '123456',
       };
 

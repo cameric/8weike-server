@@ -14,7 +14,7 @@ function signupWithPhone(req, res, next, needsCaptcha) {
   const verifyCaptcha = needsCaptcha ? captchaService.verify(captcha, hash) : Promise.resolve();
   verifyCaptcha.then(() => {
     return credentialModel.signupWithPhone(phone, password);
-  }).then((data) => { res.status(200).send({ data }); })
+  }).then((credential) => { res.status(200).send({ uid: credential.insertId }); })
     .error((err) => {
       let errMsg = null;
       if (err.code === 'ER_DUP_ENTRY') {
@@ -36,11 +36,19 @@ function signupWithPhoneWithCaptcha(req, res, next) {
 }
 
 function verify(req, res, next) {
-  const { uid, code } = req.body;
+  const { user, code } = req.body;
 
-  tfaService.verifyCode(uid, code).then(() => {
+  tfaService.verifyCode(user.id, code).then(() => {
     // Update is_verified field if verified code successfully
-    return credentialModel.updateById(uid, { is_verified: true });
+    return credentialModel.updateById(user.id, { is_verified: true });
+  }).then(() => {
+    // Automatically login after user credential is verified
+    req.login(user, (err) => {
+      if (err) {
+        return Promise.reject(new Promise.OperationalError('Automatic login failed!'));
+      }
+      return Promise.resolve();
+    });
   }).then((data) => { res.status(200).send({ data }); })
     .error((err) => {
       const errWithStatus = err;
