@@ -1,8 +1,8 @@
 // Utility functions for sending SMS message
 
 const Promise = require('bluebird');
+const request = require('request-promise');
 
-const request = Promise.promisifyAll(require('request'));
 const config = require('../config/config');
 
 /**
@@ -13,13 +13,23 @@ const config = require('../config/config');
  * @return {Promise.<TResult>} Whether the code is sent successfully
  */
 function send(phone, content, tplId=1) {
-  return request.postAsync(`${config.sms.url}/sms/tpl_send.json`, {
-    apikey: config.sms.apiKey,
-    mobile: phone,
-    tpl_id: tplId,
-    tpl_value: JSON.stringify(content),
-  }).then((res) => {
-    if (!res.result.count) {
+  const options = {
+    method: 'POST',
+    uri: `${config.sms.url}/sms/tpl_send.json`,
+    headers: {
+      'Accept': 'application/json; charset=utf-8',
+      'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+    },
+    form: {
+      apikey: config.sms.apiKey,
+      mobile: phone,
+      tpl_id: tplId,
+      tpl_value: content,
+    },
+  };
+
+  return request(options).then((res) => {
+    if (res.code > 0) {
       return Promise.reject(
         new Promise.OperationalError('Error sending SMS message.')
       );
