@@ -7,9 +7,7 @@ const captchaService = require('../../services/captcha');
 // Note(tony): have two versions of signup endpoints because
 // Mobile devices do not need captcha verification
 function signupWithPhone(req, res, next, needsCaptcha) {
-  const { phone, password } = req.body;
-  const captcha = req.body.captcha ? req.body.captcha : null;
-  const hash = req.body.hash ? req.body.hash : null;
+  const { phone, password, captcha, hash } = req.body;
 
   const verifyCaptcha = needsCaptcha ? captchaService.verify(captcha, hash) : Promise.resolve();
   verifyCaptcha.then(() => {
