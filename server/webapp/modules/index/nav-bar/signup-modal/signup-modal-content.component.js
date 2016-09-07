@@ -15,16 +15,16 @@ class SignupModalContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      step: 'basicInfo',
+      step: 'credential',
       status: 'waiting',
-      basicInfo: {
+      credential: {
         phone: '',
         password: '',
         confirmPassword: '',
         captcha: '',
       },
       tfaCode: '',
-      username: '',
+      nickname: '',
     };
 
     this._phoneValidators = [
@@ -46,7 +46,7 @@ class SignupModalContent extends React.Component {
     ];
     this._confirmPasswordValidators = [
       {
-        validator: (confirmPassword) => confirmPassword === this.state.basicInfo.password,
+        validator: (confirmPassword) => confirmPassword === this.state.credential.password,
         errorText: 'Passwords do not match!',
       }
     ];
@@ -101,7 +101,7 @@ class SignupModalContent extends React.Component {
         return (
             <div>
               <Input ref="captchaInput"
-                     value={this.state.basicInfo.captcha}
+                     value={this.state.credential.captcha}
                      isRequired={true}
                      className='signup-modal-content__captcha-input'
                      disabled={this.state.status === 'loading'}
@@ -145,19 +145,19 @@ class SignupModalContent extends React.Component {
   }
 
   _updatePhone(phone) {
-    this._updatePartialState('basicInfo', { phone });
+    this._updatePartialState('credential', { phone });
   }
 
   _updatePassword(password) {
-    this._updatePartialState('basicInfo', { password });
+    this._updatePartialState('credential', { password });
   }
 
   _updateConfirmPassword(confirmPassword) {
-    this._updatePartialState('basicInfo', { confirmPassword });
+    this._updatePartialState('credential', { confirmPassword });
   }
 
   _updateCaptcha(captcha) {
-    this._updatePartialState('basicInfo', { captcha });
+    this._updatePartialState('credential', { captcha });
   }
 
   // Helpers for TFA step
@@ -166,40 +166,40 @@ class SignupModalContent extends React.Component {
     this._updatePartialState('tfaCode', tfaCode);
   }
 
-  _updateUsername(username) {
-    this._updatePartialState('username', username);
+  _updateNickname(nickname) {
+    this._updatePartialState('nickname', nickname);
   }
 
   // Action handlers
 
-  _submitBasicInfo() {
+  _submitCredential() {
     const isPhoneValid = this.refs.phoneInput.validate();
     const isPasswordValid = this.refs.passwordInput.validate();
     const isConfirmPasswordValid = this.refs.confirmPasswordInput.validate();
     const isCaptchaValid = this.refs.captchaInput.validate();
     if (isPhoneValid && isPasswordValid && isConfirmPasswordValid && isCaptchaValid) {
       this.setState({ status: 'loading' });
-      this.props.sendBasicInfo(this.state.basicInfo,
+      this.props.sendCredential(this.state.credential,
                                this.props.signupState.captcha.hash);
     }
   }
 
   _submitTFACode() {
     this.setState({ status: 'loading'});
-    this.props.verifyTFACode(this.state.uid, this.state.tfaCode);
+    this.props.verifyTFACode(this.props.credentialId, this.state.tfaCode);
   }
 
-  _submitUsername() {
+  _submitProfile() {
     this.setState({ status: 'loading'});
-    this.props.sendUsernameInfo(this.state.username);
+    this.props.createProfile(this.state.nickname);
   }
 
-  renderBasicInfoStep() {
+  renderCredentialStep() {
     return (
       <div>
         {this._renderErrorMsg()}
         <Input ref="phoneInput"
-               value={this.state.basicInfo.phone}
+               value={this.state.credential.phone}
                className='signup-modal-content__input'
                disabled={this.state.status === 'loading'}
                isRequired={true}
@@ -208,10 +208,10 @@ class SignupModalContent extends React.Component {
                onChange={this._updatePhone.bind(this)}/>
         <div className='signup-modal-content__password-container'>
           <PasswordStrength classNames='signup-modal-content__password-strength'
-                            password={this.state.basicInfo.password}/>
+                            password={this.state.credential.password}/>
           <Input ref="passwordInput"
                  type='password'
-                 value={this.state.basicInfo.password}
+                 value={this.state.credential.password}
                  isRequired={true}
                  className='signup-modal-content__input'
                  disabled={this.state.status === 'loading'}
@@ -221,7 +221,7 @@ class SignupModalContent extends React.Component {
         </div>
         <Input ref="confirmPasswordInput"
                type="password"
-               value={this.state.basicInfo.confirmPassword}
+               value={this.state.credential.confirmPassword}
                isRequired={true}
                className='signup-modal-content__input'
                disabled={this.state.status === 'loading'}
@@ -229,7 +229,7 @@ class SignupModalContent extends React.Component {
                validators={this._confirmPasswordValidators}
                onChange={this._updateConfirmPassword.bind(this)}/>
         {this._renderCaptcha()}
-        {this._renderNextStepButton('Sign Up', this._submitBasicInfo.bind(this))}
+        {this._renderNextStepButton('Sign Up', this._submitCredential.bind(this))}
         <span className="signup-modal-content__options">
           Already a member?
           <button className='signup-modal-content__switch-btn button-as-link'
@@ -257,27 +257,27 @@ class SignupModalContent extends React.Component {
     )
   }
 
-  renderUsernameStep() {
+  renderProfileStep() {
     return (
       <div>
-        <Input value={this.state.username}
+        <Input value={this.state.nickname}
                className='signup-modal-content__input'
                isRequired={true}
                hintText='Nickname'
-               onChange={this._updateUsername.bind(this)}/>
-        {this._renderNextStepButton('Finish', this._submitUsername.bind(this))}
+               onChange={this._updateNickname.bind(this)}/>
+        {this._renderNextStepButton('Finish', this._submitProfile.bind(this))}
       </div>
     )
   }
 
   render() {
     switch (this.state.step) {
-      case 'basicInfo':
-        return this.renderBasicInfoStep();
+      case 'credential':
+        return this.renderCredentialStep();
       case 'tfa':
         return this.renderTFAStep();
-      case 'username':
-        return this.renderUsernameStep();
+      case 'profile':
+        return this.renderProfileStep();
       default:
         return (<span style={ {
           display: 'block',
@@ -294,10 +294,9 @@ SignupModalContent.propTypes = {
   // Container-provided props
   generateCaptcha: React.PropTypes.func,
   verifyCaptcha: React.PropTypes.func,
-  sendBasicInfo: React.PropTypes.func,
-  sendTFACode: React.PropTypes.func,
+  sendCredential: React.PropTypes.func,
   verifyTFACode: React.PropTypes.func,
-  sendUsernameInfo: React.PropTypes.func,
+  createProfile: React.PropTypes.func,
 };
 
 export default SignupModalContent;

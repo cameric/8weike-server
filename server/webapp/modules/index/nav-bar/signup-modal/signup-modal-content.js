@@ -9,7 +9,8 @@ import SignupModalContent from './signup-modal-content.component';
 
 function mapStateToProps(state) {
   return {
-    signupState: state.auth.signup
+    signupState: state.auth.signup,
+    credentialId: state.auth.id,
   }
 }
 
@@ -29,7 +30,7 @@ function mapDispatchToProps(dispatch) {
         nextAction: renderCaptchaInSignupAction,
       }))
     },
-    sendBasicInfo: (basicInfo, captchaHash) => {
+    sendCredential: (basicInfo, captchaHash) => {
       dispatch(new webRequestAction({
         url: '/api/signup/phone/web',
         method: 'POST',
@@ -42,26 +43,19 @@ function mapDispatchToProps(dispatch) {
         nextAction: signupWithPhoneBasicInfoAction,
       }))
     },
-    sendTFACode: (uid) => {
-      dispatch(new webRequestAction({
-        url: '/api/tfa/send',
-        method: 'POST',
-        body: { uid },
-      }))
-    },
-    verifyTFACode: (uid, code) => {
+    verifyTFACode: (credential, code) => {
       dispatch(new webRequestAction({
         url: '/api/signup/verify',
         method: 'POST',
-        body: { uid, code },
+        body: { credential, code },
         nextAction: signupWithPhoneTFAAction,
       }))
     },
-    sendUsernameInfo: (username) => {
+    createProfile: (nickname) => {
       dispatch(new webRequestAction({
         url: '/api/signup/username',
         method: 'POST',
-        body: { username },
+        body: { nickname },
         nextAction: signupWithPhoneUsernameAction,
       }))
     }
