@@ -15,9 +15,12 @@ function signupWithPhone(req, res, next, needsCaptcha) {
     return credentialModel.signupWithPhone(phone, password);
   }).then((credential) => {
     // Send TFA code based on the id of the newly created credential
-    return tfaService.sendCode(credential.insertId);
-  }).then(() => {
-    res.status(200).send({ success: true });
+    const credentialId = credential.insertId;
+    return tfaService.sendCode(credentialId).then(() => {
+      return Promise.resolve(credentialId);
+    });
+  }).then((credentialId) => {
+    res.status(200).send({ id: credentialId });
   }).error((err) => {
     let errMsg = null;
     if (err.code === 'ER_DUP_ENTRY') {
@@ -48,7 +51,7 @@ function verify(req, res, next) {
       if (err) return Promise.reject(new Promise.OperationalError('Automatic login failed!'));
       return Promise.resolve();
     });
-  }).then((data) => { res.status(200).send({ data }); })
+  }).then(() => { res.status(200).send({ success: true }); })
     .error((err) => { next(Object.assign(err, { status: 400 })); })
     .catch(next);
 }

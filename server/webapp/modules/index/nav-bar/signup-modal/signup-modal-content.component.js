@@ -163,11 +163,11 @@ class SignupModalContent extends React.Component {
   // Helpers for TFA step
 
   _updateTFACode(tfaCode) {
-    this._updatePartialState('tfaCode', tfaCode);
+    this.setState({ tfaCode });
   }
 
   _updateNickname(nickname) {
-    this._updatePartialState('nickname', nickname);
+    this.setState({ nickname });
   }
 
   // Action handlers
@@ -186,7 +186,11 @@ class SignupModalContent extends React.Component {
 
   _submitTFACode() {
     this.setState({ status: 'loading'});
-    this.props.verifyTFACode(this.props.credentialId, this.state.tfaCode);
+    this.props.verifyTFACode({
+      id: this.props.credentialId,
+      phone: this.state.credential.phone,
+      password: this.state.credential.password,
+    }, this.state.tfaCode);
   }
 
   _submitProfile() {

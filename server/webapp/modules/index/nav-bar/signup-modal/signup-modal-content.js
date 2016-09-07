@@ -44,6 +44,7 @@ function mapDispatchToProps(dispatch) {
       }))
     },
     verifyTFACode: (credential, code) => {
+      console.log(credential);
       dispatch(new webRequestAction({
         url: '/api/signup/verify',
         method: 'POST',
@@ -53,7 +54,7 @@ function mapDispatchToProps(dispatch) {
     },
     createProfile: (nickname) => {
       dispatch(new webRequestAction({
-        url: '/api/signup/username',
+        url: '/api/profile/create',
         method: 'POST',
         body: { nickname },
         nextAction: signupWithPhoneUsernameAction,

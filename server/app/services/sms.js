@@ -13,6 +13,12 @@ const config = require('../config/config');
  * @return {Promise.<TResult>} Whether the code is sent successfully
  */
 function send(phone, content, tplId=1) {
+  // Only send sms in production environment to avoid cost
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`Message content is: ${JSON.stringify(content)}`);
+    return Promise.resolve();
+  }
+
   const options = {
     method: 'POST',
     uri: `${config.sms.url}/sms/tpl_send.json`,
