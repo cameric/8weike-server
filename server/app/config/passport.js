@@ -27,7 +27,9 @@ function deserializeUser(id, done) {
   // TODO: How do we know what columns we want? SELECT * is apparently bad practice
   // Note(tony): at this time we could just return the minimal representation
   // of user: it's id. This design is subject to change.
-  credentialModel.findById(id, ['id']).then(done.bind(null, null)).catch(done);
+  credentialModel.findById(id, ['id'])
+      .then(done.bind(null, null))
+      .error(done.bind(null, false)).catch(done);
 }
 
 function configurePassport(passport) {

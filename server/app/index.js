@@ -62,7 +62,9 @@ app.use(session({
   secret: config.sessionSecret,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false }, // Set secure to false to enable session saving
+  // NOTE(tony): before setting up HTTPS,
+  // enable cookie transmission in HTTP insecurely
+  cookie: { secure: false },
 }));
 app.use(passport.initialize());
 app.use(passport.session());

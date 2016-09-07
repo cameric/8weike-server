@@ -2,10 +2,7 @@
 
 function requiresLogin(req, res, next) {
   if (!req.isAuthenticated())
-    return res.status(401).send({
-      statusCode: 401,
-      message: 'User is not authorized',
-    });
+    return next(Object.assign({}, new Error('User is not authorized'), { status: 401 }));
   return next();
 }
 

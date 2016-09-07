@@ -25,7 +25,7 @@ describe('Profile Routing', () => {
   describe('POST /api/profile/create', () => {
     const fixtureNickname = 'Harry Potter';
 
-    function loginUser (agent, testUser){
+    function loginUser (agent, testUser) {
       return (done) => {
         const data = {
           phone: testUser.phone,

@@ -9,12 +9,11 @@ const express = require('express');
 const auth = require('../middlewares/auth');
 
 // All Router modules are imported here
-const signupRouter = require('./auth/signup');
-const tfaRouter = require('./auth/tfa');
 const captchaRouter = require('./auth/captcha');
 const loginRouter = require('./auth/login');
-
 const profileRouter = require('./profile');
+const signupRouter = require('./auth/signup');
+const tfaRouter = require('./auth/tfa');
 
 // All controllers are imported here
 const logout = require('../controllers/auth').logout;

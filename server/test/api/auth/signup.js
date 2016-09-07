@@ -173,10 +173,10 @@ describe('Signup Routing', () => {
     });
 
     it('(200) valid non-verified user with valid code', (done) => {
-      const testUser = fixture.tables.credential[0];
+      const testCredential = fixture.tables.credential[0];
 
       const data = {
-        user: testUser,
+        credential: testCredential,
         code: tfa.generateCode(testUser.tfa_secret),
       };
 
@@ -192,10 +192,10 @@ describe('Signup Routing', () => {
     });
 
     it('(400) valid non-verified user with invalid code', (done) => {
-      const testUser = fixture.tables.credential[0];
+      const testCredential = fixture.tables.credential[0];
 
       const data = {
-        user: testUser,
+        credential: testCredential,
         code: '123456',
       };
 
