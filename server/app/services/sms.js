@@ -9,7 +9,7 @@ const config = require('../config/config');
  * Send a SMS message to a user's cellphone using Yun Pian
  * @param phone {string} the cellphone number to be registered
  * @param content {object} the cellphone number to be registered
- * @param tplId {int} the code to be sent to user
+ * @param tplId {int} the SMS template ID to use for sending message
  * @return {Promise.<TResult>} Whether the code is sent successfully
  */
 function send(phone, content, tplId=1) {
