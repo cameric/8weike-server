@@ -10,11 +10,12 @@ const smsService = require('./sms');
  * @return {Promise.<TResult>} Whether the tfa code is sent out successfully
  */
 function sendCode(uid) {
+  const tfaTemplateId = 1550692;
   return credentialModel.findById(uid, ['phone', 'tfa_secret']).then((credential) => {
     // Send TFA code
     return smsService.send(credential.phone, {
       '#code#': generateCode(credential.tfa_secret),
-    })
+    }, tfaTemplateId);
   });
 }
 

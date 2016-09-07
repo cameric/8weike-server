@@ -29,6 +29,22 @@ function findById(id, columns) {
 }
 
 /**
+ * Check whether the user profile is defined and returns the profile ID if exists
+ * @param id {int64} - the credential ID
+ * @returns {Promise.<user>} A promise indicating whether user has a profile.
+ */
+function getProfileForId(id) {
+  return findById(id, ['profile_id']).then((res) => {
+    if (!res.profile_id) {
+      return Promise.reject(new Promise.OperationalError(
+          'User has not set up a profile yet!'
+      ))
+    }
+    return Promise.resolve(res.profile_id);
+  });
+}
+
+/**
  * Promise: If a user exists whose phone/password match the given parameters, fulfills and returns
  *  that user's ID, otherwise rejects.
  * @param phone {string}
@@ -89,7 +105,7 @@ function signupWithPhone(phone, password) {
 
 /**
  *
- * @param id {int64} - The ID of the user to update.
+ * @param id {int64} - The ID of the credential to update.
  * @param columns {Object} - An object representing the columns to update as key-value pairs.
  * @returns {Promise.<Object>}
  */
@@ -106,8 +122,11 @@ function updateById(id, columns) {
   });
 }
 
+
+
 module.exports = {
   findById,
+  getProfileForId,
   loginWithPhone,
   signupWithPhone,
   updateById,

@@ -25,11 +25,11 @@ describe('Credential Model', () => {
 
   describe('findById', () => {
     describe('success', () => {
-      it('finds and returns a user with an ID known to be in the table', (done) => {
+      it('finds and returns a credential with an ID known to be in the table', (done) => {
         // Pick a random user from the fixture and try to find that user by ID
-        const randomUser = randomItem(fixture.tables.credential);
-        credentialModel.findById(randomUser.id, ['id']).then((user) => {
-          expect(user.id).to.equal(randomUser.id);
+        const randomCredential = randomItem(fixture.tables.credential);
+        credentialModel.findById(randomCredential.id, ['id']).then((user) => {
+          expect(user.id).to.equal(randomCredential.id);
 
           done();
         }).catch(done);
@@ -49,17 +49,13 @@ describe('Credential Model', () => {
     });
   });
 
-  describe('loginWithPhone', () => {
+  describe('getProfileForId', () => {
     describe('success', () => {
-      it('returns user X\'s ID when the given credentials match those of user X', (done) => {
-        // Pick a random user from the fixture and try to log in as that user
-        const randomUser = randomItem(fixture.tables.credential);
-
-        // NOTE: Passwords are never stored in the user table, and thus aren't in the table fixtures
-        // For convenience in this test, the test users' passwords are just their phone numbers.
-        credentialModel.loginWithPhone(randomUser.phone, randomUser.phone).then((user) => {
-          expect(user).to.not.be.null;
-          expect(user.id).to.equal(randomUser.id);
+      it('finds and returns a profile id with an existent credential ID', (done) => {
+        // This is a verified user that has an associated profile
+        const testCredential = fixture.tables.credential[2];
+        credentialModel.getProfileForId(testCredential.id).then((profileId) => {
+          expect(profileId).to.equal(testCredential.profile_id);
 
           done();
         }).catch(done);
@@ -67,10 +63,41 @@ describe('Credential Model', () => {
     });
 
     describe('failure', () => {
-      it('fails when given a valid phone number but an invalid password', (done) => {
-        const randomUser = randomItem(fixture.tables.credential);
+      it('fails when given an ID known not to be in the table', (done) => {
+        // Pick an ID known not to be in the table
+        // TODO: there's not a better (constant-time) way to guarantee this, is there?
+        credentialModel.getProfileForId(99999999999).then(() => {
+          done(new Error('Did not fail when expected to'));
+        }).catch(() => {
+          done();
+        });
+      });
+    });
+  });
 
-        credentialModel.loginWithPhone(randomUser.phone, 'not randomUser\'s password').then(() => {
+  describe('loginWithPhone', () => {
+    describe('success', () => {
+      it('returns user X\'s ID when the given credentials match those of user X', (done) => {
+        // Pick a random user from the fixture and try to log in as that user
+        const randomCredential = randomItem(fixture.tables.credential);
+
+        // NOTE: Passwords are never stored in the user table, and thus aren't in the table fixtures
+        // For convenience in this test, the test users' passwords are just their phone numbers.
+        credentialModel.loginWithPhone(randomCredential.phone, randomCredential.phone)
+          .then((credential) => {
+            expect(credential).to.not.be.null;
+            expect(credential.id).to.equal(randomCredential.id);
+
+            done();
+          }).catch(done);
+      });
+    });
+
+    describe('failure', () => {
+      it('fails when given a valid phone number but an invalid password', (done) => {
+        const randomCredential = randomItem(fixture.tables.credential);
+
+        credentialModel.loginWithPhone(randomCredential.phone, 'not randomUser\'s password').then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();
@@ -98,18 +125,18 @@ describe('Credential Model', () => {
   describe('signupWithPhone', () => {
     describe('success', () => {
       it('adds a new user when given a valid phone number and password', (done) => {
-        const newUser = {
+        const newCredential = {
           phone: '18610322136', // Known-valid Chinese phone number
           password: 'p@55w0rd',
         };
 
         // Register the user, then log in to make sure it shows up in the DB
-        credentialModel.signupWithPhone(newUser.phone, newUser.password)
-            .then(() => credentialModel.loginWithPhone(newUser.phone, newUser.password))
+        credentialModel.signupWithPhone(newCredential.phone, newCredential.password)
+            .then(() => credentialModel.loginWithPhone(newCredential.phone, newCredential.password))
             .then((user) => credentialModel.findById(user.id, ['phone']))
             .then((user) => {
               expect(user).to.be.not.null;
-              expect(user.phone).to.equal(newUser.phone);
+              expect(user.phone).to.equal(newCredential.phone);
               done();
             })
             .catch(done);
@@ -118,9 +145,9 @@ describe('Credential Model', () => {
 
     describe('failure', () => {
       it('fails when given an existing phone number and password', (done) => {
-        const randomUser = randomItem(fixture.tables.credential);
+        const randomCredential = randomItem(fixture.tables.credential);
 
-        credentialModel.signupWithPhone(randomUser.phone, 'password').then(() => {
+        credentialModel.signupWithPhone(randomCredential.phone, 'password').then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();
@@ -128,12 +155,12 @@ describe('Credential Model', () => {
       });
 
       it('fails when given an invalid phone number', (done) => {
-        const newUser = {
+        const newCredential = {
           phone: '123a456b7890',
           password: 'p@55w0rd',
         };
 
-        credentialModel.signupWithPhone(newUser.phone, newUser.password).then(() => {
+        credentialModel.signupWithPhone(newCredential.phone, newCredential.password).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();
@@ -141,12 +168,12 @@ describe('Credential Model', () => {
       });
 
       it('fails when given an invalid password', (done) => {
-        const newUser = {
+        const newCredential = {
           phone: '123a456b7890',
           password: 'a',
         };
 
-        credentialModel.signupWithPhone(newUser.phone, newUser.password).then(() => {
+        credentialModel.signupWithPhone(newCredential.phone, newCredential.password).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();
@@ -154,11 +181,11 @@ describe('Credential Model', () => {
       });
 
       it('fails when not given a phone number', (done) => {
-        const newUser = {
+        const newCredential = {
           password: 'p@55w0rd',
         };
 
-        credentialModel.signupWithPhone(newUser.phone, newUser.password).then(() => {
+        credentialModel.signupWithPhone(newCredential.phone, newCredential.password).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();
@@ -166,11 +193,11 @@ describe('Credential Model', () => {
       });
 
       it('fails when not given a password', (done) => {
-        const newUser = {
+        const newCredential = {
           phone: '1234567890',
         };
 
-        credentialModel.signupWithPhone(newUser.phone, newUser.password).then(() => {
+        credentialModel.signupWithPhone(newCredential.phone, newCredential.password).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();
@@ -183,16 +210,16 @@ describe('Credential Model', () => {
     describe('success', () => {
       it('updates the phone number of an existing user', (done) => {
         // Pick a random user from the fixture and try to update their phone number, adding a '!!!'
-        const randomUser = randomItem(fixture.tables.credential);
-        const newPhone = `${randomUser.phone}!!!`;
+        const randomCredential = randomItem(fixture.tables.credential);
+        const newPhone = `${randomCredential.phone}!!!`;
 
         // Update the user
-        credentialModel.updateById(randomUser.id, {phone: newPhone}).then(() =>
+        credentialModel.updateById(randomCredential.id, {phone: newPhone}).then(() =>
             // Retrieve the updated user from the DB
-            credentialModel.findById(randomUser.id, ['phone']).then((user) => {
+            credentialModel.findById(randomCredential.id, ['phone']).then((credential) => {
               // Ensure that the nickname is updated
-              expect(user).not.to.be.null;
-              expect(user.phone).to.equal(newPhone);
+              expect(credential).not.to.be.null;
+              expect(credential.phone).to.equal(newPhone);
               done();
             })
         ).catch(done);
@@ -209,9 +236,9 @@ describe('Credential Model', () => {
       });
 
       it('fails to update a nonexistent column of an existing user', (done) => {
-        const randomUser = randomItem(fixture.tables.credential);
+        const randomCredential = randomItem(fixture.tables.credential);
 
-        credentialModel.updateById(randomUser.id, {asdfghjkl: 3.14159}).then(() => {
+        credentialModel.updateById(randomCredential.id, {asdfghjkl: 3.14159}).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();

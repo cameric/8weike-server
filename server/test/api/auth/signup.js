@@ -173,11 +173,11 @@ describe('Signup Routing', () => {
     });
 
     it('(200) valid non-verified user with valid code', (done) => {
-      const testUser = fixture.tables.credential[0];
+      const testCredential = fixture.tables.credential[0];
 
       const data = {
-        uid: testUser.id,
-        code: tfa.generateCode(testUser.tfa_secret),
+        credential: testCredential,
+        code: tfa.generateCode(testCredential.tfa_secret),
       };
 
       request(app)
@@ -185,17 +185,17 @@ describe('Signup Routing', () => {
           .send(data)
           .expect(200)
           .end((err, _) => {
-            sinon.assert.calledWith(spy, testUser.id, {is_verified: true});
+            sinon.assert.calledWith(spy, testCredential.id, {is_verified: true});
             if (err) done(err);
             else done();
           });
     });
 
     it('(400) valid non-verified user with invalid code', (done) => {
-      const testUser = fixture.tables.credential[0];
+      const testCredential = fixture.tables.credential[0];
 
       const data = {
-        uid: testUser.id,
+        credential: testCredential,
         code: '123456',
       };
 
