@@ -23,15 +23,15 @@ describe('Profile Model', () => {
         .catch(done);
   });
 
-  describe('findByUid', () => {
+  describe('findByCredential', () => {
     describe('success', () => {
       it('finds and returns a profile with a user that exists', (done) => {
         // This is a verified user that has an associated profile
-        const testUser = fixture.tables.credential[2];
-        const testUserProfile = fixture.tables.profile[0];
+        const testCredential = fixture.tables.credential[2];
+        const testProfile = fixture.tables.profile[0];
 
-        profileModel.findByUid(testUser.id, ['nickname']).then((user) => {
-          expect(user.nickname).to.equal(testUserProfile.nickname);
+        profileModel.findByCredential(testCredential.id, ['nickname']).then((profile) => {
+          expect(profile.nickname).to.equal(testProfile.nickname);
           done();
         }).catch(done);
       });
@@ -39,7 +39,7 @@ describe('Profile Model', () => {
 
     describe('failure', () => {
       it('fails when the user does not exist', (done) => {
-        profileModel.findByUid(99999999999, ['nickname']).then(() => {
+        profileModel.findByCredential(99999999999, ['nickname']).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();
@@ -50,7 +50,7 @@ describe('Profile Model', () => {
         // This is a verified user that does not have an associated profile
         const testUser = fixture.tables.credential[1];
 
-        profileModel.findByUid(testUser.id, ['nickname']).then(() => {
+        profileModel.findByCredential(testUser.id, ['nickname']).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();
@@ -59,15 +59,17 @@ describe('Profile Model', () => {
     });
   });
 
-  describe('createProfileWithName', () => {
+  describe('createProfileForCredential', () => {
     const fixtureNickname = 'Harry Potter';
 
     describe('success', () => {
       it('create a new profile with nickname', (done) => {
         // This is a verified user that does not have an associated profile
-        const testUser = fixture.tables.credential[1];
+        const testCredential = fixture.tables.credential[1];
 
-        profileModel.createProfileWithName(testUser.id, fixtureNickname).then((profile) => {
+        profileModel.createProfileForCredential(testCredential.id, {
+          nickname: fixtureNickname,
+        }).then((profile) => {
           expect(profile.affectedRows).to.equal(1);
           done();
         }).catch(done);
@@ -76,7 +78,9 @@ describe('Profile Model', () => {
 
     describe('failure', () => {
       it('fails when the user does not exist', (done) => {
-        profileModel.createProfileWithName(99999999999, fixtureNickname).then(() => {
+        profileModel.createProfileForCredential(99999999999, {
+          nickname: fixtureNickname,
+        }).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();
@@ -85,9 +89,11 @@ describe('Profile Model', () => {
 
       it('fails when the user already has a profile', (done) => {
         // This is a verified user that already has an associated profile
-        const testUser = fixture.tables.credential[2];
+        const testCredential = fixture.tables.credential[2];
 
-        profileModel.createProfileWithName(testUser.id, fixtureNickname).then(() => {
+        profileModel.createProfileForCredential(testCredential.id, {
+          nickname: fixtureNickname,
+        }).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();
@@ -96,9 +102,11 @@ describe('Profile Model', () => {
 
       it('fails when the user has not verified phone number', (done) => {
         // This is a unverified user
-        const testUser = fixture.tables.credential[0];
+        const testCredential = fixture.tables.credential[0];
 
-        profileModel.createProfileWithName(testUser.id, fixtureNickname).then(() => {
+        profileModel.createProfileForCredential(testCredential.id, {
+          nickname: fixtureNickname,
+        }).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();
@@ -107,16 +115,16 @@ describe('Profile Model', () => {
     });
   });
 
-  describe('updateByUid', () => {
+  describe('updateByCredential', () => {
     const newNickname = 'Steve Jobs';
 
     describe('success', () => {
       it('update a profile with a user that exists', (done) => {
         // This is a verified user that has an associated profile
-        const testUser = fixture.tables.credential[2];
+        const testCredential = fixture.tables.credential[2];
 
-        profileModel.updateByUid(testUser.id, { nickname: newNickname }).then(() => {
-          return profileModel.findByUid(testUser.id, ['nickname']);
+        profileModel.updateByCredential(testCredential.id, { nickname: newNickname }).then(() => {
+          return profileModel.findByCredential(testCredential.id, ['nickname']);
         }).then((profile) => {
           expect(profile.nickname).to.equal(newNickname);
           done();
@@ -126,7 +134,7 @@ describe('Profile Model', () => {
 
     describe('failure', () => {
       it('fails when the user does not exist', (done) => {
-        profileModel.updateByUid(99999999999, { nickname: newNickname }).then(() => {
+        profileModel.updateByCredential(99999999999, { nickname: newNickname }).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();
@@ -137,7 +145,7 @@ describe('Profile Model', () => {
         // This is a verified user that does not have an associated profile
         const testUser = fixture.tables.credential[1];
 
-        profileModel.updateByUid(testUser.id, { nickname: newNickname }).then(() => {
+        profileModel.updateByCredential(testUser.id, { nickname: newNickname }).then(() => {
           done(new Error('Did not fail when expected to'));
         }).catch(() => {
           done();

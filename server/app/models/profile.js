@@ -7,14 +7,14 @@ const db = require('../database');
 
 /**
  * Create a profile and initialize it with some data
- * @param uid {int64} - The uid of the user.
+ * @param cid {int64} - The credential id of the user.
  * @param columns {Object} - an object of data to insert
  * @returns {Promise.<Object>}
  */
-function createProfile(uid, columns) {
+function createProfileForCredential(cid, columns) {
   const queryString = 'INSERT INTO profile ( ?? ) values ( ? )';
 
-  return credentialModel.findById(uid, ['is_verified', 'profile_id']).then((credential) => {
+  return credentialModel.findById(cid, ['is_verified', 'profile_id']).then((credential) => {
     if (!credential.is_verified) {
       return Promise.reject(new Promise.OperationalError(
           'User credential has not been verified!'
@@ -42,10 +42,10 @@ function createProfile(uid, columns) {
  * @param columns {Array.<String>} - A list of columns to retrieve.
  * @returns {Promise.<user>} A promise that returns a profile if fulfilled.
  */
-function findByCredentialId(cid, columns) {
+function findByCredential(cid, columns) {
   const queryString = 'SELECT ?? FROM profile WHERE id = ?';
 
-  return credentialModel.getProfileForCredential(cid).then((pid) => {
+  return credentialModel.getProfileForId(cid).then((pid) => {
     // IDs are unique, so we can automatically return the first element in `res` (if any).
     // The response will either be an individual user object, or null
     return db.query(queryString, [columns, pid]).then((res) => {
@@ -67,10 +67,10 @@ function findByCredentialId(cid, columns) {
  * @param columns {Object} - An object representing the columns to update as key-value pairs.
  * @returns {Promise.<Object>}
  */
-function updateByCredentialId(cid, columns) {
+function updateByCredential(cid, columns) {
   const queryString = 'UPDATE profile SET ? WHERE id = ?';
 
-  return credentialModel.getProfileForCredential(cid).then((pid) => {
+  return credentialModel.getProfileForId(cid).then((pid) => {
     return db.query(queryString, [columns, pid]).then((okPacket) => {
       if (okPacket.affectedRows < 1) {
         return Promise.reject(new Promise.OperationalError(
@@ -84,7 +84,7 @@ function updateByCredentialId(cid, columns) {
   });
 }
 module.exports = {
-  createProfile,
-  findByCredentialId,
-  updateByCredentialId
+  createProfileForCredential,
+  findByCredential,
+  updateByCredential
 };

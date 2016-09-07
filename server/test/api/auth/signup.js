@@ -177,7 +177,7 @@ describe('Signup Routing', () => {
 
       const data = {
         credential: testCredential,
-        code: tfa.generateCode(testUser.tfa_secret),
+        code: tfa.generateCode(testCredential.tfa_secret),
       };
 
       request(app)
@@ -185,7 +185,7 @@ describe('Signup Routing', () => {
           .send(data)
           .expect(200)
           .end((err, _) => {
-            sinon.assert.calledWith(spy, testUser.id, {is_verified: true});
+            sinon.assert.calledWith(spy, testCredential.id, {is_verified: true});
             if (err) done(err);
             else done();
           });

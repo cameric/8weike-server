@@ -34,13 +34,13 @@ function findById(id, columns) {
  * @returns {Promise.<user>} A promise indicating whether user has a profile.
  */
 function getProfileForId(id) {
-  return findById(id, ['profile_id']).then((credential) => {
-    if (!credential.profile_id) {
+  return findById(id, ['profile_id']).then((res) => {
+    if (!res.profile_id) {
       return Promise.reject(new Promise.OperationalError(
           'User has not set up a profile yet!'
       ))
     }
-    return Promise.resolve(credential.profile_id);
+    return Promise.resolve(res.profile_id);
   });
 }
 

@@ -47,12 +47,12 @@ describe('Profile Routing', () => {
     describe('Valid input', () => {
       let agent = request.agent(app);
       // This is a verified user that does not have an associated profile
-      const testUser = fixture.tables.credential[1];
+      const testCredential = fixture.tables.credential[1];
 
-      it('Log in with a verified user with no profile', loginUser(agent, testUser));
+      it('Log in with a verified user with no profile', loginUser(agent, testCredential));
       it('(200) Success when a logged in user creates a profile', (done) => {
         const data = {
-          uid: testUser.uid,
+          uid: testCredential.uid,
           nickname: fixtureNickname,
         };
 
@@ -70,12 +70,12 @@ describe('Profile Routing', () => {
     describe('Invalid input', () => {
       let agent = request.agent(app);
       // This is a verified user that does not have an associated profile
-      const testUser = fixture.tables.credential[1];
+      const testCredential = fixture.tables.credential[1];
 
-      it('Log in with a verified user with no profile', loginUser(agent, testUser));
+      it('Log in with a verified user with no profile', loginUser(agent, testCredential));
       it('(400) responds with Bad Request when nickname is not provided', (done) => {
         const data = {
-          uid: testUser.uid,
+          uid: testCredential.uid,
         };
 
         agent
@@ -92,10 +92,10 @@ describe('Profile Routing', () => {
     describe('Unauthorized user', () => {
       it('(401) responds with Unauthorized when user has not logged in', (done) => {
         // This is a verified user that does not have an associated profile
-        const testUser = fixture.tables.credential[1];
+        const testCredential = fixture.tables.credential[1];
 
         const data = {
-          uid: testUser.uid,
+          uid: testCredential.uid,
           nickname: fixtureNickname,
         };
 
@@ -115,12 +115,12 @@ describe('Profile Routing', () => {
     describe('Verified user', () => {
       let agent = request.agent(app);
       // This is a verified user that has an associated profile
-      const testUser = fixture.tables.credential[2];
+      const testCredential = fixture.tables.credential[2];
 
-      it('Log in with a verified user that already has a profile', loginUser(agent, testUser));
+      it('Log in with a verified user that already has a profile', loginUser(agent, testCredential));
       it('(400) responds with Bad Request when user already has a profile', (done) => {
         const data = {
-          uid: testUser.uid,
+          uid: testCredential.uid,
           nickname: fixtureNickname,
         };
 
