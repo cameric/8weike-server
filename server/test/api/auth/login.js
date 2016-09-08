@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-expressions */
 const app = require('../../../app');
 const db = require('../../../app/database');
-const expect = require('chai').expect;
 const fixture = require('../../fixtures/user');
 const randomItem = require('../../utils').randomItem;
 const request = require('supertest');
@@ -26,13 +25,13 @@ describe('Login Routing', () => {
 
   describe('POST /api/login/phone', () => {
     describe('valid input', () => {
-      it('(302) Redirects to /api/user/* when given valid credentials', (done) => {
-        const randomUser = randomItem(fixture.tables.credential);
+      it('(200) Login success when given valid credentials', (done) => {
+        const randomCredential = randomItem(fixture.tables.credential);
 
         const data = {
-          phone: randomUser.phone,
+          phone: randomCredential.phone,
           // In the fixture, all users' phone numbers are their passwords
-          password: randomUser.phone,
+          password: randomCredential.phone,
         };
 
         request(app)
@@ -40,8 +39,8 @@ describe('Login Routing', () => {
             .send(data)
             .expect(200)
             .end((err, res) => {
-              if (err) done(err);
-              done();
+              if (err) return done(err);
+              return done();
             });
       });
     });
@@ -58,8 +57,8 @@ describe('Login Routing', () => {
             .send(data)
             .expect(401)
             .end((err, _) => {
-              if (err) done(err);
-              else done();
+              if (err) return done(err);
+              return done();
             });
       });
     });
