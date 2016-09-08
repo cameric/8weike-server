@@ -10,8 +10,8 @@ const phoneStrategy = new LocalStrategy({
   usernameField: 'phone',
   passwordField: 'password',
 }, (phone, password, done) =>
-    credentialModel.loginWithPhone(phone, password).then((user) => {
-      done(null, user);
+    credentialModel.loginWithPhone(phone, password).then((credential) => {
+      done(null, credential);
     }).error((err) => {
       done(null, false, err);
     }).catch((err) => {
