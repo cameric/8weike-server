@@ -7,21 +7,17 @@ const db = require('../database');
 
 /**
  * Create a profile and initialize it with some data
- * @param cid {int64} - The credential id of the user.
+ * @param cid {number} - The credential id of the user.
  * @param columns {Object} - an object of data to insert
  * @returns {Promise.<Object>}
  */
 function createProfileForCredential(cid, columns) {
   const queryString = 'INSERT INTO profile ( ?? ) values ( ? )';
 
-  return credentialModel.findById(cid, ['is_verified', 'profile_id']).then((credential) => {
-    if (!credential.is_verified) {
+  return credentialModel.findById(cid, ['profile_id']).then((credential) => {
+    if (credential.profile_id) {
       return Promise.reject(new Promise.OperationalError(
-          'User credential has not been verified!'
-      ));
-    } else if (credential.profile_id) {
-      return Promise.reject(new Promise.OperationalError(
-          'User profile already exists!'
+          'Profile already exists!'
       ));
     } else if (!columns.nickname) {
       return Promise.reject(new Promise.OperationalError(
@@ -32,13 +28,14 @@ function createProfileForCredential(cid, columns) {
 
     const columnNames = Object.keys(columns);
     const columnValues = columnNames.map((col) => columns[col]);
+
     return db.query(queryString, [columnNames, columnValues]);
   });
 }
 
 /**
  * Find the profile using the user ID
- * @param cid {int64} - user credential ID
+ * @param cid {number} - user credential ID
  * @param columns {Array.<String>} - A list of columns to retrieve.
  * @returns {Promise.<user>} A promise that returns a profile if fulfilled.
  */
@@ -54,7 +51,7 @@ function findByCredential(cid, columns) {
             'No profile exists with the given user. This should never occur!'));
       } else if (res.length > 1) {
         return Promise.reject(new Promise.OperationalError(
-            'Multiple profiles link to the same Id. This should never occur!'));
+            'Multiple profiles link to the same ID. This should never occur!'));
       }
       return res[0];
     });
@@ -63,7 +60,7 @@ function findByCredential(cid, columns) {
 
 /**
  * Update the user profile given the user id.
- * @param cid {int64} - The ID of the credential to update.
+ * @param cid {number} - The ID of the credential to update.
  * @param columns {Object} - An object representing the columns to update as key-value pairs.
  * @returns {Promise.<Object>}
  */
@@ -86,5 +83,5 @@ function updateByCredential(cid, columns) {
 module.exports = {
   createProfileForCredential,
   findByCredential,
-  updateByCredential
+  updateByCredential,
 };

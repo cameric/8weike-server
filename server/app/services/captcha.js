@@ -16,14 +16,14 @@ const config = require('../config/config');
  * @return {Promise.<TResult>} Whether the captcha is generated successfully
  */
 function get(options) {
-  const [ text, picture ] = ccap(options).get();
+  const [text, picture] = ccap(options).get();
 
   // Send back hashed text and picture
   return bcrypt.hashAsync(text, config.encrypt.bcryptSaltRounds).then((hash) => {
     return {
       hash,
       picture: picture.toString('base64'),
-    }
+    };
   });
 }
 
@@ -36,11 +36,8 @@ function get(options) {
 function verify(captcha, hash) {
   // Verify user response against original hash
   return bcrypt.compareAsync(captcha, hash).then((valid) => {
-    if (valid) {
-      return Promise.resolve();
-    } else {
-      return Promise.reject(new Promise.OperationalError('Incorrect captcha response!'));
-    }
+    if (valid) return Promise.resolve();
+    return Promise.reject(new Promise.OperationalError('Incorrect captcha response!'));
   });
 }
 

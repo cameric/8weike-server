@@ -1,5 +1,6 @@
-drop table user;
-create table profile (
+DROP TABLE user;
+
+CREATE TABLE profile (
     id BIGINT NOT NULL AUTO_INCREMENT,
     nickname VARCHAR(255),
     description VARCHAR(255),
@@ -8,7 +9,7 @@ create table profile (
     PRIMARY KEY (id)
 );
 
-create table credential (
+CREATE TABLE credential (
     id BIGINT NOT NULL AUTO_INCREMENT,
     phone VARCHAR(255) NOT NULL,
     password_hash CHAR(60) NOT NULL,

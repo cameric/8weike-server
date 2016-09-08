@@ -3,7 +3,9 @@
 // Log raw error messages to the console.
 // Will only be applied in development environment.
 function logErrors(err, req, res, next) {
-  console.error(err.stack);
+  // TODO: this outputs errors during "error expected" cases during manual testing and makes the
+  // output nearly unreadable. Commented out for now.
+  //console.error(err.stack);
   next(err);
 }
 

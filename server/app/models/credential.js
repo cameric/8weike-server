@@ -8,7 +8,7 @@ const db = require('../database');
 
 /**
  *
- * @param id {int64} - The ID to search for.
+ * @param id {number} - The ID to search for.
  * @param columns {Array.<String>} - A list of columns to retrieve.
  * @returns {Promise.<user>} A promise that returns a user if fulfilled.
  */
@@ -24,13 +24,13 @@ function findById(id, columns) {
       return Promise.reject(new Promise.OperationalError(
           'Multiple users with the same ID exist. This should never occur!'));
     }
-    return res[0];
+    return Promise.resolve(res[0]);
   });
 }
 
 /**
  * Check whether the user profile is defined and returns the profile ID if exists
- * @param id {int64} - the credential ID
+ * @param id {number} - the credential ID
  * @returns {Promise.<user>} A promise indicating whether user has a profile.
  */
 function getProfileForId(id) {
@@ -38,7 +38,7 @@ function getProfileForId(id) {
     if (!res.profile_id) {
       return Promise.reject(new Promise.OperationalError(
           'User has not set up a profile yet!'
-      ))
+      ));
     }
     return Promise.resolve(res.profile_id);
   });
@@ -74,38 +74,123 @@ function loginWithPhone(phone, password) {
 }
 
 /**
- * Returns a promise to signup a new user in the database.
- * @param phone {string} - The new user's phone number.
- * @param password {string} - The new user's password.
- * @returns {Promise.<TResult>} - A promise that fulfills when the user is successfully registered.
+ * Checks if the given phone number is valid (i.e. non-null and valid in China)
+ * @param phone {string}
+ * @returns {Promise.<Object>}
  */
-function signupWithPhone(phone, password) {
-  // TODO: Move password length and locale to config
+function validatePhoneNumber(phone) {
   if ((phone == null) || !validator.isMobilePhone(phone, 'zh-CN')) {
     return Promise.reject(new Promise.OperationalError('Invalid phone number.'));
-  } else if ((password == null) || !validator.isLength(password, { min: 8 })) {
+  }
+  return Promise.resolve();
+}
+
+/**
+ * Checks if the given password is valid (i.e. non-null and more than 8 chars long)
+ * @param password {string}
+ * @returns {Promise.<Object>}
+ */
+function validatePassword(password) {
+  if ((password == null) || !validator.isLength(password, { min: 8 })) {
     return Promise.reject(new Promise.OperationalError('Password too short.'));
   }
+  return Promise.resolve();
+}
 
-  // Hash the password and create the new credential
-  const queryString = 'INSERT INTO credential ( ?? ) VALUES ( ? )';
+/**
+ * Returns a promise to save a credential in the database.
+ * @param credential {Object}
+ * @returns {Promise.<TResult>} - A promise that fulfills when the credential is inserted.
+ */
+function save(credential) {
+  if (!credential.password_hash
+      || credential.password_hash.length !== 60) { // Bcrypt hash len
+    return Promise.reject(new Promise.OperationalError(
+        'Password hash not of length 60.'));
+  } else if (!credential.tfa_secret
+      || credential.tfa_secret.length !== config.crypto.tfaSecretLength) {
+    return Promise.reject(new Promise.OperationalError(
+        `Secret not of length ${config.crypto.tfaSecretLength}.`));
+  }
 
-  return bcrypt.hashAsync(password, config.encrypt.bcryptSaltRounds).then((hash) => {
-    const user = {
-      phone,
-      password_hash: hash,
-      tfa_secret: speakeasy.generateSecret({ length: 20 }).base32, // TODO: move length to config
-    };
-    const columnNames = Object.keys(user);
-    const columnValues = columnNames.map((col) => user[col]);
+  return validatePhoneNumber(credential.phone)
+      .then(() => { // Validate PW hash length
+        // All bcrypt hashes are 60 chars long
+        const BCRYPT_HASH_LENGTH = 60;
 
-    return db.query(queryString, [columnNames, columnValues]);
+        const pwHash = credential.password_hash;
+        if ((pwHash == null)
+            || !validator.isLength(pwHash, { min: BCRYPT_HASH_LENGTH, max: BCRYPT_HASH_LENGTH })) {
+          return Promise.reject(new Promise.OperationalError(
+              'Password hash is not length 60.'));
+        }
+        return Promise.resolve();
+      })
+      .then(() => { // Validate secret length
+        const SECRET_LENGTH = config.crypto.tfaSecretLength;
+
+        const secret = credential.tfa_secret;
+        if ((secret == null)
+            || !validator.isLength(secret, { min: SECRET_LENGTH, max: SECRET_LENGTH })) {
+          return Promise.reject(new Promise.OperationalError(
+              `Secret is not length ${SECRET_LENGTH}.`));
+        }
+        return Promise.resolve();
+      })
+      .then(() => {
+        const queryString = 'INSERT INTO credential ( ?? ) VALUES ( ? )';
+
+        const columnNames = Object.keys(credential);
+        const columnValues = columnNames.map((col) => credential[col]);
+
+        db.query(queryString, [columnNames, columnValues]);
+      });
+}
+
+/**
+ * Creates a (temporary) credential object.
+ * @param phone
+ * @param password
+ * @returns {Promise.<Object>}
+ */
+function create(phone, password) {
+  return validatePhoneNumber(phone)
+      .then(() => validatePassword(password))
+      .then(() => bcrypt.hashAsync(password, config.crypto.bcryptSaltRounds))
+      .then((hash) => {
+        const credential = {
+          phone,
+          password_hash: hash,
+          tfa_secret: speakeasy.generateSecret({ length: config.crypto.tfaSecretLength }).base32,
+        };
+        return Promise.resolve(credential);
+      });
+}
+
+/**
+ * Returns arbitrary columns for the credential with the given phone number.
+ * @param phone {string}
+ * @param columns {Array.<String>}
+ * @returns {Promise.<Object>}
+ */
+function findByPhoneNumber(phone, columns) {
+  const queryString = 'SELECT ?? FROM credential WHERE phone = ?';
+
+  return db.query(queryString, [columns, phone]).then((res) => {
+    if (res.length < 1) {
+      return Promise.reject(new Promise.OperationalError(
+          'No credential with the given phone number exists.'));
+    } else if (res.length > 1) {
+      return Promise.reject(new Promise.OperationalError(
+          'Multiple credentials with the same phone number exist. This should never occur!'));
+    }
+    return Promise.resolve(res[0]);
   });
 }
 
 /**
- *
- * @param id {int64} - The ID of the credential to update.
+ * Updates a credential, indexed by ID.
+ * @param id {number} - The ID of the credential to update.
  * @param columns {Object} - An object representing the columns to update as key-value pairs.
  * @returns {Promise.<Object>}
  */
@@ -122,12 +207,34 @@ function updateById(id, columns) {
   });
 }
 
+/**
+ * Updates a credential's phone number.
+ * @param id {number}
+ * @param phone {string}
+ */
+function updatePhoneNumber(id, phone) {
+  return validatePhoneNumber(phone)
+      .then(() => updateById(id, { phone }));
+}
 
+/**
+ * Updates a credential's password.
+ * @param id {number}
+ * @param password {string}
+ */
+function updatePassword(id, password) {
+  return validatePassword(password)
+      .then(() => bcrypt.hashAsync(password, config.crypto.bcryptSaltRounds))
+      .then((hash) => updateById(id, { password_hash: hash }));
+}
 
 module.exports = {
+  create,
+  findByPhoneNumber,
   findById,
   getProfileForId,
   loginWithPhone,
-  signupWithPhone,
-  updateById,
+  save,
+  updatePassword,
+  updatePhoneNumber,
 };

@@ -24,8 +24,9 @@ const defaults = {
     },
   },
   sessionSecret: '8weike-terces',
-  encrypt: {
+  crypto: {
     bcryptSaltRounds: 12,
+    tfaSecretLength: 20,
   },
   dev: {
     port: 8888,
