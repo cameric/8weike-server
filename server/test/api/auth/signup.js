@@ -12,6 +12,12 @@ const Promise = require('bluebird');
 const bcrypt = Promise.promisifyAll(require('bcrypt'));
 
 describe('Signup Routing', () => {
+  before(() => {
+    // Stub out sms service so that it won't send code
+    let stub = sinon.stub(tfa, 'sendCode');
+    stub.returns(Promise.resolve());
+  });
+
   beforeEach((done) => {
     // Truncate the user table
     db.truncate(['credential', 'profile'])
@@ -23,6 +29,8 @@ describe('Signup Routing', () => {
   });
 
   after((done) => {
+    tfa.sendCode.restore();
+
     db.truncate(['credential', 'profile'])
         .then(done.bind(null, null))
         .catch(done);

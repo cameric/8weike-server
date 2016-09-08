@@ -8,7 +8,26 @@ function authReducers(state = {}, action) {
       if (action.error) {
         return _.merge({}, state, {
           signup: {
-            currentStep: 'basicInfo',
+            currentStep: 'credential',
+            status: 'error',
+            error: action.payload.parsedError,
+          }
+        });
+      } else {
+        return _.merge({}, state, {
+          id: action.payload.id,
+          signup: {
+            currentStep: 'credential',
+            status: 'success',
+            nextStep: 'tfa',
+          }
+        });
+      }
+    case 'SIGNUP_WITH_PHONE_TFA':
+      if (action.error) {
+        return _.merge({}, state, {
+          signup: {
+            currentStep: 'tfa',
             status: 'error',
             error: action.payload.parsedError,
           }
@@ -16,9 +35,9 @@ function authReducers(state = {}, action) {
       } else {
         return _.merge({}, state, {
           signup: {
-            currentStep: 'basicInfo',
+            currentStep: 'tfa',
             status: 'success',
-            nextStep: 'tfa',
+            nextStep: 'profile',
           }
         });
       }
