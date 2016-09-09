@@ -13,13 +13,13 @@ function saveSignupDataToSession(session, phone, password) {
   const saveSession = Promise.promisify(session.save, { context: session });
   const savePendingCredentialToSession = () => credentialModel.create(phone, password)
       .then((credential) => {
-        session.pending_credential = credential; // eslint-disable-line no-param-reassign
+        session.pendingRedential = credential; // eslint-disable-line no-param-reassign
       })
       .then(() => saveSession);
 
   return verifyNotAlreadySignedUp()
       .then(() => savePendingCredentialToSession())
-      .then(() => { tfaService.sendCode(session.pending_credential); });
+      .then(() => { tfaService.sendCode(session.pendingCredential); });
 }
 
 function signupWithPhoneWithoutCaptcha(req, res, next) {
@@ -47,20 +47,22 @@ function verify(req, res, next) {
   const { code } = req.body;
   const session = req.session;
 
-  tfaService.verifyCode(req.session.pending_credential, code)
-      .then(() => credentialModel.create(req.session.pending_credential))
+  tfaService.verifyCode(req.session.pendingCredential, code)
+      .then(() => credentialModel.save(req.session.pendingCredential))
       .then((newCredentialEntry) => {
+        /*
         // Automatically login after the credential is created
-        req.login({ id: newCredentialEntry.insertId }, (err) => {
+        req.login({}, (err) => {
           if (err) return Promise.reject(new Promise.OperationalError('Automatic login failed!'));
           return Promise.resolve();
         });
+        */
       })
       .then(() => {
         res.status(200).send({ success: true });
 
         // Remove the pending credential data from the session -- it is not needed anymore
-        delete session.pending_credential;
+        delete session.pendingCredential;
       })
     .error((err) => { next(Object.assign(err, { status: 400 })); })
     .catch(next);

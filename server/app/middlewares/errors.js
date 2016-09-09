@@ -4,8 +4,8 @@
 // Will only be applied in development environment.
 function logErrors(err, req, res, next) {
   // TODO: this outputs errors during "error expected" cases during manual testing and makes the
-  // output nearly unreadable. Commented out for now.
-  //console.error(err.stack);
+  // output nearly unreadable if we print the full stack. I'm printing just the message for now.
+  console.error(`ERROR: ${err}`);
   next(err);
 }
 

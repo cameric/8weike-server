@@ -103,16 +103,6 @@ function validatePassword(password) {
  * @returns {Promise.<TResult>} - A promise that fulfills when the credential is inserted.
  */
 function save(credential) {
-  if (!credential.password_hash
-      || credential.password_hash.length !== 60) { // Bcrypt hash len
-    return Promise.reject(new Promise.OperationalError(
-        'Password hash not of length 60.'));
-  } else if (!credential.tfa_secret
-      || credential.tfa_secret.length !== config.crypto.tfaSecretLength) {
-    return Promise.reject(new Promise.OperationalError(
-        `Secret not of length ${config.crypto.tfaSecretLength}.`));
-  }
-
   return validatePhoneNumber(credential.phone)
       .then(() => { // Validate PW hash length
         // All bcrypt hashes are 60 chars long
@@ -122,12 +112,12 @@ function save(credential) {
         if ((pwHash == null)
             || !validator.isLength(pwHash, { min: BCRYPT_HASH_LENGTH, max: BCRYPT_HASH_LENGTH })) {
           return Promise.reject(new Promise.OperationalError(
-              'Password hash is not length 60.'));
+              `Password hash is not length ${BCRYPT_HASH_LENGTH}.`));
         }
         return Promise.resolve();
       })
       .then(() => { // Validate secret length
-        const SECRET_LENGTH = config.crypto.tfaSecretLength;
+        const SECRET_LENGTH = 32; // In base 32 TODO: Genericize this, somehow
 
         const secret = credential.tfa_secret;
         if ((secret == null)
@@ -143,7 +133,7 @@ function save(credential) {
         const columnNames = Object.keys(credential);
         const columnValues = columnNames.map((col) => credential[col]);
 
-        db.query(queryString, [columnNames, columnValues]);
+        return db.query(queryString, [columnNames, columnValues]);
       });
 }
 
@@ -228,6 +218,16 @@ function updatePassword(id, password) {
       .then((hash) => updateById(id, { password_hash: hash }));
 }
 
+/**
+ * Updates a credential's profileId.
+ * @param id {number}
+ * @param phone {string}
+ */
+function updateProfileId(id, profileId) {
+  // TODO: Should we reject if the profile already set? In theory it should only be set once
+  return updateById(id, { profile_id: profileId });
+}
+
 module.exports = {
   create,
   findByPhoneNumber,
@@ -237,4 +237,5 @@ module.exports = {
   save,
   updatePassword,
   updatePhoneNumber,
+  updateProfileId,
 };

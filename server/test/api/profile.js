@@ -4,10 +4,11 @@ const app = require('../../app');
 const db = require('../../app/database');
 const fixture = require('../fixtures/user');
 const request = require('supertest');
+const utils = require('../utils');
 
 describe('Profile Routing', () => {
   beforeEach((done) => {
-    // Truncate the user table
+    // Truncate the credential table
     db.truncate(['credential', 'profile'])
         // Import the fixture
         .then(() => db.importTablesFromFixture(fixture, ['profile', 'credential']))
@@ -25,34 +26,15 @@ describe('Profile Routing', () => {
   describe('POST /api/profile/create', () => {
     const fixtureNickname = 'Harry Potter';
 
-    function loginUser(agent, credential) {
-      return new Promise((reject, fulfill) => {
-        const data = {
-          phone: credential.phone,
-          // In the fixture, all users' phone numbers are their passwords
-          password: credential.phone,
-        };
-
-        agent
-            .post('/api/login/phone')
-            .send(data)
-            .expect(200)
-            .end((err, _) => {
-              if (err) return reject(err);
-              return fulfill();
-            });
-      });
-    }
-
     describe('Valid input', () => {
       const agent = request.agent(app);
-      // This is a verified user that does not have an associated profile
+      // This is a verified credential that does not have an associated profile
       const testCredential = fixture.tables.credential[1];
 
-      it('(200) Success when a logged in user creates a profile', (done) => {
-        loginUser(agent, testCredential).then(() => {
+      it('(200) Success when a logged-in credential creates a profile', (done) => {
+        utils.loginWithAgent(agent, testCredential).then(() => {
           const data = {
-            uid: testCredential.uid,
+            id: testCredential.id,
             nickname: fixtureNickname,
           };
 
@@ -61,8 +43,8 @@ describe('Profile Routing', () => {
               .send(data)
               .expect(200)
               .end((err, _) => {
-                if (err) return done(err);
-                return done();
+                if (err) done(err);
+                else done();
               });
         }).catch(done);
       });
@@ -70,13 +52,13 @@ describe('Profile Routing', () => {
 
     describe('Invalid input', () => {
       const agent = request.agent(app);
-      // This is a verified user that does not have an associated profile
+      // This is a verified credential that does not have an associated profile
       const testCredential = fixture.tables.credential[1];
 
       it('(400) responds with Bad Request when nickname is not provided', (done) => {
-        loginUser(agent, testCredential).then(() => {
+        utils.loginWithAgent(agent, testCredential).then(() => {
           const data = {
-            uid: testCredential.uid,
+            id: testCredential.id,
           };
 
           agent
@@ -84,20 +66,20 @@ describe('Profile Routing', () => {
               .send(data)
               .expect(400)
               .end((err, _) => {
-                if (err) return done(err);
-                return done();
+                if (err) done(err);
+                else done();
               });
         }).catch(done);
       });
     });
 
-    describe('Unauthorized user', () => {
-      it('(401) responds with Unauthorized when user has not logged in', (done) => {
-        // This is a verified user that does not have an associated profile
+    describe('Unauthorized credential', () => {
+      it('(401) responds with Unauthorized when credential has not logged in', (done) => {
+        // This is a verified credential that does not have an associated profile
         const testCredential = fixture.tables.credential[1];
 
         const data = {
-          uid: testCredential.uid,
+          id: testCredential.id,
           nickname: fixtureNickname,
         };
 
@@ -107,22 +89,22 @@ describe('Profile Routing', () => {
             .send(data)
             .expect(401)
             .end((err, _) => {
-              if (err) return done(err);
-              return done();
+              if (err) done(err);
+              else done();
             });
       });
     });
 
 
-    describe('Verified user', () => {
+    describe('Verified credential', () => {
       const agent = request.agent(app);
-      // This is a verified user that has an associated profile
+      // This is a verified credential that has an associated profile
       const testCredential = fixture.tables.credential[2];
 
-      it('(400) responds with Bad Request when user already has a profile', (done) => {
-        loginUser(agent, testCredential).then(() => {
+      it('(400) responds with Bad Request when credential already has a profile', (done) => {
+        utils.loginWithAgent(agent, testCredential).then(() => {
           const data = {
-            uid: testCredential.uid,
+            id: testCredential.id,
             nickname: fixtureNickname,
           };
 
@@ -131,10 +113,10 @@ describe('Profile Routing', () => {
               .send(data)
               .expect(400)
               .end((err, _) => {
-                if (err) return done(err);
-                return done();
+                if (err) done(err);
+                else done();
               });
-        });
+        }).catch(done);
       });
     });
   });

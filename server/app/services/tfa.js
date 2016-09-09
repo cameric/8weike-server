@@ -36,14 +36,18 @@ function sendCode(credential) {
  */
 function verifyCode(credential, code) {
   // Verify the given 6-digit code
-  const isCodeCorrent = speakeasy.totp.verify({
-    secret: credential.tfa_secret,
-    encoding: 'base32',
-    token: code,
-  });
+  try {
+    const isCodeCorrect = speakeasy.totp.verify({
+      secret: credential.tfa_secret,
+      encoding: 'base32',
+      token: code,
+    });
 
-  if (!isCodeCorrent) return Promise.reject(new Promise.OperationalError('Code is incorrect!'));
-  return Promise.resolve();
+    if (!isCodeCorrect) return Promise.reject(new Promise.OperationalError('Code is incorrect!'));
+    return Promise.resolve();
+  } catch (err) {
+    return Promise.reject(err);
+  }
 }
 
 module.exports = {
