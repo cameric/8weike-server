@@ -158,6 +158,7 @@ describe('Signup Routing', () => {
 
     afterEach(() => {
       spy.reset();
+      verifyCodeStub.restore();
     });
 
     describe('Valid input', () => {
@@ -193,8 +194,6 @@ describe('Signup Routing', () => {
     describe('Invalid input', () => {
       it('(400) valid non-verified credential with invalid code', (done) => {
         const agent = request.agent(app);
-
-        verifyCodeStub.restore();
 
         utils.signupWithAgent(agent, signupInfo.phone, signupInfo.password).then(() => {
           const data = {
