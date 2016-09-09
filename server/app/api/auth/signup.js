@@ -11,11 +11,9 @@ const forceSsl = expressEnforcesSsl();
 
 const signupRouter = express.Router(); // eslint-disable-line new-cap
 
-// TODO: Uncomment this line once we have HTTPS working
-// signupRouter.post('/phone/mobile', forceSsl, signup.phoneOnMobile);
-signupRouter.post('/phone/mobile', signup.phoneNoCaptcha);
-// signupRouter.post('/phone/web', forceSsl, signup.phoneOnWeb);
-signupRouter.post('/phone/web', signup.phoneWithCaptcha);
+// TODO: Force SSL once we have HTTPS working
+signupRouter.post('/phone/mobile', signup.withoutCaptcha.phone);
+signupRouter.post('/phone/web', signup.withCaptcha.phone);
 signupRouter.post('/verify', signup.verify);
 
 module.exports = signupRouter;

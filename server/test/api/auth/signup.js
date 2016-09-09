@@ -1,15 +1,17 @@
 /* eslint-env node, mocha */
 /* eslint-disable no-unused-expressions */
+const Promise = require('bluebird');
+
 const app = require('../../../app');
+const credentialModel = require('../../../app/models/credential');
 const db = require('../../../app/database');
 const fixture = require('../../fixtures/user');
-const randomItem = require('../../utils').randomItem;
 const tfa = require('../../../app/services/tfa');
-const credentialModel = require('../../../app/models/credential');
+const utils = require('../../utils');
+
+const bcrypt = Promise.promisifyAll(require('bcrypt'));
 const request = require('supertest');
 const sinon = require('sinon');
-const Promise = require('bluebird');
-const bcrypt = Promise.promisifyAll(require('bcrypt'));
 
 describe('Signup Routing', () => {
   before(() => {
@@ -19,7 +21,7 @@ describe('Signup Routing', () => {
   });
 
   beforeEach((done) => {
-    // Truncate the user table
+    // Truncate the credential table
     db.truncate(['credential', 'profile'])
     // Import the fixture
         .then(() => db.importTablesFromFixture(fixture, ['profile', 'credential']))
@@ -38,7 +40,7 @@ describe('Signup Routing', () => {
 
   describe('Phone on mobile', () => {
     describe('valid input', () => {
-      it('(200) Responds OK when given valid credentials for a new user', (done) => {
+      it('(200) Responds OK when given valid credentials for a new credential', (done) => {
         const data = {
           phone: '18610322136', // Known-valid Chinese phone number
           password: 'p@55w0rd',
@@ -47,11 +49,7 @@ describe('Signup Routing', () => {
         request(app)
             .post('/api/signup/phone/mobile')
             .send(data)
-            .expect(200)
-            .end((err, _) => {
-              if (err) done(err);
-              else done();
-            });
+            .expect(200, done);
       });
     });
 
@@ -64,11 +62,7 @@ describe('Signup Routing', () => {
         request(app)
             .post('/api/signup/phone/mobile')
             .send(data)
-            .expect(400)
-            .end((err, _) => {
-              if (err) done(err);
-              else done();
-            });
+            .expect(400, done);
       });
 
       it('(400) Responds Bad Request when not given a password', (done) => {
@@ -79,11 +73,7 @@ describe('Signup Routing', () => {
         request(app)
             .post('/api/signup/phone/mobile')
             .send(data)
-            .expect(400)
-            .end((err, _) => {
-              if (err) done(err);
-              else done();
-            });
+            .expect(400, done);
       });
 
       it('(400) Responds Bad Request when given a malformed phone number', (done) => {
@@ -95,15 +85,11 @@ describe('Signup Routing', () => {
         request(app)
             .post('/api/signup/phone/mobile')
             .send(data)
-            .expect(400)
-            .end((err, _) => {
-              if (err) done(err);
-              else done();
-            });
+            .expect(400, done);
       });
 
-      it('(400) Responds Bad Request when given the phone number of an existing user', (done) => {
-        const randomUser = randomItem(fixture.tables.credential);
+      it('(400) Responds Bad Request when signing up with an existing phone number', (done) => {
+        const randomUser = utils.randomItem(fixture.tables.credential);
 
         const data = {
           phone: randomUser.phone,
@@ -113,11 +99,7 @@ describe('Signup Routing', () => {
         request(app)
             .post('/api/signup/phone/mobile')
             .send(data)
-            .expect(400)
-            .end((err, _) => {
-              if (err) done(err);
-              else done();
-            });
+            .expect(400, done);
       });
     });
   });
@@ -147,11 +129,7 @@ describe('Signup Routing', () => {
         request(app)
             .post('/api/signup/phone/web')
             .send(data)
-            .expect(200)
-            .end((err, _) => {
-              if (err) done(err);
-              else done();
-            });
+            .expect(200, done);
       });
 
       it('(400) Responds Bad Request when captcha is invalid', (done) => {
@@ -163,59 +141,83 @@ describe('Signup Routing', () => {
         request(app)
             .post('/api/signup/phone/web')
             .send(data)
-            .expect(400)
-            .end((err, _) => {
-              if (err) done(err);
-              else done();
-            });
+            .expect(400, done);
       });
     });
   });
 
-  describe('post /api/signup/verify', () => {
+  describe('POST /api/signup/verify', () => {
+    const signupInfo = {
+      phone: '18610322136', // Known-valid Chinese phone number
+      password: 'p@55w0rd',
+    };
+
     // Spy on the update function
-    const spy = sinon.spy(credentialModel, 'updateById');
+    const spy = sinon.spy(credentialModel, 'saveToDatabase');
+    const verifyCodeStub = sinon.stub(tfa, 'verifyCode');
 
     afterEach(() => {
       spy.reset();
+      verifyCodeStub.restore();
     });
 
-    it('(200) valid non-verified user with valid code', (done) => {
-      const testCredential = fixture.tables.credential[0];
+    describe('Valid input', () => {
+      it('(200) valid non-verified credential with valid code', (done) => {
+        const agent = request.agent(app);
 
-      const data = {
-        credential: testCredential,
-        code: tfa.generateCode(testCredential.tfa_secret),
-      };
+        verifyCodeStub.returns(Promise.resolve());
 
-      request(app)
-          .post('/api/signup/verify')
-          .send(data)
-          .expect(200)
-          .end((err, _) => {
-            sinon.assert.calledWith(spy, testCredential.id, {is_verified: true});
-            if (err) done(err);
-            else done();
-          });
+        utils.signupWithAgent(agent, signupInfo.phone, signupInfo.password).then(() => {
+          const data = {
+            code: '123456',
+          };
+
+          agent
+              .post('/api/signup/verify')
+              .send(data)
+              .expect(200)
+              .end((err, _) => {
+                if (err) return done(err);
+
+                try {
+                  sinon.assert.calledWith(spy, sinon.match({ phone: signupInfo.phone }));
+                } catch (e) {
+                  return done(e);
+                }
+
+                return done();
+              });
+        }).catch(done);
+      });
     });
 
-    it('(400) valid non-verified user with invalid code', (done) => {
-      const testCredential = fixture.tables.credential[0];
+    describe('Invalid input', () => {
+      it('(400) valid non-verified credential with invalid code', (done) => {
+        const agent = request.agent(app);
 
-      const data = {
-        credential: testCredential,
-        code: '123456',
-      };
+        utils.signupWithAgent(agent, signupInfo.phone, signupInfo.password).then(() => {
+          const data = {
+            code: '123456',
+          };
 
-      request(app)
-          .post('/api/signup/verify')
-          .send(data)
-          .expect(400)
-          .end((err, _) => {
-            sinon.assert.notCalled(spy);
-            if (err) done(err);
-            else done();
-          });
+          agent
+              .post('/api/signup/verify')
+              .send(data)
+              .expect(400)
+              .end((err, _) => {
+                sinon.assert.notCalled(spy);
+                if (err) return done(err);
+
+                try {
+                  sinon.assert.notCalled(spy);
+                } catch (e) {
+                  return done(e);
+                }
+
+                return done();
+              });
+        }).catch(done);
+      });
     });
   });
 });

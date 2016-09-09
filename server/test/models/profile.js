@@ -99,19 +99,6 @@ describe('Profile Model', () => {
           done();
         });
       });
-
-      it('fails when the user has not verified phone number', (done) => {
-        // This is a unverified user
-        const testCredential = fixture.tables.credential[0];
-
-        profileModel.createProfileForCredential(testCredential.id, {
-          nickname: fixtureNickname,
-        }).then(() => {
-          done(new Error('Did not fail when expected to'));
-        }).catch(() => {
-          done();
-        });
-      });
     });
   });
 

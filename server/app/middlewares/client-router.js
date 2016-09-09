@@ -23,11 +23,11 @@ function loadReduxInitialState(props, store) {
 }
 
 function match(req, res, next) {
-  router.match({ routes: routes, location: req.url }, (err, redirect, props) => {
+  router.match({ routes, location: req.url }, (err, redirect, props) => {
     // In here we can make some decisions all at once
     if (err) {
       // There was an error somewhere during route matching
-      next(`Route matching error: ${err.message}`);
+      next(new Error(`Route matching error: ${err.message}`));
     } else if (redirect) {
       // Before a route is entered, it can redirect so handle it first.
       res.redirect(redirect.pathname + redirect.search);
@@ -37,7 +37,7 @@ function match(req, res, next) {
       loadReduxInitialState(props, store).then(() => {
         const reduxInitialState = serialize(store.getState());
         const context = ce(Redux.Provider, {
-          store: store,
+          store,
         }, ce(router.RouterContext, props));
 
         // If we got props then we matched a route and can render

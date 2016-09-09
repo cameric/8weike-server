@@ -29,7 +29,7 @@ describe('TFA Services', () => {
 
   describe('Send TFA code', () => {
     // Mock out send sms so that it actually won't be called
-    let stub = sinon.stub(sms, 'send');
+    const stub = sinon.stub(sms, 'send');
     stub.returns(Promise.resolve());
 
     afterEach(() => {
@@ -41,39 +41,28 @@ describe('TFA Services', () => {
     });
 
     it('Success when credential exists', (done) => {
-      const randomUser = randomItem(fixture.tables.credential);
+      const randomCredential = randomItem(fixture.tables.credential);
 
-      tfa.sendCode(randomUser.id).then(() => {
-        sinon.assert.calledWith(stub, randomUser.phone);
+      tfa.sendCode(randomCredential.tfa_secret, randomCredential.phone).then(() => {
+        sinon.assert.calledWith(stub, randomCredential.phone);
         done();
       }).catch(done);
-    });
-
-    it('Error when credential does not exist', (done) => {
-      const randomId = 104324;
-
-      tfa.sendCode(randomId).then(() => {
-        done(new Error('Did not fail when expected to'));
-      }).catch(() => {
-        sinon.assert.notCalled(stub);
-        done();
-      });
     });
   });
 
   describe('Verify TFA code', () => {
-    it('Success when valid non-verified credential with valid code', (done) => {
-      const testUser = fixture.tables.credential[0];
+    it('Success when given valid non-verified credential with valid code', (done) => {
+      const testCredential = fixture.tables.credential[0];
 
-      tfa.verifyCode(testUser.id, tfa.generateCode(testUser.tfa_secret)).then(() => {
-        done();
-      }).catch(done);
+      tfa.verifyCode(testCredential.tfa_secret, tfa.generateCode(testCredential.tfa_secret))
+          .then(() => { done(); })
+          .catch(done);
     });
 
     it('Error when non-verified credential with invalid code', (done) => {
-      const testUser = fixture.tables.credential[0];
+      const testCredential = fixture.tables.credential[0];
 
-      tfa.verifyCode(testUser.id, '123456').then(() => {
+      tfa.verifyCode(testCredential.tfa_secret, '123456').then(() => {
         done(new Error('Did not fail when expected to'));
       }).catch(() => {
         done();

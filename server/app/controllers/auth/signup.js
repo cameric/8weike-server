@@ -4,60 +4,74 @@ const credentialModel = require('../../models/credential');
 const tfaService = require('../../services/tfa');
 const captchaService = require('../../services/captcha');
 
-// Note(tony): have two versions of signup endpoints because
-// Mobile devices do not need captcha verification
-function signupWithPhone(req, res, next, needsCaptcha) {
-  const { phone, password, captcha, hash } = req.body;
+function saveSignupDataToSession(session, phone, password) {
+  const verifyNotAlreadySignedUp = () => credentialModel.findByPhoneNumber(phone, ['id'])
+      .then(() => Promise.reject(new Promise.OperationalError(
+              'A credential with this phone number already exists.')))
+      .error(() => Promise.resolve());
 
-  const verifyCaptcha = needsCaptcha ? captchaService.verify(captcha, hash) : Promise.resolve();
-  verifyCaptcha.then(() => {
-    // Record credential data in DB
-    return credentialModel.signupWithPhone(phone, password);
-  }).then((credential) => {
-    // Send TFA code based on the id of the newly created credential
-    const credentialId = credential.insertId;
-    return tfaService.sendCode(credentialId).then(() => {
-      return Promise.resolve(credentialId);
-    });
-  }).then((credentialId) => {
-    res.status(200).send({ id: credentialId });
-  }).error((err) => {
-    let errMsg = null;
-    if (err.code === 'ER_DUP_ENTRY') {
-      errMsg = 'User already exists!';
-    }
-    const error = errMsg ? new Error(errMsg) : err;
-    next(Object.assign(error, { status: 400 }));
-  }).catch(next);
+  const saveSession = Promise.promisify(session.save, { context: session });
+  const savePendingCredentialToSession = () => credentialModel.createTemporary(phone, password)
+      .then((credential) => {
+        session.pendingCredential = credential; // eslint-disable-line no-param-reassign
+      })
+      .then(() => saveSession);
+
+  return verifyNotAlreadySignedUp()
+      .then(() => savePendingCredentialToSession())
+      .then(() => {
+        tfaService.sendCode(session.pendingCredential.tfa_secret, session.pendingCredential.phone);
+      });
 }
 
-function signupWithPhoneNoCaptcha(req, res, next) {
-  signupWithPhone(req, res, next, false);
+function signupWithPhoneWithoutCaptcha(req, res, next) {
+  const { phone, password } = req.body;
+  const session = req.session;
+
+  saveSignupDataToSession(session, phone, password)
+      .then(() => { res.status(200).send(); })
+      .error((err) => { next(Object.assign(err, { status: 400 })); })
+      .catch(next);
 }
 
 function signupWithPhoneWithCaptcha(req, res, next) {
-  signupWithPhone(req, res, next, true);
+  const { phone, password, captcha, hash } = req.body;
+  const session = req.session;
+
+  captchaService.verify(captcha, hash)
+      .then(() => saveSignupDataToSession(session, phone, password))
+      .then(() => { res.status(200).send(); })
+      .error((err) => { next(Object.assign(err, { status: 400 })); })
+      .catch(next);
 }
 
 function verify(req, res, next) {
-  const { credential, code } = req.body;
+  const { code } = req.body;
+  const session = req.session;
 
-  tfaService.verifyCode(credential.id, code).then(() => {
-    // Update is_verified field if verified code successfully
-    return credentialModel.updateById(credential.id, { is_verified: true });
-  }).then(() => {
-    // Automatically login after user credential is verified
-    req.login(credential, (err) => {
-      if (err) return Promise.reject(new Promise.OperationalError('Automatic login failed!'));
-      return Promise.resolve();
-    });
-  }).then(() => { res.status(200).send({ success: true }); })
+  tfaService.verifyCode(req.session.pendingCredential.tfa_secret, code)
+      .then(() => credentialModel.saveToDatabase(req.session.pendingCredential))
+      .then((newCredentialEntry) => {
+        // Automatically login after the credential is created
+        const login = Promise.promisify(req.login, { context: req });
+        return login({ id: newCredentialEntry.insertId });
+      })
+      .then(() => {
+        res.status(200).send({ success: true });
+
+        // Remove the pending credential data from the session -- it is not needed anymore
+        delete session.pendingCredential;
+      })
     .error((err) => { next(Object.assign(err, { status: 400 })); })
     .catch(next);
 }
 
 module.exports = {
-  phoneNoCaptcha: signupWithPhoneNoCaptcha,
-  phoneWithCaptcha: signupWithPhoneWithCaptcha,
+  withoutCaptcha: {
+    phone: signupWithPhoneWithoutCaptcha,
+  },
+  withCaptcha: {
+    phone: signupWithPhoneWithCaptcha,
+  },
   verify,
 };

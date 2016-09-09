@@ -26,7 +26,7 @@ describe('Login Routing', () => {
 
   describe('POST /api/login/phone', () => {
     describe('valid input', () => {
-      it('(302) Redirects to /api/user/* when given valid credentials', (done) => {
+      it('(200) Returns OK when given valid credentials', (done) => {
         const randomUser = randomItem(fixture.tables.credential);
 
         const data = {
@@ -38,11 +38,7 @@ describe('Login Routing', () => {
         request(app)
             .post('/api/login/phone')
             .send(data)
-            .expect(200)
-            .end((err, res) => {
-              if (err) done(err);
-              done();
-            });
+            .expect(200, done);
       });
     });
 
@@ -56,11 +52,7 @@ describe('Login Routing', () => {
         request(app)
             .post('/api/login/phone')
             .send(data)
-            .expect(401)
-            .end((err, _) => {
-              if (err) done(err);
-              else done();
-            });
+            .expect(401, done);
       });
     });
   });
