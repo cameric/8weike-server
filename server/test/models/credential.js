@@ -122,7 +122,7 @@ describe('Credential Model', () => {
     // TODO
   });
 
-  describe('create', () => {
+  describe('createTemporary', () => {
     describe('success', () => {
       it('returns a credential object when given valid params', (done) => {
         const signupInfo = {
@@ -130,7 +130,7 @@ describe('Credential Model', () => {
           password: 'p@55w0rd',
         };
 
-        credentialModel.create(signupInfo.phone, signupInfo.password)
+        credentialModel.createTemporary(signupInfo.phone, signupInfo.password)
             .then((credential) => {
               expect(credential.phone).to.equal(signupInfo.phone);
               expect(credential.password_hash).to.be.not.null;
@@ -146,7 +146,7 @@ describe('Credential Model', () => {
           password: 'p@55w0rd',
         };
 
-        credentialModel.create(signupInfo.phone, signupInfo.password)
+        credentialModel.createTemporary(signupInfo.phone, signupInfo.password)
             .then(() => {
               done(new Error('Did not fail when expected to'));
             }).catch(() => {
@@ -160,7 +160,7 @@ describe('Credential Model', () => {
           password: 'a',
         };
 
-        credentialModel.create(signupInfo.phone, signupInfo.password)
+        credentialModel.createTemporary(signupInfo.phone, signupInfo.password)
             .then(() => {
               done(new Error('Did not fail when expected to'));
             }).catch(() => {
@@ -170,7 +170,7 @@ describe('Credential Model', () => {
     });
   });
 
-  describe('save', () => {
+  describe('saveToDatabase', () => {
     describe('success', () => {
       it('accepts and saves a valid, non-existing credential', (done) => {
         const signupInfo = {
@@ -179,8 +179,8 @@ describe('Credential Model', () => {
         };
 
         // Register the credential, then log in to make sure it shows up in the DB
-        credentialModel.create(signupInfo.phone, signupInfo.password)
-            .then((credential) => credentialModel.save(credential))
+        credentialModel.createTemporary(signupInfo.phone, signupInfo.password)
+            .then((credential) => credentialModel.saveToDatabase(credential))
             .then(() => credentialModel.loginWithPhone(signupInfo.phone, signupInfo.password))
             .then((credential) => credentialModel.findById(credential.id, ['phone']))
             .then((credential) => {
@@ -195,8 +195,8 @@ describe('Credential Model', () => {
       it('fails when given an existing phone number and password', (done) => {
         const randomCredential = randomItem(fixture.tables.credential);
 
-        credentialModel.create(randomCredential.phone, 'password')
-            .then((credential) => credentialModel.save(credential))
+        credentialModel.createTemporary(randomCredential.phone, 'password')
+            .then((credential) => credentialModel.saveToDatabase(credential))
             .then(() => {
               done(new Error('Did not fail when expected to'));
             }).catch(() => {
@@ -210,7 +210,7 @@ describe('Credential Model', () => {
           password: 'dajsfhjskdf',
         };
 
-        credentialModel.create(signupInfo.phone, signupInfo.password)
+        credentialModel.createTemporary(signupInfo.phone, signupInfo.password)
             .then((credential) => credentialModel.save(credential))
             .then(() => {
               done(new Error('Did not fail when expected to'));
@@ -225,7 +225,7 @@ describe('Credential Model', () => {
           password: 'a',
         };
 
-        credentialModel.create(signupInfo.phone, signupInfo.password)
+        credentialModel.createTemporary(signupInfo.phone, signupInfo.password)
             .then((credential) => credentialModel.save(credential))
             .then(() => {
               done(new Error('Did not fail when expected to'));
@@ -239,7 +239,7 @@ describe('Credential Model', () => {
           password: 'dajsfhjskdf',
         };
 
-        credentialModel.create(signupInfo.phone, signupInfo.password)
+        credentialModel.createTemporary(signupInfo.phone, signupInfo.password)
             .then((credential) => credentialModel.save(credential))
             .then(() => {
               done(new Error('Did not fail when expected to'));
@@ -253,7 +253,7 @@ describe('Credential Model', () => {
           phone: '18610322136', // Known-valid Chinese phone number
         };
 
-        credentialModel.create(signupInfo.phone, signupInfo.password)
+        credentialModel.createTemporary(signupInfo.phone, signupInfo.password)
             .then((credential) => credentialModel.save(credential))
             .then(() => {
               done(new Error('Did not fail when expected to'));

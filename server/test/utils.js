@@ -11,7 +11,7 @@ function loginWithAgent(agent, credential) {
     };
 
     agent
-        .post('/api/login/phone')
+        .post('/api/login/phone') // No captcha
         .send(data)
         .expect(200)
         .end((err, _) => {
@@ -29,7 +29,7 @@ function signupWithAgent(agent, phone, password) {
     };
 
     agent
-        .post('/api/signup/phone')
+        .post('/api/signup/phone/mobile') // No captcha
         .send(data)
         .expect(200)
         .end((err, _) => {

@@ -147,21 +147,25 @@ describe('Signup Routing', () => {
   });
 
   describe('POST /api/signup/verify', () => {
-    // Spy on the update function
-    const spy = sinon.spy(credentialModel, 'save');
-
-    afterEach(() => {
-      spy.reset();
-    });
-
     const signupInfo = {
       phone: '18610322136', // Known-valid Chinese phone number
       password: 'p@55w0rd',
     };
 
+    // Spy on the update function
+    const spy = sinon.spy(credentialModel, 'saveToDatabase');
+    const verifyCodeStub = sinon.stub(tfa, 'verifyCode');
+
+    afterEach(() => {
+      spy.reset();
+    });
+
     describe('Valid input', () => {
       it('(200) valid non-verified credential with valid code', (done) => {
         const agent = request.agent(app);
+
+        verifyCodeStub.returns(Promise.resolve());
+
         utils.signupWithAgent(agent, signupInfo.phone, signupInfo.password).then(() => {
           const data = {
             code: '123456',
@@ -172,11 +176,15 @@ describe('Signup Routing', () => {
               .send(data)
               .expect(200)
               .end((err, _) => {
-                // TODO(spencer): save is called internally with an object including random data
-                // There is not good way to do the following test, as far as I know
-                // sinon.assert.calledWith(spy, testCredential.id, {});
-                if (err) done(err);
-                else done();
+                if (err) return done(err);
+
+                try {
+                  sinon.assert.calledWith(spy, sinon.match({ phone: signupInfo.phone }));
+                } catch (e) {
+                  return done(e);
+                }
+
+                return done();
               });
         }).catch(done);
       });
@@ -185,6 +193,9 @@ describe('Signup Routing', () => {
     describe('Invalid input', () => {
       it('(400) valid non-verified credential with invalid code', (done) => {
         const agent = request.agent(app);
+
+        verifyCodeStub.restore();
+
         utils.signupWithAgent(agent, signupInfo.phone, signupInfo.password).then(() => {
           const data = {
             code: '123456',
@@ -196,8 +207,15 @@ describe('Signup Routing', () => {
               .expect(400)
               .end((err, _) => {
                 sinon.assert.notCalled(spy);
-                if (err) done(err);
-                else done();
+                if (err) return done(err);
+
+                try {
+                  sinon.assert.notCalled(spy);
+                } catch (e) {
+                  return done(e);
+                }
+
+                return done();
               });
         }).catch(done);
       });
