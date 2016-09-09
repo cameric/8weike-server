@@ -49,7 +49,7 @@ describe('Signup Routing', () => {
         request(app)
             .post('/api/signup/phone/mobile')
             .send(data)
-            .expect(200, done)
+            .expect(200, done);
       });
     });
 

@@ -16,38 +16,34 @@ function generateCode(secret) {
 }
 
 /**
- * Generate a tfa code according to the given credential and send out using SMS.
- * @param credential {Object}
+ * Generate a tfa code according to `secret` and send it via SMS to `phone`.
+ * @param secret {string}
+ * @param phone {string}
  * @return {Promise.<TResult>} Whether the tfa code is sent out successfully
  */
-function sendCode(credential) {
+function sendCode(secret, phone) {
   const tfaTemplateId = 1550692;
 
-  return smsService.send(credential.phone, {
-    '#code#': generateCode(credential.tfa_secret),
+  return smsService.send(phone, {
+    '#code#': generateCode(secret),
   }, tfaTemplateId);
 }
 
 /**
- * Verify a provided tfa code given a user id
+ * Verify a provided tfa code given a credential
  * @param credential {Object}
  * @param code {string} the user-inputed TFA value.
  * @return {Promise.<TResult>} Whether the user put in the correct TFA value.
  */
-function verifyCode(credential, code) {
-  // Verify the given 6-digit code
-  try {
-    const isCodeCorrect = speakeasy.totp.verify({
-      secret: credential.tfa_secret,
-      encoding: 'base32',
-      token: code,
-    });
+function verifyCode(secret, code) {
+  const isCodeCorrect = speakeasy.totp.verify({
+    secret,
+    encoding: 'base32',
+    token: code,
+  });
 
-    if (!isCodeCorrect) return Promise.reject(new Promise.OperationalError('Code is incorrect!'));
-    return Promise.resolve();
-  } catch (err) {
-    return Promise.reject(err);
-  }
+  if (!isCodeCorrect) return Promise.reject(new Promise.OperationalError('Code is incorrect!'));
+  return Promise.resolve();
 }
 
 module.exports = {

@@ -10,10 +10,16 @@ const phoneStrategy = new LocalStrategy({
   usernameField: 'phone',
   passwordField: 'password',
 }, (phone, password, done) =>
-    credentialModel.loginWithPhone(phone, password)
-        .then(done.bind(null, null))
-        .error(done.bind(null, null, false))
-        .catch(done));
+    credentialModel.loginWithPhone(phone, password).then((credential) => {
+      done(null, credential);
+      return null;
+    }).error((err) => {
+      done(null, false, err);
+      return null;
+    }).catch((err) => {
+      done(err);
+      return null;
+    }));
 
 function serializeUser(user, done) {
   if (!user.id) return done(new Error('User object does not have id property.'), null);
@@ -23,8 +29,8 @@ function serializeUser(user, done) {
 function deserializeUser(id, done) {
   // TODO: How do we know what columns we want? SELECT * is apparently bad practice
   // Note(tony): at this time we could just return the minimal representation
-  // of user: it's id. This design is subject to change.
-  return credentialModel.findById(id, ['id'])
+  // of user: its id. This design is subject to change.
+  credentialModel.findById(id, ['id'])
       .then(done.bind(null, null))
       .catch(done);
 }
