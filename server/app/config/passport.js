@@ -10,16 +10,17 @@ const phoneStrategy = new LocalStrategy({
   usernameField: 'phone',
   passwordField: 'password',
 }, (phone, password, done) =>
-    credentialModel.loginWithPhone(phone, password).then((credential) => {
-      done(null, credential);
-      return null;
-    }).error((err) => {
-      done(null, false, err);
-      return null;
-    }).catch((err) => {
-      done(err);
-      return null;
-    }));
+    credentialModel.loginWithPhone(phone, password)
+        .then((credential) => {
+          done(null, credential);
+          return null;
+        }).error((err) => {
+          done(null, false, err);
+          return null;
+        }).catch((err) => {
+          done(err);
+          return null;
+        }));
 
 function serializeUser(user, done) {
   if (!user.id) return done(new Error('User object does not have id property.'), null);
@@ -31,8 +32,13 @@ function deserializeUser(id, done) {
   // Note(tony): at this time we could just return the minimal representation
   // of user: its id. This design is subject to change.
   credentialModel.findById(id, ['id'])
-      .then(done.bind(null, null))
-      .catch(done);
+      .then((credential) => {
+        done(null, credential);
+        return null;
+      }).catch((err) => {
+        done(err);
+        return null;
+      });
 }
 
 function configurePassport(passport) {
