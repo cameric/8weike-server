@@ -53,10 +53,8 @@ function verify(req, res, next) {
       .then(() => credentialModel.saveToDatabase(req.session.pendingCredential))
       .then((newCredentialEntry) => {
         // Automatically login after the credential is created
-        req.login({ id: newCredentialEntry.insertId }, (err) => {
-          if (err) return Promise.reject(new Promise.OperationalError('Automatic login failed!'));
-          return Promise.resolve();
-        });
+        const login = Promise.promisify(req.login, { context: req });
+        return login({ id: newCredentialEntry.insertId });
       })
       .then(() => {
         res.status(200).send({ success: true });
