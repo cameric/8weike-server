@@ -1,11 +1,14 @@
 // The middlewares serve all error handling
+const Promise = require('bluebird');
 
 // Log raw error messages to the console.
 // Will only be applied in development environment.
 function logErrors(err, req, res, next) {
   // TODO: this outputs errors during "error expected" cases during manual testing and makes the
-  // output nearly unreadable if we print the full stack. I'm printing just the message for now.
-  console.error(`ERROR: ${err}`);
+  // output nearly unreadable if we print the full stack. I'm printing only critical errors for now.
+  if (!(err instanceof Promise.OperationalError)) {
+    console.error(err);
+  }
   next(err);
 }
 
