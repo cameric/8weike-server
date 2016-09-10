@@ -211,7 +211,7 @@ function updatePassword(id, password) {
 /**
  * Updates a credential's profileId.
  * @param id {number}
- * @param phone {string}
+ * @param profileId {string}
  */
 function updateProfileId(id, profileId) {
   // TODO: Should we reject if the profile already set? In theory it should only be set once

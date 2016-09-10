@@ -31,7 +31,7 @@ function sendCode(secret, phone) {
 
 /**
  * Verify a provided tfa code given a credential
- * @param credential {Object}
+ * @param secret {Object}
  * @param code {string} the user-inputed TFA value.
  * @return {Promise.<TResult>} Whether the user put in the correct TFA value.
  */

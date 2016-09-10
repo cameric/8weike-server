@@ -44,7 +44,6 @@ function mapDispatchToProps(dispatch) {
       }))
     },
     verifyTFACode: (credential, code) => {
-      console.log(credential);
       dispatch(new webRequestAction({
         url: '/api/signup/verify',
         method: 'POST',

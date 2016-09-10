@@ -246,6 +246,7 @@ class SignupModalContent extends React.Component {
   renderTFAStep() {
     return (
       <div>
+        {this._renderErrorMsg()}
         <span style={ {
           display: 'block',
           marginTop: '30px',
