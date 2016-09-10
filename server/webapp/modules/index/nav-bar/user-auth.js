@@ -8,6 +8,9 @@ import { loadProfileByIdAction } from '../../../actions/profile';
 function mapStateToProps(state) {
   return {
     uid: state.auth.uid,
+    hasProfile: state.auth.hasProfile,
+    loginState: state.auth.login,
+    signupState: state.auth.signup,
     profile: state.profile.info,
   }
 }

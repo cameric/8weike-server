@@ -284,7 +284,6 @@ SignupModalContent.propTypes = {
   verifyCaptcha: React.PropTypes.func,
   sendCredential: React.PropTypes.func,
   verifyTFACode: React.PropTypes.func,
-  createProfile: React.PropTypes.func,
 };
 
 export default SignupModalContent;

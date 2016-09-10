@@ -10,11 +10,17 @@ require('../../../stylesheets/utils/button.scss');
 class UserAuth extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      isProfileLoaded: false,
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.uid && this.props.uid != nextProps.uid)
+    if (!this.state.isProfileLoaded &&
+        nextProps.uid && (nextProps.hasProfile || nextProps.profile)) {
       this.props.loadProfileById();
+      this.setState({ isProfileLoaded: true });
+    }
   }
 
   _handleLoginTransitToSignup() {
@@ -81,12 +87,18 @@ class UserAuth extends React.Component {
 
   _renderConditional() {
     // Initial payload. Does not render anything
-    if (typeof this.props.uid === 'undefined') return null;
+    if (typeof this.props.uid === 'undefined')
+      return null;
+
     // User logged in but profile hasn't finished loading. Render nothing to avoid flashing
-    if (this.props.uid && !this.props.profile) return null;
+    if (this.props.uid && !this.props.profile && !this.props.loginState && !this.props.signupState)
+      return null;
+
     // User logged in and profile is loaded, update the nav bar
-    if (this.props.uid) return this._renderWithLogin();
-    // User hasn't logged in. Render signup/login
+    if (this.props.uid && this.props.profile)
+      return this._renderWithLogin();
+
+    // User hasn't logged in or in the process of logging in. Render signup/login
     return this._renderWithoutLogin();
   }
 

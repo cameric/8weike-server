@@ -7,7 +7,8 @@ import CreateProfileModal from './create-profile-modal.component';
 
 function mapStateToProps(state) {
   return {
-    profileId: state.profile.id,
+    profile: state.profile.info,
+    loginState: state.auth.login,
   }
 }
 

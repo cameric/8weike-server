@@ -4,7 +4,7 @@ import { createAction } from 'redux-actions';
 
 // Signup action creators
 
-export const signupWithPhoneBasicInfoAction = createAction('SIGNUP_WITH_PHONE_BASIC_INFO');
+export const signupWithPhoneCredentialAction = createAction('SIGNUP_WITH_PHONE_CREDENTIAL');
 
 export const signupWithPhoneTFAAction = createAction('SIGNUP_WITH_PHONE_TFA');
 

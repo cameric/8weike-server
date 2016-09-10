@@ -4,7 +4,7 @@ import * as _ from 'lodash/object'
 // state = state.auth
 function authReducers(state = {}, action) {
   switch (action.type) {
-    case 'SIGNUP_WITH_PHONE_BASIC_INFO':
+    case 'SIGNUP_WITH_PHONE_CREDENTIAL':
       if (action.error) {
         return _.merge({}, state, {
           signup: {
@@ -15,7 +15,6 @@ function authReducers(state = {}, action) {
         });
       } else {
         return _.merge({}, state, {
-          id: action.payload.id,
           signup: {
             currentStep: 'credential',
             status: 'success',
@@ -34,6 +33,8 @@ function authReducers(state = {}, action) {
         });
       } else {
         return _.merge({}, state, {
+          uid: action.payload.id,
+          hasProfile: false,
           signup: {
             currentStep: 'tfa',
             status: 'success',
@@ -73,10 +74,12 @@ function authReducers(state = {}, action) {
     case 'LOAD_LOGIN_STATUS':
       if (action.error) {
         return Object.assign({}, state, {
+          hasProfile: false,
           uid: null,
         });
       } else {
         return Object.assign({}, state, {
+          hasProfile: true,
           uid: action.payload.id,
         });
       }

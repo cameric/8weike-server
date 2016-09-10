@@ -52,10 +52,11 @@ function verify(req, res, next) {
       .then((newCredentialEntry) => {
         // Automatically login after the credential is created
         const login = Promise.promisify(req.login, { context: req });
-        return login({ id: newCredentialEntry.insertId });
+        const newCredentialId = newCredentialEntry.insertId;
+        return login({ id: newCredentialId }).then(() => newCredentialId);
       })
-      .then(() => {
-        res.status(200).send({ success: true });
+      .then((id) => {
+        res.status(200).send({ id });
 
         // Remove the pending credential data from the session -- it is not needed anymore
         delete session.pendingCredential;

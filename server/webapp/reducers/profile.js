@@ -11,7 +11,9 @@ function profileReducers(state = {}, action) {
         });
       } else {
         return _.merge({}, state, {
-          id: action.payload.profileId,
+          info: {
+            id: action.payload.profileId,
+          },
         });
       }
 

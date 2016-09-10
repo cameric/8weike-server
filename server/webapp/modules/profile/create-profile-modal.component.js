@@ -12,18 +12,21 @@ class CreateProfileModal extends React.Component {
     this.state = {
       status: 'waiting',
       nickname: '',
+      completed: false,
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
-    if (nextProps.profileId) this.props.onSuccess();
+    if (nextProps.profile && nextProps.profile !== this.props.profile) {
+      this.setState({ completed: true }, this.props.onSuccess.bind(this));
+    }
   }
 
   componentWillUnmount() {
-    if (!this.props.profileId) {
+    if (!this.state.completed && !this.props.profile) {
       // Logout if the user does not complete the task
-      this.props.logoutIfNotSet();
+      //this.props.logoutIfNotSet();
+      console.log("hit");
     }
   }
 
@@ -32,7 +35,7 @@ class CreateProfileModal extends React.Component {
   }
 
   _submitProfile() {
-    this.setState({ status: 'loading'});
+    this.setState({ status: 'loading' });
     this.props.createProfile(this.state.nickname);
   }
 
