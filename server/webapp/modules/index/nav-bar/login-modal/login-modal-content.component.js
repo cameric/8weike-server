@@ -32,8 +32,7 @@ class LoginModalContent extends React.Component {
         // Reset user input if error
         this.setState({ status: 'waiting' });
       } else if (nextProps.loginState.status === 'success') {
-        console.log(nextProps);
-        if (nextProps.profileId) this.props.onLoginSuccess();
+        if (nextProps.hasProfile) this.props.onLoginSuccess();
         else this.setState({ shouldCreateProfile: true });
       }
     }
@@ -166,7 +165,10 @@ class LoginModalContent extends React.Component {
   }
 
   render() {
-    if (this.state.shouldCreateProfile) return (<CreateProfileModal submitBtnMsg='Finish' />);
+    if (this.state.shouldCreateProfile) {
+      return (<CreateProfileModal submitBtnMsg='Finish'
+                                  onSuccess={this.props.onLoginSuccess.bind(this)}/>);
+    }
     return this._renderLoginModal();
   }
 }

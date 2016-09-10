@@ -263,7 +263,8 @@ class SignupModalContent extends React.Component {
       case 'tfa':
         return this.renderTFAStep();
       case 'profile':
-        return (<CreateProfileModal submitBtnMsg='Finish'/>);
+        return (<CreateProfileModal submitBtnMsg='Finish'
+                                    onSuccess={this.props.onSignupSuccess.bind(this)}/>);
       default:
         return (<span style={ {
           display: 'block',
@@ -276,6 +277,7 @@ class SignupModalContent extends React.Component {
 SignupModalContent.propTypes = {
   signupState: React.PropTypes.object,
   transitToLogin: React.PropTypes.func,
+  onSignupSuccess: React.PropTypes.func,
 
   // Container-provided props
   generateCaptcha: React.PropTypes.func,

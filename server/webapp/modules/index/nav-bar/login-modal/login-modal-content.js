@@ -7,7 +7,7 @@ import LoginModalContent from './login-modal-content.component';
 function mapStateToProps(state) {
   return {
     loginState: state.auth.login,
-    profileId: state.auth.profileId,
+    hasProfile: state.auth.hasProfile,
   }
 }
 

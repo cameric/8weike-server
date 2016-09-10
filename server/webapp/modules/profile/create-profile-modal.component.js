@@ -15,6 +15,11 @@ class CreateProfileModal extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
+    if (nextProps.profileId) this.props.onSuccess();
+  }
+
   componentWillUnmount() {
     if (!this.props.profileId) {
       // Logout if the user does not complete the task
@@ -63,6 +68,8 @@ class CreateProfileModal extends React.Component {
 
 CreateProfileModal.propTypes = {
   submitBtnMsg: React.PropTypes.string,
+  onSuccess: React.PropTypes.func,
+
   createProfile: React.PropTypes.func,
   logoutIfNotSet: React.PropTypes.func,
 };

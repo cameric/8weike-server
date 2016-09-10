@@ -7,7 +7,7 @@ import CreateProfileModal from './create-profile-modal.component';
 
 function mapStateToProps(state) {
   return {
-    profileId: state.auth.profileId,
+    profileId: state.profile.id,
   }
 }
 
@@ -35,4 +35,3 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(CreateProfileModal)
-

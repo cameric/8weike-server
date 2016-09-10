@@ -30,31 +30,54 @@ class UserAuth extends React.Component {
     this.props.loadUserById();
   }
 
+  _handleSignupSuccess() {
+    this.refs.signupModal.hideModal();
+    this.props.loadUserById();
+  }
+
   _renderButton(label) {
     return (
       <button className='user-auth__button button-as-link'>{label}</button>
     )
   }
 
+  _renderWithoutLogin() {
+    return (
+        <div className='user-auth'>
+          <Modal ref="signupModal"
+                 targetButton={this._renderButton('Sign Up')}
+                 title="Sign Up"
+                 containerClassNames='user-auth__modal'
+                 contentClassNames="signup-modal">
+            <SignupModalContent transitToLogin={this._handleSignupTransitToLogin.bind(this)}
+                                onSignupSuccess={this._handleSignupSuccess.bind(this)}/>
+          </Modal>
+          <Modal ref="loginModal"
+                 targetButton={this._renderButton('Login')}
+                 title="Login"
+                 containerClassNames='user-auth__modal'
+                 contentClassNames="login-modal">
+            <LoginModalContent transitToSignup={this._handleLoginTransitToSignup.bind(this)}
+                               onLoginSuccess={this._handleLoginSuccess.bind(this)}/>
+          </Modal>
+        </div>
+    )
+  }
+
+  _renderWithLogin() {
+    return (<div className="user-auth__button">{this.props.profileId}</div>)
+  }
+
+  _renderConditional() {
+    if (this.props.profileId) return this._renderWithLogin();
+    else return this._renderWithoutLogin();
+  }
+
   render() {
     return (
-      <div className='user-auth'>
-        <Modal ref="signupModal"
-               targetButton={this._renderButton('Sign Up')}
-               title="Sign Up"
-               containerClassNames='user-auth__modal'
-               contentClassNames="signup-modal">
-          <SignupModalContent transitToLogin={this._handleSignupTransitToLogin.bind(this)}/>
-        </Modal>
-        <Modal ref="loginModal"
-               targetButton={this._renderButton('Login')}
-               title="Login"
-               containerClassNames='user-auth__modal'
-               contentClassNames="login-modal">
-          <LoginModalContent transitToSignup={this._handleLoginTransitToSignup.bind(this)}
-                             onLoginSuccess={this._handleLoginSuccess.bind(this)}/>
-        </Modal>
-      </div>
+        <div className='user-auth'>
+          {this._renderConditional()}
+        </div>
     )
   }
 }
