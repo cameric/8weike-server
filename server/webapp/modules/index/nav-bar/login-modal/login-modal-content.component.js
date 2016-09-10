@@ -6,6 +6,7 @@ import { white, grey100 } from 'material-ui/styles/colors';
 
 import ErrorBanner from '../../../../ui/error-banner';
 import Input from '../../../../ui/input';
+import CreateProfileModal from '../../../profile/create-profile-modal';
 
 require('../../../../stylesheets/modules/login-modal-content.scss');
 require('../../../../stylesheets/utils/button.scss');
@@ -18,6 +19,7 @@ class LoginModalContent extends React.Component {
       password: '',
       shouldRememberPassword: false,
       status: 'waiting',
+      shouldCreateProfile: false,
     };
   }
 
@@ -30,7 +32,9 @@ class LoginModalContent extends React.Component {
         // Reset user input if error
         this.setState({ status: 'waiting' });
       } else if (nextProps.loginState.status === 'success') {
-        this.props.onLoginSuccess();
+        console.log(nextProps);
+        if (nextProps.profileId) this.props.onLoginSuccess();
+        else this.setState({ shouldCreateProfile: true });
       }
     }
   }
@@ -99,66 +103,71 @@ class LoginModalContent extends React.Component {
 
   }
 
-  render() {
+  _renderLoginModal() {
     return (
-      <div>
-        {this._renderErrorMsg()}
-        <FlatButton backgroundColor='#3BA435'
-                    hoverColor='#2C7727'
-                    disabled={this.state.status === 'loading'}
-                    onTouchTap={this._handleLoginWithWechat.bind(this)}
-                    style={ {
+        <div>
+          {this._renderErrorMsg()}
+          <FlatButton backgroundColor='#3BA435'
+                      hoverColor='#2C7727'
+                      disabled={this.state.status === 'loading'}
+                      onTouchTap={this._handleLoginWithWechat.bind(this)}
+                      style={ {
                     width: '100%',
                     margin: '20px 0 10px 0',
                     color: 'white',
                   } }>Login with Wechat</FlatButton>
-        <FlatButton backgroundColor='#E47829'
-                    hoverColor='#B25D20'
-                    disabled={this.state.status === 'loading'}
-                    onTouchTap={this._handleLoginWithWeibo.bind(this)}
-                    style={ {
+          <FlatButton backgroundColor='#E47829'
+                      hoverColor='#B25D20'
+                      disabled={this.state.status === 'loading'}
+                      onTouchTap={this._handleLoginWithWeibo.bind(this)}
+                      style={ {
                     width: '100%',
                     margin: '0',
                     color: 'white',
                   } }>Login with Weibo</FlatButton>
-        <p className='login-modal-content__separator'>OR</p>
-        <Input ref="phoneInput"
-               value={this.state.phone}
-               className='login-modal-content__input'
-               disabled={this.state.status === 'loading'}
-               isRequired={true}
-               hintText='Phone Number'
-               onChange={this._updatePhone.bind(this)}/>
-        <Input ref="passwordInput"
-               type='password'
-               value={this.state.password}
-               isRequired={true}
-               className='login-modal-content__input'
-               disabled={this.state.status === 'loading'}
-               hintText='Password'
-               onChange={this._updatePassword.bind(this)}/>
-        <div className="login-modal-content__remember">
-          <Checkbox checked={this.state.shouldRememberPassword}
-                    disabled={this.state.status === 'loading'}
-                    onCheck={this._updatePasswordRemember.bind(this)}
-                    label="Remember me"
-                    labelPosition='right'
-                    style={{
+          <p className='login-modal-content__separator'>OR</p>
+          <Input ref="phoneInput"
+                 value={this.state.phone}
+                 className='login-modal-content__input'
+                 disabled={this.state.status === 'loading'}
+                 isRequired={true}
+                 hintText='Phone Number'
+                 onChange={this._updatePhone.bind(this)}/>
+          <Input ref="passwordInput"
+                 type='password'
+                 value={this.state.password}
+                 isRequired={true}
+                 className='login-modal-content__input'
+                 disabled={this.state.status === 'loading'}
+                 hintText='Password'
+                 onChange={this._updatePassword.bind(this)}/>
+          <div className="login-modal-content__remember">
+            <Checkbox checked={this.state.shouldRememberPassword}
+                      disabled={this.state.status === 'loading'}
+                      onCheck={this._updatePasswordRemember.bind(this)}
+                      label="Remember me"
+                      labelPosition='right'
+                      style={{
                       width: '160px',
                       float: 'left',
                     }}/>
-          <button className='button-as-link login-modal-content__switch-btn
+            <button className='button-as-link login-modal-content__switch-btn
                              login-modal-content__remember__forget'
-                  onClick={this.props.transitToForgetPassword}>Forgot Password?</button>
-        </div>
-        {this._renderLoginButton()}
+                    onClick={this.props.transitToForgetPassword}>Forgot Password?</button>
+          </div>
+          {this._renderLoginButton()}
         <span className="login-modal-content__options">
           Don't have an account?
           <button className='login-modal-content__switch-btn button-as-link'
                   onClick={this.props.transitToSignup}>Sign Up</button>
         </span>
-      </div>
+        </div>
     );
+  }
+
+  render() {
+    if (this.state.shouldCreateProfile) return (<CreateProfileModal submitBtnMsg='Finish' />);
+    return this._renderLoginModal();
   }
 }
 

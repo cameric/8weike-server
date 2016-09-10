@@ -64,6 +64,7 @@ function authReducers(state = {}, action) {
       } else {
         return Object.assign({}, state, {
           uid: action.payload.id,
+          profileId: action.payload.profileId,
           login: {
             status: 'success',
           }

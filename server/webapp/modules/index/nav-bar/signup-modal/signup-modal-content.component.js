@@ -7,6 +7,7 @@ import validator from 'validator';
 import ErrorBanner from '../../../../ui/error-banner';
 import Input from '../../../../ui/input';
 import PasswordStrength from './password-strength';
+import CreateProfileModal from '../../../profile/create-profile-modal';
 
 require('../../../../stylesheets/modules/signup-modal-content.scss');
 require('../../../../stylesheets/utils/button.scss');
@@ -166,10 +167,6 @@ class SignupModalContent extends React.Component {
     this.setState({ tfaCode });
   }
 
-  _updateNickname(nickname) {
-    this.setState({ nickname });
-  }
-
   // Action handlers
 
   _submitCredential() {
@@ -193,10 +190,7 @@ class SignupModalContent extends React.Component {
     }, this.state.tfaCode);
   }
 
-  _submitProfile() {
-    this.setState({ status: 'loading'});
-    this.props.createProfile(this.state.nickname);
-  }
+
 
   renderCredentialStep() {
     return (
@@ -262,19 +256,6 @@ class SignupModalContent extends React.Component {
     )
   }
 
-  renderProfileStep() {
-    return (
-      <div>
-        <Input value={this.state.nickname}
-               className='signup-modal-content__input'
-               isRequired={true}
-               hintText='Nickname'
-               onChange={this._updateNickname.bind(this)}/>
-        {this._renderNextStepButton('Finish', this._submitProfile.bind(this))}
-      </div>
-    )
-  }
-
   render() {
     switch (this.state.step) {
       case 'credential':
@@ -282,7 +263,7 @@ class SignupModalContent extends React.Component {
       case 'tfa':
         return this.renderTFAStep();
       case 'profile':
-        return this.renderProfileStep();
+        return (<CreateProfileModal submitBtnMsg='Finish'/>);
       default:
         return (<span style={ {
           display: 'block',

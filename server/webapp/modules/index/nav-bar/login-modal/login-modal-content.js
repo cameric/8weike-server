@@ -6,7 +6,8 @@ import LoginModalContent from './login-modal-content.component';
 
 function mapStateToProps(state) {
   return {
-    loginState: state.auth.login
+    loginState: state.auth.login,
+    profileId: state.auth.profileId,
   }
 }
 
@@ -30,4 +31,3 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(LoginModalContent)
-
