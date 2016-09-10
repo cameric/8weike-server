@@ -2,22 +2,31 @@ import { connect } from 'react-redux'
 
 import UserAuth from './user-auth.component';
 import { webRequestAction } from '../../../actions/utils';
-import { loadUserByIdAction } from '../../../actions/profile';
+import { logoutAction } from '../../../actions/auth';
+import { loadProfileByIdAction } from '../../../actions/profile';
 
 function mapStateToProps(state) {
   return {
-    profileId: state.profile.id,
+    uid: state.auth.uid,
+    profile: state.profile.info,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    loadUserById: (uid) => {
-      //dispatch(new webRequestAction({
-      //  url: `/api/user/${uid}`,
-      //  method: 'GET',
-      //  nextAction: loadUserByIdAction,
-      //}))
+    loadProfileById: () => {
+      dispatch(new webRequestAction({
+        url: `/api/profile/info`,
+        method: 'GET',
+        nextAction: loadProfileByIdAction,
+      }))
+    },
+    logout: () => {
+      dispatch(new webRequestAction({
+        url: '/api/logout',
+        method: 'GET',
+        nextAction: logoutAction,
+      }))
     }
   }
 }

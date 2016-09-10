@@ -15,7 +15,7 @@ function mapDispatchToProps(dispatch) {
   return {
     createProfile: (nickname) => {
       dispatch(new webRequestAction({
-        url: '/api/profile/create',
+        url: '/api/profile',
         method: 'POST',
         body: { nickname },
         nextAction: createProfileAction,

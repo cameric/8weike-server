@@ -70,6 +70,28 @@ function authReducers(state = {}, action) {
           }
         });
       }
+    case 'LOAD_LOGIN_STATUS':
+      if (action.error) {
+        return Object.assign({}, state, {
+          uid: null,
+        });
+      } else {
+        return Object.assign({}, state, {
+          uid: action.payload.id,
+        });
+      }
+    case 'LOGOUT':
+      if (action.error) {
+        return Object.assign({}, state, {
+          login: {
+            status: 'error',
+            error: action.payload.parsedError,
+          }
+        });
+      } else {
+        location.reload();
+        return state;
+      }
     default:
       return state;
   }

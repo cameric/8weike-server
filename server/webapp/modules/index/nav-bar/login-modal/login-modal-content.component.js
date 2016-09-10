@@ -141,15 +141,6 @@ class LoginModalContent extends React.Component {
                  hintText='Password'
                  onChange={this._updatePassword.bind(this)}/>
           <div className="login-modal-content__remember">
-            <Checkbox checked={this.state.shouldRememberPassword}
-                      disabled={this.state.status === 'loading'}
-                      onCheck={this._updatePasswordRemember.bind(this)}
-                      label="Remember me"
-                      labelPosition='right'
-                      style={{
-                      width: '160px',
-                      float: 'left',
-                    }}/>
             <button className='button-as-link login-modal-content__switch-btn
                              login-modal-content__remember__forget'
                     onClick={this.props.transitToForgetPassword}>Forgot Password?</button>

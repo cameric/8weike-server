@@ -18,7 +18,7 @@ function mapDispatchToProps(dispatch) {
   return {
     generateCaptcha: () => {
       dispatch(new webRequestAction({
-        url: '/api/captcha/get',
+        url: '/api/captcha',
         method: 'POST',
         body: {
           width: 130,

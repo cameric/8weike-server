@@ -21,5 +21,8 @@ loginRouter.post('/phone', passport.authenticate('local'), login.phone);
 loginRouter.post('/weixin', passport.authenticate('weixin'), login.weixin);
 loginRouter.post('/weibo', passport.authenticate('weibo'), login.weibo);
 
+// Check if the user has logged in
+loginRouter.get('/', login.checkIfLoggedIn);
+
 module.exports = loginRouter;
 

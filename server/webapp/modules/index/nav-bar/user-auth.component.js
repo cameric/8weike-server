@@ -10,9 +10,11 @@ require('../../../stylesheets/utils/button.scss');
 class UserAuth extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      uid: null,
-    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.uid && this.props.uid != nextProps.uid)
+      this.props.loadProfileById();
   }
 
   _handleLoginTransitToSignup() {
@@ -27,12 +29,16 @@ class UserAuth extends React.Component {
 
   _handleLoginSuccess() {
     this.refs.loginModal.hideModal();
-    this.props.loadUserById();
+    this.props.loadProfileById();
   }
 
   _handleSignupSuccess() {
     this.refs.signupModal.hideModal();
-    this.props.loadUserById();
+    this.props.loadProfileById();
+  }
+
+  _handleLogout() {
+    this.props.logout();
   }
 
   _renderButton(label) {
@@ -65,17 +71,28 @@ class UserAuth extends React.Component {
   }
 
   _renderWithLogin() {
-    return (<div className="user-auth__button">{this.props.profileId}</div>)
+    return (
+        <div className='user-auth'>
+          <span className="user-auth__button">{this.props.profile.nickname}</span>
+          <button className='user-auth__button button-as-link'
+                  onClick={this._handleLogout.bind(this)}>Logout</button>
+        </div>)
   }
 
   _renderConditional() {
-    if (this.props.profileId) return this._renderWithLogin();
-    else return this._renderWithoutLogin();
+    // Initial payload. Does not render anything
+    if (typeof this.props.uid === 'undefined') return null;
+    // User logged in but profile hasn't finished loading. Render nothing to avoid flashing
+    if (this.props.uid && !this.props.profile) return null;
+    // User logged in and profile is loaded, update the nav bar
+    if (this.props.uid) return this._renderWithLogin();
+    // User hasn't logged in. Render signup/login
+    return this._renderWithoutLogin();
   }
 
   render() {
     return (
-        <div className='user-auth'>
+        <div>
           {this._renderConditional()}
         </div>
     )

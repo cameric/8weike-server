@@ -21,8 +21,14 @@ function loginWithWeixin(req, res) {
 function loginWithWeibo(req, res) {
 }
 
+function checkIfLoggedIn(req, res) {
+  if (req.isAuthenticated()) res.status(200).send({ id: req.user.id });
+  else res.status(200).send({ id: null });
+}
+
 module.exports = {
   phone: loginWithPhone,
   weixin: loginWithWeixin,
   weibo: loginWithWeibo,
+  checkIfLoggedIn,
 };

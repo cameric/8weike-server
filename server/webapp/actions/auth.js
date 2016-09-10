@@ -14,4 +14,6 @@ export const renderCaptchaInSignupAction = createAction('RENDER_CAPTCHA_IN_SIGNU
 
 export const loginWithPhoneAction = createAction('LOGIN_WITH_PHONE');
 
+export const loadLoginStatusAction = createAction('LOAD_LOGIN_STATUS');
+
 export const logoutAction = createAction('LOGOUT');
