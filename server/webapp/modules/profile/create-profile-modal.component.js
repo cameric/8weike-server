@@ -12,21 +12,19 @@ class CreateProfileModal extends React.Component {
     this.state = {
       status: 'waiting',
       nickname: '',
-      completed: false,
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.profile && nextProps.profile !== this.props.profile) {
-      this.setState({ completed: true }, this.props.onSuccess.bind(this));
+      this.props.onSuccess();
     }
   }
 
   componentWillUnmount() {
-    if (!this.state.completed && !this.props.profile) {
+    if (this.state.status === 'waiting') {
       // Logout if the user does not complete the task
-      //this.props.logoutIfNotSet();
-      console.log("hit");
+      this.props.logoutIfNotSet();
     }
   }
 
