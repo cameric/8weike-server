@@ -23,7 +23,10 @@
       "name": "nSERVER",
       "image": "cameric8weike/8weike-server-prod:<TAG>",
       "essential": true,
-      "memory": 128,
+      "memory": 256,
+      "links": [
+        "redis"
+      ],
       "environment": [
         {
           "name": "NODE_ENV",
@@ -62,6 +65,12 @@
           "containerPath": "/srv/nSERVER/log"
         }
       ]
+    },
+    {
+      "name": "redis",
+      "image": "redis:latest",
+      "essential": true,
+      "memory": 512
     },
     {
       "name": "flyway-worker",
