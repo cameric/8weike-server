@@ -12,6 +12,7 @@ module.exports = {
     host: 'localhost',
     port: 6379,
     ttl: 260,
+    logErrors: true,
   },
   csp: {
     nonceHash: NONCE_HASH,
