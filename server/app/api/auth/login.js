@@ -25,4 +25,3 @@ loginRouter.post('/weibo', passport.authenticate('weibo'), login.weibo);
 loginRouter.get('/', login.checkIfLoggedIn);
 
 module.exports = loginRouter;
-

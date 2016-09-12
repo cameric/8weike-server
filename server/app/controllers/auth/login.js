@@ -1,7 +1,9 @@
 const credentialModel = require('../../models/credential');
 
 function loginWithPhone(req, res, next) {
-  if (!req.user) return next(Object.assign(new Error('req.user is null'), { status: 404 }));
+  if (!req.user) {
+    return next(Object.assign(new Promise.OperationalError('req.user is null'), { status: 400 }));
+  }
 
   // Need to have another query because after credential is serialized,
   // only the id will be passed into this handler.
