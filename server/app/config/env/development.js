@@ -9,6 +9,12 @@ module.exports = {
     user: 'dbdevmaster',
     debug: process.env.MYSQL_DEBUG || false,
   },
+  redis: {
+    host: 'redis',
+    port: 6379,
+    ttl: 260,
+    logErrors: true,
+  },
   csp: {
     nonceHash: NONCE_HASH,
     directives: {
