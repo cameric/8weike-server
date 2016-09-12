@@ -1,9 +1,8 @@
 import { connect } from 'react-redux'
 
 import { webRequestAction } from '../../../../actions/utils';
-import { signupWithPhoneBasicInfoAction,
+import { signupWithPhoneCredentialAction,
          signupWithPhoneTFAAction,
-         signupWithPhoneUsernameAction,
          renderCaptchaInSignupAction } from '../../../../actions/auth';
 import SignupModalContent from './signup-modal-content.component';
 
@@ -18,7 +17,7 @@ function mapDispatchToProps(dispatch) {
   return {
     generateCaptcha: () => {
       dispatch(new webRequestAction({
-        url: '/api/captcha/get',
+        url: '/api/captcha',
         method: 'POST',
         body: {
           width: 130,
@@ -30,21 +29,20 @@ function mapDispatchToProps(dispatch) {
         nextAction: renderCaptchaInSignupAction,
       }))
     },
-    sendCredential: (basicInfo, captchaHash) => {
+    sendCredential: (credential, captchaHash) => {
       dispatch(new webRequestAction({
         url: '/api/signup/phone/web',
         method: 'POST',
         body: {
-          phone: basicInfo.phone,
-          password: basicInfo.password,
-          captcha: basicInfo.captcha,
+          phone: credential.phone,
+          password: credential.password,
+          captcha: credential.captcha,
           hash: captchaHash,
         },
-        nextAction: signupWithPhoneBasicInfoAction,
+        nextAction: signupWithPhoneCredentialAction,
       }))
     },
     verifyTFACode: (credential, code) => {
-      console.log(credential);
       dispatch(new webRequestAction({
         url: '/api/signup/verify',
         method: 'POST',
@@ -52,14 +50,6 @@ function mapDispatchToProps(dispatch) {
         nextAction: signupWithPhoneTFAAction,
       }))
     },
-    createProfile: (nickname) => {
-      dispatch(new webRequestAction({
-        url: '/api/profile/create',
-        method: 'POST',
-        body: { nickname },
-        nextAction: signupWithPhoneUsernameAction,
-      }))
-    }
   }
 }
 

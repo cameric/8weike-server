@@ -23,7 +23,7 @@ describe('Profile Routing', () => {
         .catch(done);
   });
 
-  describe('POST /api/profile/create', () => {
+  describe('POST /api/profile', () => {
     const fixtureNickname = 'Harry Potter';
 
     describe('Valid input', () => {
@@ -39,7 +39,7 @@ describe('Profile Routing', () => {
           };
 
           agent
-              .post('/api/profile/create')
+              .post('/api/profile')
               .send(data)
               .expect(200)
               .end((err, _) => {
@@ -62,7 +62,7 @@ describe('Profile Routing', () => {
           };
 
           agent
-              .post('/api/profile/create')
+              .post('/api/profile')
               .send(data)
               .expect(400)
               .end((err, _) => {
@@ -85,7 +85,7 @@ describe('Profile Routing', () => {
 
         // use request here to remove logged in state
         request(app)
-            .post('/api/profile/create')
+            .post('/api/profile')
             .send(data)
             .expect(401)
             .end((err, _) => {
@@ -109,7 +109,7 @@ describe('Profile Routing', () => {
           };
 
           agent
-              .post('/api/profile/create')
+              .post('/api/profile')
               .send(data)
               .expect(400)
               .end((err, _) => {

@@ -356,4 +356,43 @@ describe('Credential Model', () => {
       });
     });
   });
+
+  describe('updateProfileId', () => {
+    describe('success', () => {
+      it('updates the profile of an existing credential if not set', (done) => {
+        // Pick a credential from the fixture that does not have a profile
+        const testCredential = fixture.tables.credential[0];
+        const testProfileId = 1;
+
+        // Update the user
+        credentialModel.updateProfileId(testCredential.id, testProfileId)
+            .then(() =>
+              // Retrieve the updated user from the DB
+                credentialModel.findById(testCredential.id, ['profile_id'])
+                    .then((credential) => {
+                      // Ensure that the profile id is updated
+                      expect(credential).not.to.be.null;
+                      // Ensure that the PW hash has changed
+                      expect(credential.profile_id).to.equal(testProfileId);
+                      done();
+                    })
+            ).catch(done);
+      });
+    });
+
+    describe('failure', () => {
+      it('fails to update a credential if already has a profile', (done) => {
+        // Pick a credential from the fixture that already has a profile
+        const testCredential = fixture.tables.credential[2];
+        const testProfileId = 2;
+
+        credentialModel.updateProfileId(testCredential, testProfileId)
+            .then(() => {
+              done(new Error('Did not fail when expected to'));
+            }).catch(() => {
+          done();
+        });
+      });
+    });
+  });
 });

@@ -32,7 +32,9 @@ export default store => next => action => {
       .then((response) => {
         // Client-side rendering goes through `response.text`
         // Server-side rendering goes through `response.res.text`
-        fulfill(JSON.parse(response.text || response.res.text));
+        const res = (response.xhr) ? response.text : response.res.text;
+        if (res) fulfill(JSON.parse(res));
+        else fulfill(res);
       }, (error) => {
         reject(error);
       });

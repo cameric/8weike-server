@@ -211,11 +211,15 @@ function updatePassword(id, password) {
 /**
  * Updates a credential's profileId.
  * @param id {number}
- * @param phone {string}
+ * @param profileId {number}
  */
 function updateProfileId(id, profileId) {
-  // TODO: Should we reject if the profile already set? In theory it should only be set once
-  return updateById(id, { profile_id: profileId });
+  return findById(id, ['profile_id']).then((credential) => {
+    if (credential.profile_id) {
+      return Promise.reject(Promise.OperationalError('Cannot update profile ID after it is set.'));
+    }
+    return updateById(id, { profile_id: profileId });
+  })
 }
 
 module.exports = {

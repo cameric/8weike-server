@@ -2,7 +2,8 @@ import { combineReducers } from 'redux'
 import { routerReducer } from 'react-router-redux';
 
 // Reducer components
-import authReducers from '../reducers/auth'
+import authReducers from '../reducers/auth';
+import profileReducers from '../reducers/profile';
 
 function pageInitialState(state = {}, action) {
   switch (action.type) {
@@ -13,20 +14,10 @@ function pageInitialState(state = {}, action) {
   }
 }
 
-function loadUserById(state = {}, action) {
-  if (action.type === 'LOAD_USER_BY_ID') {
-    return Object.assign({}, state, {
-      user: action.payload
-    })
-  } else {
-    return state
-  }
-}
-
 const appReducers = combineReducers({
   pageInitialState,
-  loadUserById,
   auth: authReducers,
+  profile: profileReducers,
   routing: routerReducer,
 });
 

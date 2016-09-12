@@ -7,6 +7,7 @@ const profile = require('../controllers/profile');
 
 const profileRouter = express.Router(); // eslint-disable-line new-cap
 
-profileRouter.post('/create', auth.requiresLogin, profile.create);
+profileRouter.post('/', auth.requiresLogin, profile.create);
+profileRouter.get('/info', auth.requiresLogin, profile.getInfo);
 
 module.exports = profileRouter;

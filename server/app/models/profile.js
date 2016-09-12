@@ -80,6 +80,7 @@ function updateByCredential(cid, columns) {
     });
   });
 }
+
 module.exports = {
   createProfileForCredential,
   findByCredential,

@@ -19,7 +19,7 @@ function get(options) {
   const [text, picture] = ccap(options).get();
 
   // Send back hashed text and picture
-  return bcrypt.hashAsync(text, config.encrypt.bcryptSaltRounds).then((hash) => {
+  return bcrypt.hashAsync(text, config.crypto.bcryptSaltRounds).then((hash) => {
     return {
       hash,
       picture: picture.toString('base64'),

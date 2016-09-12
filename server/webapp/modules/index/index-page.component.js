@@ -16,6 +16,10 @@ class IndexPage extends React.Component {
     })))
   }
 
+  componentWillMount() {
+    this.props.loadLoginStatus();
+  }
+
   render() {
     return (
       <DocumentTitle title="8WeiKe - Index">
@@ -31,7 +35,7 @@ class IndexPage extends React.Component {
 
 IndexPage.propTypes = {
   globalInfo: React.PropTypes.object,
-  loadUserById: React.PropTypes.func,
+  loadLoginStatus: React.PropTypes.func,
 };
 
 export default IndexPage

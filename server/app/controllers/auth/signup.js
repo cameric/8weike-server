@@ -6,9 +6,8 @@ const captchaService = require('../../services/captcha');
 
 function saveSignupDataToSession(session, phone, password) {
   const verifyNotAlreadySignedUp = () => credentialModel.findByPhoneNumber(phone, ['id'])
-      .then(() => Promise.reject(new Promise.OperationalError(
-              'A credential with this phone number already exists.')))
-      .error(() => Promise.resolve());
+      .then(() => Promise.reject(new Promise.OperationalError('Credential already exists!')),
+            () => Promise.resolve());
 
   const saveSession = Promise.promisify(session.save, { context: session });
   const savePendingCredentialToSession = () => credentialModel.createTemporary(phone, password)
@@ -19,9 +18,8 @@ function saveSignupDataToSession(session, phone, password) {
 
   return verifyNotAlreadySignedUp()
       .then(() => savePendingCredentialToSession())
-      .then(() => {
-        tfaService.sendCode(session.pendingCredential.tfa_secret, session.pendingCredential.phone);
-      });
+      .then(() => tfaService.sendCode(session.pendingCredential.tfa_secret,
+          session.pendingCredential.phone));
 }
 
 function signupWithPhoneWithoutCaptcha(req, res, next) {
@@ -54,10 +52,11 @@ function verify(req, res, next) {
       .then((newCredentialEntry) => {
         // Automatically login after the credential is created
         const login = Promise.promisify(req.login, { context: req });
-        return login({ id: newCredentialEntry.insertId });
+        const newCredentialId = newCredentialEntry.insertId;
+        return login({ id: newCredentialId }).then(() => newCredentialId);
       })
-      .then(() => {
-        res.status(200).send({ success: true });
+      .then((id) => {
+        res.status(200).send({ id });
 
         // Remove the pending credential data from the session -- it is not needed anymore
         delete session.pendingCredential;

@@ -11,9 +11,16 @@ const phoneStrategy = new LocalStrategy({
   passwordField: 'password',
 }, (phone, password, done) =>
   credentialModel.loginWithPhone(phone, password)
-      .then(done.bind(null, null))
-      .error(done.bind(null, null, false))
-      .catch(done));
+      .then((credential) => {
+        done(null, credential);
+        return null;
+      }).error(() => {
+        done(null, false);
+        return null;
+      }).catch((err) => {
+        done(err);
+        return null;
+      }));
 
 function serializeUser(user, done) {
   if (!user.id) return done(new Error('User object does not have id property.'), null);
