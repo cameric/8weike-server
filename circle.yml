@@ -8,6 +8,7 @@ machine:
   services:
     - docker
     - mysql
+    - redis
   environment:
     NODE_ENV: test
 
@@ -16,6 +17,7 @@ dependencies:
     - pip install awscli
   override:
     - cd server && npm install && npm run build
+    - sudo service redis-server status || sudo service redis-server start
   post:
     - docker info
     - docker build -t cameric8weike/8weike-server-prod:$CIRCLE_SHA1 .

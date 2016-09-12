@@ -5,6 +5,8 @@ const helmet = require('helmet');
 const path = require('path');
 const passport = require('passport');
 const session = require('express-session');
+const redis = require('redis');
+const redisStore = require('connect-redis')(session);
 
 const config = require('./config/config');
 const passportConfig = require('./config/passport');
@@ -57,15 +59,18 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Passport authentication
+// Configure session
 app.use(session({
   secret: config.sessionSecret,
+  store: new redisStore(config.redis),
   resave: false,
   saveUninitialized: true,
   // NOTE(tony): before setting up HTTPS,
   // enable cookie transmission in HTTP insecurely
   cookie: { secure: false, maxAge: 3600000 },
 }));
+
+// Passport authentication
 app.use(passport.initialize());
 app.use(passport.session());
 passportConfig(passport);

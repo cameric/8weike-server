@@ -9,6 +9,11 @@ module.exports = {
     user: process.env.MYSQL_RDS_DB_PROD_USER,
     ssl: 'Amazon RDS',
   },
+  redis: {
+    host: 'redis',
+    port: 6379,
+    ttl: 260,
+  },
   csp: {
     nonceHash: NONCE_HASH,
     directives: {
