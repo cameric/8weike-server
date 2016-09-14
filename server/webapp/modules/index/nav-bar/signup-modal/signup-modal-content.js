@@ -42,6 +42,9 @@ function mapDispatchToProps(dispatch) {
         nextAction: signupWithPhoneCredentialAction,
       }))
     },
+    resendTFACode: () => {
+
+    },
     verifyTFACode: (credential, code) => {
       dispatch(new webRequestAction({
         url: '/api/signup/verify',

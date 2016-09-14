@@ -4,10 +4,11 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { white } from 'material-ui/styles/colors';
 import validator from 'validator';
 
+import CountDown from '../../../../ui/countdown';
+import CreateProfileModal from '../../../profile/create-profile-modal';
 import ErrorBanner from '../../../../ui/error-banner';
 import Input from '../../../../ui/input';
 import PasswordStrength from './password-strength';
-import CreateProfileModal from '../../../profile/create-profile-modal';
 
 require('../../../../stylesheets/modules/signup-modal-content.scss');
 require('../../../../stylesheets/utils/button.scss');
@@ -26,6 +27,7 @@ class SignupModalContent extends React.Component {
       },
       tfaCode: '',
       nickname: '',
+      shouldDisableTfaBtn: true,
     };
 
     this._phoneValidators = [
@@ -124,6 +126,23 @@ class SignupModalContent extends React.Component {
     }
   }
 
+  _renderTFAResendBtnContent() {
+    if (this.state.shouldDisableTfaBtn) {
+      return (
+          <span>
+            Enable resend in <CountDown duration={30}
+                                        onFinished={() => {
+                         this.setState({ shouldDisableTfaBtn: false })
+                       }}/> seconds
+          </span>
+      )
+    } else {
+      return (
+          <span>Resend code now</span>
+      )
+    }
+  }
+
   _renderNextStepButton(info, handleTouchTap) {
     const buttonMsg = (this.state.status === 'waiting') ? info
         : (<CircularProgress color={white} size={0.3} style={{ marginTop: '-7px' }}/>);
@@ -168,6 +187,11 @@ class SignupModalContent extends React.Component {
 
   _updateTFACode(tfaCode) {
     this.setState({ tfaCode });
+  }
+
+  _handleTFAResend() {
+    this.setState({ shouldDisableTfaBtn: true });
+    this.props.resendTFACode();
   }
 
   // Action handlers
@@ -245,7 +269,14 @@ class SignupModalContent extends React.Component {
         <span style={ {
           display: 'block',
           marginTop: '30px',
-        } }>A passcode has been sent to your phone</span>
+        } }>
+          A passcode has been sent to your phone.
+          <button className="button-as-link signup-modal-content__tfa-resend-btn"
+                  disabled={this.state.shouldDisableTfaBtn}
+                  onClick={this._handleTFAResend.bind(this)}>
+            {this._renderTFAResendBtnContent()}
+          </button>
+        </span>
         <Input value={this.state.tfaCode}
                className='signup-modal-content__input'
                isRequired={true}
@@ -282,6 +313,7 @@ SignupModalContent.propTypes = {
 
   // Container-provided props
   generateCaptcha: React.PropTypes.func,
+  resendTFACode: React.PropTypes.func,
   verifyCaptcha: React.PropTypes.func,
   sendCredential: React.PropTypes.func,
   verifyTFACode: React.PropTypes.func,
