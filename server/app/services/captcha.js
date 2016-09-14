@@ -19,7 +19,7 @@ function get(options) {
   const [text, picture] = ccap(options).get();
 
   // Send back hashed text and picture
-  return bcrypt.hashAsync(text, config.crypto.bcryptSaltRounds).then((hash) => {
+  return bcrypt.hashAsync(text.toLowerCase(), config.crypto.bcryptSaltRounds).then((hash) => {
     return {
       hash,
       picture: picture.toString('base64'),
@@ -35,7 +35,7 @@ function get(options) {
  */
 function verify(captcha, hash) {
   // Verify user response against original hash
-  return bcrypt.compareAsync(captcha, hash).then((valid) => {
+  return bcrypt.compareAsync(captcha.toLowerCase(), hash).then((valid) => {
     if (valid) return Promise.resolve();
     return Promise.reject(new Promise.OperationalError('Incorrect captcha response!'));
   });

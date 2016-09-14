@@ -108,7 +108,10 @@ class SignupModalContent extends React.Component {
                      disabled={this.state.status === 'loading'}
                      hintText='Captcha Numbers'
                      onChange={this._updateCaptcha.bind(this)}/>
-              <img src={ `data:image/png;base64,${this.props.signupState.captcha.picture}` }/>
+              <button className="button-as-link"
+                      onClick={this.props.generateCaptcha.bind(this)}>
+                <img src={ `data:image/png;base64,${this.props.signupState.captcha.picture}` }/>
+              </button>
             </div>
         )
       } else {
@@ -189,8 +192,6 @@ class SignupModalContent extends React.Component {
       password: this.state.credential.password,
     }, this.state.tfaCode);
   }
-
-
 
   renderCredentialStep() {
     return (

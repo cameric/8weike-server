@@ -114,7 +114,7 @@ describe('Signup Routing', () => {
       let fixtureHash;
 
       before((done) => {
-        bcrypt.hashAsync(fixtureCaptcha, 12).then((hash) => {
+        bcrypt.hashAsync(fixtureCaptcha.toLowerCase(), 12).then((hash) => {
           fixtureHash = hash;
           done();
         });
