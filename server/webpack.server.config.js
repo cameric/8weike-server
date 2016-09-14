@@ -44,6 +44,9 @@ module.exports = {
       {
         test: /\.scss$/,
         loader: 'ignore-loader',
+      },
+      { test: /\.json$/,
+        loader: "json-loader"
       }
     ],
   },
