@@ -23,6 +23,7 @@ const defaults = {
       cert: null, // TODO
     },
   },
+  localeCookie: '8weike-user-locale',
   sessionSecret: '8weike-terces',
   crypto: {
     bcryptSaltRounds: 12,

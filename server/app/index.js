@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express = require('express');
+const i18n = require('i18n');
 const helmet = require('helmet');
 const path = require('path');
 const passport = require('passport');
@@ -58,6 +59,24 @@ app.use(express.static(path.join(config.root, '/public')));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Configure i18n
+i18n.configure({
+  locales: ['zh', 'en'],
+  defaultLocale: 'zh',
+  cookie: config.localeCookie,
+  directory: __dirname + '/locales',
+  logDebugFn: (msg) => {
+    if (process.env.NODE_ENV === 'development') console.log('debug', msg);
+  },
+  logWarnFn: (msg) => {
+    if (process.env.NODE_ENV === 'development') console.log('warn', msg);
+  },
+  logErrorFn: (msg) => {
+    if (process.env.NODE_ENV === 'development') console.log('error', msg);
+  },
+});
+app.use(i18n.init);
 
 // Configure session
 app.use(session({
