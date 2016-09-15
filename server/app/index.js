@@ -97,7 +97,11 @@ passportConfig(passport);
 // Setup router (order is important)
 
 // Client-side React Router middleware
+// Material-UI server-side globals
+global.navigator = global.navigator || {};
+global.navigator.userAgent = 'all';
 app.use(clientRouter);
+
 // REST API top-level router under /api
 app.use('/api', router);
 
