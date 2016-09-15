@@ -54,11 +54,12 @@ class UserAuth extends React.Component {
   }
 
   _renderWithoutLogin() {
+    console.log(__("Sign Up"));
     return (
         <div className='user-auth'>
           <Modal ref="signupModal"
                  targetButton={this._renderButton('Sign Up')}
-                 title="Sign Up"
+                 title={"Sign Up"}
                  containerClassNames='user-auth__modal'
                  contentClassNames="signup-modal">
             <SignupModalContent transitToLogin={this._handleSignupTransitToLogin.bind(this)}
@@ -66,7 +67,7 @@ class UserAuth extends React.Component {
           </Modal>
           <Modal ref="loginModal"
                  targetButton={this._renderButton('Login')}
-                 title="Login"
+                 title={__("Login")}
                  containerClassNames='user-auth__modal'
                  contentClassNames="login-modal">
             <LoginModalContent transitToSignup={this._handleLoginTransitToSignup.bind(this)}

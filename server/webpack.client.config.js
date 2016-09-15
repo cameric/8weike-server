@@ -4,7 +4,7 @@ const generateConfig = require('./webpack.client.config.template');
 
 // Front-end locale mappings
 const languages = {
-  zh: 'webapp/locales/zh.json',
+  zh: require('./webapp/locales/zh.json'),
   en: null,
 };
 
