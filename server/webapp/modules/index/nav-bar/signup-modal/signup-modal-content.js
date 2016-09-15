@@ -8,6 +8,7 @@ import SignupModalContent from './signup-modal-content.component';
 
 function mapStateToProps(state) {
   return {
+    locale: (typeof state.locale === 'string') ? state.locale : 'zh-CN',
     signupState: state.auth.signup,
     credentialId: state.auth.id,
   }

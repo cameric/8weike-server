@@ -30,6 +30,7 @@ class SignupModalContent extends React.Component {
 
     this._phoneValidators = [
       {
+        // TODO: Add functionality to add phone number other than China's
         validator: (phone) => validator.isMobilePhone(phone, 'zh-CN'),
         errorText: __('Not a valid phone number!'),
       }

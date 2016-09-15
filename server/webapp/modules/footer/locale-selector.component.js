@@ -13,7 +13,7 @@ class LocaleSelector extends React.Component {
   render() {
     return (
       <div className='locale-selector'>
-        {this._renderLocaleSelectBtn('简体中文', 'zh')}
+        {this._renderLocaleSelectBtn('简体中文', 'zh-CN')}
         <span> | </span>
         {this._renderLocaleSelectBtn('English', 'en')}
       </div>
