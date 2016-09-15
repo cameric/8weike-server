@@ -5,6 +5,7 @@
  */
 
 const eslint = require('gulp-eslint');
+const exec = require('child_process').exec;
 const gulp = require('gulp');
 const jsdoc = require('gulp-jsdoc3');
 const nodemon = require('nodemon');
@@ -76,9 +77,21 @@ gulp.task('server-build', () => {
   });
 });
 
+gulp.task('npm-build', () => {
+  console.log("Rebuilding dependencies");
+  const proc = exec('npm prune && npm install', (error) => {
+    if (error) console.error(`exec error: ${error}`);
+  });
+
+  proc.stderr.on('data', (data) => {
+    console.log(data);
+  });
+});
+
 gulp.task('run', ['webpack-dev-server', 'server-build'], () => {
   // First build new server.bundle.js
   gulp.watch(SOURCE_GLOBS, ['server-build']);
+  gulp.watch(['package.json'], ['npm-build']);
 
   // Restart node by listening to server.bundle.js changes
   nodemon({
