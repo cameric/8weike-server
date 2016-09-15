@@ -15,5 +15,6 @@ const signupRouter = express.Router(); // eslint-disable-line new-cap
 signupRouter.post('/phone/mobile', signup.withoutCaptcha.phone);
 signupRouter.post('/phone/web', signup.withCaptcha.phone);
 signupRouter.post('/verify', signup.verify);
+signupRouter.post('/resend_code', signup.resendCode);
 
 module.exports = signupRouter;
