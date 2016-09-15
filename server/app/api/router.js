@@ -23,10 +23,10 @@ const appRouter = express.Router(); // eslint-disable-line new-cap
 
 // Api for showing global information about the company
 appRouter.get('/global_info', (req, res) => {
-  res.send(JSON.stringify({
+  res.status(200).send({
     version: 'Alpha',
     company: 'Cameric',
-  }));
+  });
 });
 
 // Authentication-related APIs

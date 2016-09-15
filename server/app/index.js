@@ -62,8 +62,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Configure i18n
 i18n.configure({
-  locales: ['zh', 'en'],
-  defaultLocale: 'zh',
+  locales: ['zh-CN', 'en'],
+  defaultLocale: 'zh-CN',
   cookie: config.localeCookie,
   directory: __dirname + '/locales',
   logDebugFn: (msg) => {
@@ -107,6 +107,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(errorHandlers.logErrors);
 }
 
+app.use(errorHandlers.localizeErrors);
 app.use(errorHandlers.clientErrorHandler);
 app.use(errorHandlers.serverErrorHandler);
 

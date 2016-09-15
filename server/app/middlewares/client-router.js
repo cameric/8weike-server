@@ -2,7 +2,7 @@
 
 const _ = require('lodash/core');
 const React = require('react');
-const ReactDOM = require('react-dom/server');
+const ReactDOMServer = require('react-dom/server');
 const router = require('react-router');
 const Redux = require('react-redux');
 const serialize = require('serialize-javascript');
@@ -35,17 +35,19 @@ function match(req, res, next) {
       // Server-side rendering of initial state
       const store = configureStore(reducers);
       loadReduxInitialState(props, store).then(() => {
-        const reduxInitialState = serialize(store.getState());
+        const locale = req.cookies[config.localeCookie] || 'zh-CN';
         const context = ce(Redux.Provider, {
           store,
         }, ce(router.RouterContext, props));
 
         // If we got props then we matched a route and can render
         res.status(200).render('index', {
-          reactContent: ReactDOM.renderToString(context),
-          reduxInitialState,
+          reactContent: "", //ReactDOMServer.renderToString(context),
+          reduxInitialState: serialize(Object.assign({}, store.getState(), {
+            locale,
+          })),
           nonceHash: config.csp.nonceHash,
-          locale: req.cookies[config.localeCookie] || 'zh',
+          locale,
         });
       });
     } else {

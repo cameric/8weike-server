@@ -1,5 +1,6 @@
 // The middlewares serve all error handling
 const Promise = require('bluebird');
+const i18n = require('i18n');
 
 // Log raw error messages to the console.
 // Will only be applied in development environment.
@@ -9,6 +10,12 @@ function logErrors(err, req, res, next) {
   if (!(err instanceof Promise.OperationalError)) {
     console.error(err);
   }
+  next(err);
+}
+
+// Localize error messages
+function localizeErrors(err, req, res, next) {
+  err.message = i18n.__(err.message || "");
   next(err);
 }
 
@@ -48,6 +55,7 @@ function notFoundError(req, res) {
 
 module.exports = {
   logErrors,
+  localizeErrors,
   clientErrorHandler,
   serverErrorHandler,
   notFoundError,
