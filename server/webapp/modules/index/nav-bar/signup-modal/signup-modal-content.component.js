@@ -30,14 +30,14 @@ class SignupModalContent extends React.Component {
 
     this._phoneValidators = [
       {
-        validator: (phone) => validator.isMobilePhone(phone, global.LOCALE),
-        errorText: 'Not a valid phone number!',
+        validator: (phone) => validator.isMobilePhone(phone, 'zh-CN'),
+        errorText: __('Not a valid phone number!'),
       }
     ];
     this._passwordValidators = [
       {
         validator: (password) => validator.isLength(password, {min: 8, max: undefined}),
-        errorText: 'Password should be at least 8 characters!',
+        errorText: __('Password should be at least 8 characters!'),
       },
       // TODO: Find a better way to handle password requirement
       //{
@@ -48,14 +48,14 @@ class SignupModalContent extends React.Component {
     this._confirmPasswordValidators = [
       {
         validator: (confirmPassword) => confirmPassword === this.state.credential.password,
-        errorText: 'Passwords do not match!',
+        errorText: __('Passwords do not match!'),
       }
     ];
     this._tfaValidators = [
       {
         validator: (tfaCode) => validator.isNumeric(tfaCode) &&
           validator.isLength(tfaCode, {min: 6, max: 6}),
-        errorText: 'Code should contain 6 digits!',
+        errorText: 'Code length should be 6!',
       }
     ];
   }
@@ -106,7 +106,7 @@ class SignupModalContent extends React.Component {
                      isRequired={true}
                      className='signup-modal-content__captcha-input'
                      disabled={this.state.status === 'loading'}
-                     hintText='Captcha Numbers'
+                     hintText={__('Captcha Numbers')}
                      onChange={this._updateCaptcha.bind(this)}/>
               <button className="button-as-link"
                       onClick={this.props.generateCaptcha.bind(this)}>
@@ -116,7 +116,7 @@ class SignupModalContent extends React.Component {
         )
       } else {
         return (
-            <div>Unable to load Captcha!</div>
+            <div>{__('Unable to load Captcha!')}</div>
         )
       }
     } else {
@@ -202,7 +202,7 @@ class SignupModalContent extends React.Component {
                className='signup-modal-content__input'
                disabled={this.state.status === 'loading'}
                isRequired={true}
-               hintText='Phone Number'
+               hintText={__('Phone Number')}
                validators={this._phoneValidators}
                onChange={this._updatePhone.bind(this)}/>
         <div className='signup-modal-content__password-container'>
@@ -214,7 +214,7 @@ class SignupModalContent extends React.Component {
                  isRequired={true}
                  className='signup-modal-content__input'
                  disabled={this.state.status === 'loading'}
-                 hintText='Password'
+                 hintText={__('Password')}
                  validators={this._passwordValidators}
                  onChange={this._updatePassword.bind(this)}/>
         </div>
@@ -224,15 +224,15 @@ class SignupModalContent extends React.Component {
                isRequired={true}
                className='signup-modal-content__input'
                disabled={this.state.status === 'loading'}
-               hintText='Confirm Password'
+               hintText={__('Confirm Password')}
                validators={this._confirmPasswordValidators}
                onChange={this._updateConfirmPassword.bind(this)}/>
         {this._renderCaptcha()}
-        {this._renderNextStepButton('Sign Up', this._submitCredential.bind(this))}
+        {this._renderNextStepButton(__('Sign Up'), this._submitCredential.bind(this))}
         <span className="signup-modal-content__options">
-          Already a member?
+          {__('Already a member?')}
           <button className='signup-modal-content__switch-btn button-as-link'
-                  onClick={this.props.transitToLogin}>Login</button>
+                  onClick={this.props.transitToLogin}>{__('Login')}</button>
         </span>
       </div>
     )
@@ -245,14 +245,14 @@ class SignupModalContent extends React.Component {
         <span style={ {
           display: 'block',
           marginTop: '30px',
-        } }>A passcode has been sent to your phone</span>
+        } }>{__('A passcode has been sent to your phone')}</span>
         <Input value={this.state.tfaCode}
                className='signup-modal-content__input'
                isRequired={true}
-               hintText='6-digit Passcode'
+               hintText={__('6-digit Passcode')}
                validators={this._tfaValidators}
                onChange={this._updateTFACode.bind(this)}/>
-        {this._renderNextStepButton('Confirm Phone Number', this._submitTFACode.bind(this))}
+        {this._renderNextStepButton(__('Confirm Phone Number'), this._submitTFACode.bind(this))}
       </div>
     )
   }
@@ -264,7 +264,7 @@ class SignupModalContent extends React.Component {
       case 'tfa':
         return this.renderTFAStep();
       case 'profile':
-        return (<CreateProfileModal submitBtnMsg='Finish'
+        return (<CreateProfileModal submitBtnMsg={__('Finish')}
                                     onSuccess={this.props.onSignupSuccess.bind(this)}/>);
       default:
         return (<span style={ {

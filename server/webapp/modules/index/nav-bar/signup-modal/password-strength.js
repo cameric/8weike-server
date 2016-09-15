@@ -13,23 +13,23 @@ class PasswordStrengthMeter extends React.Component {
     super(props);
     this.strengthMappings = {
       0: {
-        label: 'Worst',
+        label: __('Worst'),
         color: '#CB1702',
       },
       1: {
-        label: 'Bad',
+        label: __('Bad'),
         color: '#FF7900',
       },
       2: {
-        label: 'Weak',
+        label: __('Weak'),
         color: '#FFCC00',
       },
       3: {
-        label: 'Good',
+        label: __('Good'),
         color: '#DDFE00',
       },
       4: {
-        label: 'Strong',
+        label: __('Strong'),
         color: '#91CA00'
       }
     };
@@ -94,10 +94,10 @@ class PasswordStrengthMeter extends React.Component {
                  open={this.state.isVisible}
                  targetOrigin={ { vertical: 'top', horizontal: 'left' } }>
           <div className='password-strength'>
-            <h4 className='password-strength__title'>Password Strength Meter</h4>
+            <h4 className='password-strength__title'>{__('Password Strength Meter')}</h4>
             <Divider />
             <span className='password-strength__label'>
-              Your password is: {this.strengthMappings[this.strength.score].label}
+              {__('Your password is: ')}{this.strengthMappings[this.strength.score].label}
             </span>
             <LinearProgress mode='determinate'
                             value={parseInt(this.strength.score, 10)}

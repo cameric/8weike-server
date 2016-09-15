@@ -65,7 +65,7 @@ class LoginModalContent extends React.Component {
   }
 
   _renderLoginButton() {
-    const buttonMsg = (this.state.status === 'waiting') ? 'Login'
+    const buttonMsg = (this.state.status === 'waiting') ? __('Login')
         : (<CircularProgress color={white} size={0.3} style={{ marginTop: '-7px' }}/>);
     return (
         <FlatButton backgroundColor='#00BCD4'
@@ -114,7 +114,7 @@ class LoginModalContent extends React.Component {
                     width: '100%',
                     margin: '20px 0 10px 0',
                     color: 'white',
-                  } }>Login with Wechat</FlatButton>
+                  } }>{__('Login with Wechat')}</FlatButton>
           <FlatButton backgroundColor='#E47829'
                       hoverColor='#B25D20'
                       disabled={this.state.status === 'loading'}
@@ -123,14 +123,14 @@ class LoginModalContent extends React.Component {
                     width: '100%',
                     margin: '0',
                     color: 'white',
-                  } }>Login with Weibo</FlatButton>
-          <p className='login-modal-content__separator'>OR</p>
+                  } }>{__('Login with Weibo')}</FlatButton>
+          <p className='login-modal-content__separator'>{__('OR')}</p>
           <Input ref="phoneInput"
                  value={this.state.phone}
                  className='login-modal-content__input'
                  disabled={this.state.status === 'loading'}
                  isRequired={true}
-                 hintText='Phone Number'
+                 hintText={__('Phone Number')}
                  onChange={this._updatePhone.bind(this)}/>
           <Input ref="passwordInput"
                  type='password'
@@ -138,18 +138,18 @@ class LoginModalContent extends React.Component {
                  isRequired={true}
                  className='login-modal-content__input'
                  disabled={this.state.status === 'loading'}
-                 hintText='Password'
+                 hintText={__('Password')}
                  onChange={this._updatePassword.bind(this)}/>
           <div className="login-modal-content__remember">
             <button className='button-as-link login-modal-content__switch-btn
                              login-modal-content__remember__forget'
-                    onClick={this.props.transitToForgetPassword}>Forgot Password?</button>
+                    onClick={this.props.transitToForgetPassword}>{__('Forgot Password?')}</button>
           </div>
           {this._renderLoginButton()}
         <span className="login-modal-content__options">
-          Don't have an account?
+          {__("Don't have an account?")}
           <button className='login-modal-content__switch-btn button-as-link'
-                  onClick={this.props.transitToSignup}>Sign Up</button>
+                  onClick={this.props.transitToSignup}>{__('Sign Up')}</button>
         </span>
         </div>
     );
