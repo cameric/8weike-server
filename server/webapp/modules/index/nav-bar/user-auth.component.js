@@ -81,7 +81,7 @@ class UserAuth extends React.Component {
         <div className='user-auth'>
           <span className="user-auth__button">{this.props.profile.nickname}</span>
           <button className='user-auth__button button-as-link'
-                  onClick={this._handleLogout.bind(this)}>Logout</button>
+                  onClick={this._handleLogout.bind(this)}>{__('Logout')}</button>
         </div>)
   }
 

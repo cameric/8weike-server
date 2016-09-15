@@ -59,7 +59,7 @@ class CreateProfileModal extends React.Component {
           <Input value={this.state.nickname}
                  className='signup-modal-content__input'
                  isRequired={true}
-                 hintText='Nickname'
+                 hintText={__('Nickname')}
                  onChange={this._updateNickname.bind(this)}/>
           {this._renderSubmitButton()}
         </div>

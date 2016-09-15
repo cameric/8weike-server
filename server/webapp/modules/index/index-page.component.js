@@ -23,7 +23,7 @@ class IndexPage extends React.Component {
 
   render() {
     return (
-      <DocumentTitle title="8WeiKe - Index">
+      <DocumentTitle title={__('8WeiKe - Index')}>
         <div>
           <NavBar />
           <span>Version: {this.props.globalInfo.version}</span>
