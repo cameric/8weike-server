@@ -41,8 +41,20 @@ function match(req, res, next) {
         }, ce(router.RouterContext, props));
 
         // If we got props then we matched a route and can render
+        // Note(tony): try ... catch block is ugly but we have to use it
+        // to catch the error in `renderToString`. Otherwise the request will hang.
+        //
+        // TODO(tony): re-enable server-side rendering (see trello card)
+        let result;
+        try {
+          result = ReactDOMServer.renderToString(context);
+        } catch (err) {
+          // Fallback to client-side rendering
+          result = "";
+        }
+
         res.status(200).render('index', {
-          reactContent: "", //ReactDOMServer.renderToString(context),
+          reactContent: result,
           reduxInitialState: serialize(Object.assign({}, store.getState(), {
             locale,
           })),
