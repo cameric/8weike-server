@@ -3,6 +3,7 @@ import { routerReducer } from 'react-router-redux';
 
 // Reducer components
 import authReducers from '../reducers/auth';
+import localeReducers from '../reducers/locale';
 import profileReducers from '../reducers/profile';
 
 function pageInitialState(state = {}, action) {
@@ -17,6 +18,7 @@ function pageInitialState(state = {}, action) {
 const appReducers = combineReducers({
   pageInitialState,
   auth: authReducers,
+  locale: localeReducers,
   profile: profileReducers,
   routing: routerReducer,
 });

@@ -1,4 +1,4 @@
-// This is reducers for all auth-related actions
+// This is reducers for all profile-related actions
 import * as _ from 'lodash/object'
 
 // state = state.profile

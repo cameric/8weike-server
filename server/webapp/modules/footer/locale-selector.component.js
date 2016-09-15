@@ -1,18 +1,12 @@
 import React from 'react';
 
-import LocaleSelector from './locale-selector';
-
 require('../../stylesheets/modules/locale-selector.scss');
 
-class Footer extends React.Component {
-  _changeLocale(locale) {
-    this.props.setLocale(locale);
-  }
-
+class LocaleSelector extends React.Component {
   _renderLocaleSelectBtn(msg, locale) {
     return (
       <button className='button-as-link'
-              onClick={this._changeLocale.bind(this, locale)}>{msg}</button>
+              onClick={() => { this.props.setLocale(locale); }}>{msg}</button>
     )
   }
 
@@ -27,8 +21,8 @@ class Footer extends React.Component {
   }
 }
 
-Footer.propTypes = {
+LocaleSelector.propTypes = {
   setLocale: React.PropTypes.func.isRequired,
 };
 
-export default Footer
+export default LocaleSelector
