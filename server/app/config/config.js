@@ -22,6 +22,12 @@ const defaults = {
       key: null,  // TODO
       cert: null, // TODO
     },
+    cookie: {
+      // TODO: Set this to true after we have HTTPS enabled
+      secure: false,
+      maxAge: 3600000,
+      httpOnly: true,
+    }
   },
   localeCookie: '8weike-user-locale',
   sessionSecret: '8weike-terces',

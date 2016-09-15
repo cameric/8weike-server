@@ -86,7 +86,7 @@ app.use(session({
   saveUninitialized: true,
   // NOTE(tony): before setting up HTTPS,
   // enable cookie transmission in HTTP insecurely
-  cookie: { secure: false, maxAge: 3600000 },
+  cookie: config.express.cookie,
 }));
 
 // Passport authentication
