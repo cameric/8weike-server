@@ -45,6 +45,7 @@ function match(req, res, next) {
           reactContent: ReactDOM.renderToString(context),
           reduxInitialState,
           nonceHash: config.csp.nonceHash,
+          locale: req.cookies[config.localeCookie] || 'zh',
         });
       });
     } else {
