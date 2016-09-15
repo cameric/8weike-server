@@ -54,20 +54,19 @@ class UserAuth extends React.Component {
   }
 
   _renderWithoutLogin() {
-    console.log(__("Sign Up"));
     return (
         <div className='user-auth'>
           <Modal ref="signupModal"
-                 targetButton={this._renderButton('Sign Up')}
-                 title={"Sign Up"}
+                 targetButton={this._renderButton(__('Sign Up'))}
+                 title={__('Sign Up')}
                  containerClassNames='user-auth__modal'
                  contentClassNames="signup-modal">
             <SignupModalContent transitToLogin={this._handleSignupTransitToLogin.bind(this)}
                                 onSignupSuccess={this._handleSignupSuccess.bind(this)}/>
           </Modal>
           <Modal ref="loginModal"
-                 targetButton={this._renderButton('Login')}
-                 title={__("Login")}
+                 targetButton={this._renderButton(__('Login'))}
+                 title={__('Login')}
                  containerClassNames='user-auth__modal'
                  contentClassNames="login-modal">
             <LoginModalContent transitToSignup={this._handleLoginTransitToSignup.bind(this)}

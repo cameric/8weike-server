@@ -21,15 +21,27 @@ const defaultPlugins = [
   new webpack.DefinePlugin({
     'global.NODE_ENV': `"${process.env.NODE_ENV}"`,
     'global.BUNDLE_ID': '"8WEIKE_WEB_CLIENT"',
-    // TODO: Implement locale support
-    'global.LOCALE': '"zh-CN"',
   }),
   new ExtractTextPlugin('style.bundle.css', {
     allChunks: true
-  })
+  }),
 ];
 
 module.exports = (langName, langLocale=null) => {
+  let plugins = [];
+  if (process.env.NODE_ENV === 'production') {
+    plugins = _.concat(defaultPlugins, [
+      new I18nPlugin(langLocale),
+      new webpack.optimize.DedupePlugin(),
+      new webpack.optimize.OccurrenceOrderPlugin(),
+      new webpack.optimize.UglifyJsPlugin(),
+    ])
+  } else {
+    plugins = _.concat(defaultPlugins, [
+      new I18nPlugin(langLocale),
+    ]);
+  }
+
   return {
     entry: (process.env.NODE_ENV === 'development') ? devEntryPoints : prodEntryPoints,
     devtool: 'sourcemap',
@@ -56,13 +68,6 @@ module.exports = (langName, langLocale=null) => {
         },
       ],
     },
-    plugins: (process.env.NODE_ENV === 'production') ?
-        _.concat(defaultPlugins, [
-          new I18nPlugin(langLocale),
-          new webpack.optimize.DedupePlugin(),
-          new webpack.optimize.OccurrenceOrderPlugin(),
-          new webpack.optimize.UglifyJsPlugin(),
-        ]) :
-        defaultPlugins,
+    plugins,
   }
 };

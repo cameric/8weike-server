@@ -9,7 +9,7 @@
     "start:test": "node server.bundle.js",
     "start:prod": "node server.bundle.js",
     "build": "npm run build:client && npm run build:server",
-    "build:client": "webpack --colors webpack.client.config.js",
+    "build:client": "webpack --config webpack.client.config.js",
     "build:server": "webpack --config webpack.server.config.js --colors",
     "test": "mocha --require ignore-styles --compilers js:babel-register --recursive"
   },
