@@ -12,6 +12,9 @@ const defaultPlugins = [
   new webpack.DefinePlugin({
     "global.GENTLY": JSON.stringify(false),
     'global.BUNDLE_ID': '"8WEIKE_SERVER"',
+    // NOTE(tony): A slightly sneaky hack to enable server-side render
+    // All occurrences will be replaced by subsequent client-side render
+    '__': (str) => { return str },
   }),
 ];
 const plugins = process.env.NODE_ENV === 'development' ?

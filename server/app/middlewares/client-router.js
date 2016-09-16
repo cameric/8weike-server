@@ -43,13 +43,15 @@ function match(req, res, next) {
         // If we got props then we matched a route and can render
         // Note(tony): try ... catch block is ugly but we have to use it
         // to catch the error in `renderToString`. Otherwise the request will hang.
-        //
-        // TODO(tony): re-enable server-side rendering (see trello card)
-        let result;
+        let result = null;
         try {
           result = ReactDOMServer.renderToString(context);
         } catch (err) {
           // Fallback to client-side rendering
+          if (process.env.NODE_ENV == 'development') {
+            console.log("Server-side rendering failed with error:");
+            console.log(err);
+          }
           result = "";
         }
 
