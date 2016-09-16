@@ -4,7 +4,7 @@ machine:
   python:
     version: 2.7.3
   node:
-    version: 5.5.0
+    version: 6.1.0
   services:
     - docker
     - mysql
