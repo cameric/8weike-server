@@ -2,5 +2,5 @@
 	"Login": "登陆",
 	"Credential already exists!": "用户已存在!",
 	"Incorrect captcha response!": "验证码错误!",
-	"__ is not defined": "__ is not defined"
+	"Code is incorrect!": "短信验证码错误!"
 }

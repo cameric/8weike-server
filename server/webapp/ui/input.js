@@ -18,7 +18,7 @@ class Input extends React.Component {
   _validateInput(inputValue) {
     if (this.props.isRequired && inputValue === '') {
       this.setState({
-        errorText: 'This field is required!',
+        errorText: __('This field is required!'),
       });
       return false;
     } else {
