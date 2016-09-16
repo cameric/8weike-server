@@ -15,8 +15,8 @@ const reducers = require('../../webapp/shared/reducers').default;
 const ce = React.createElement;
 
 function loadReduxInitialState(props, store) {
-  let { query, params } = props;
-  let component = props.components[props.components.length - 1].WrappedComponent;
+  const { query, params } = props;
+  const component = props.components[props.components.length - 1].WrappedComponent;
   return _.has(component, 'fetchData') ?
     component.fetchData({ query, params, store }) :
     Promise.resolve();
@@ -35,7 +35,7 @@ function match(req, res, next) {
       // Server-side rendering of initial state
       const store = configureStore(reducers);
       loadReduxInitialState(props, store).then(() => {
-        const locale = req.cookies[config.localeCookie] || 'zh-CN';
+        const locale = req.cookies[config.locale.cookie] || config.locale.default;
         const context = ce(Redux.Provider, {
           store,
         }, ce(router.RouterContext, props));
@@ -46,13 +46,13 @@ function match(req, res, next) {
         let result = null;
         try {
           result = ReactDOMServer.renderToString(context);
-        } catch (err) {
+        } catch (renderErr) {
           // Fallback to client-side rendering
-          if (process.env.NODE_ENV == 'development') {
-            console.log("Server-side rendering failed with error:");
-            console.log(err);
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Server-side rendering failed with error:');
+            console.log(renderErr);
           }
-          result = "";
+          result = '';
         }
 
         res.status(200).render('index', {

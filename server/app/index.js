@@ -6,8 +6,7 @@ const helmet = require('helmet');
 const path = require('path');
 const passport = require('passport');
 const session = require('express-session');
-const redis = require('redis');
-const redisStore = require('connect-redis')(session);
+const RedisStore = require('connect-redis')(session);
 
 const config = require('./config/config');
 const passportConfig = require('./config/passport');
@@ -62,10 +61,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Configure i18n
 i18n.configure({
-  locales: ['zh-CN', 'en'],
-  defaultLocale: 'zh-CN',
-  cookie: config.localeCookie,
-  directory: __dirname + '/locales',
+  locales: config.locale.supported,
+  defaultLocale: config.locale.default,
+  cookie: config.locale.cookie,
+  directory: path.join(__dirname, '/locales'),
   logDebugFn: (msg) => {
     if (process.env.NODE_ENV === 'development') console.log('debug', msg);
   },
@@ -81,7 +80,7 @@ app.use(i18n.init);
 // Configure session
 app.use(session({
   secret: config.sessionSecret,
-  store: new redisStore(config.redis),
+  store: new RedisStore(config.redis),
   resave: false,
   saveUninitialized: true,
   // NOTE(tony): before setting up HTTPS,

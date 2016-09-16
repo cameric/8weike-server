@@ -89,7 +89,7 @@ function loginWithPhone(phone, password) {
  * @param locale {string} Optional locale used to validate phone. Default to zh-CN
  * @returns {Promise.<Object>}
  */
-function validatePhoneNumber(phone, locale='zh-CN') {
+function validatePhoneNumber(phone, locale = config.locale.default) {
   if ((phone == null) || !validator.isMobilePhone(phone, locale)) {
     return Promise.reject(new Promise.OperationalError('Invalid phone number.'));
   }
@@ -114,7 +114,7 @@ function validatePassword(password) {
  * @param locale {string} Optional locale used to validate phone. Default to zh-CN
  * @returns {Promise.<TResult>} - A promise that fulfills when the credential is inserted.
  */
-function saveToDatabase(credential, locale='zh-CN') {
+function saveToDatabase(credential, locale = config.locale.default) {
   return validatePhoneNumber(credential.phone, locale)
       .then(() => { // Validate PW hash length
         // All bcrypt hashes are 60 chars long, by definition --- this is not configurable
@@ -217,10 +217,11 @@ function updatePassword(id, password) {
 function updateProfileId(id, profileId) {
   return findById(id, ['profile_id']).then((credential) => {
     if (credential.profile_id) {
-      return Promise.reject(Promise.OperationalError('Cannot update profile ID after it is set.'));
+      return Promise.reject(
+          new Promise.OperationalError('Cannot update profile ID after it is set.'));
     }
     return updateById(id, { profile_id: profileId });
-  })
+  });
 }
 
 module.exports = {

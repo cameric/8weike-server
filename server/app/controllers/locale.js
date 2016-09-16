@@ -6,7 +6,7 @@ const config = require('../config/config');
 function set(req, res) {
   const { locale } = req.body;
   // Attach a locale cookie to client
-  res.cookie(config.localeCookie, locale, config.express.cookie);
+  res.cookie(config.locale.cookie, locale, config.express.cookie);
   res.status(200).send();
 }
 

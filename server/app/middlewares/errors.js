@@ -15,8 +15,10 @@ function logErrors(err, req, res, next) {
 
 // Localize error messages
 function localizeErrors(err, req, res, next) {
-  err.message = i18n.__(err.message || "");
-  next(err);
+  const errWithLocalizedMsg = err;
+  // eslint-disable-next-line no-underscore-dangle
+  errWithLocalizedMsg.message = i18n.__(err.message || 'An error occurred.');
+  next(errWithLocalizedMsg);
 }
 
 // Handle errors produced by Ajax requests
@@ -34,7 +36,7 @@ function clientErrorHandler(err, req, res, next) {
 
 // Handle errors produced by server-side failure.
 // Will render an error page to the client-side.
-function serverErrorHandler(err, req, res, next) {
+function serverErrorHandler(err, req, res) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
