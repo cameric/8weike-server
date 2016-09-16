@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
 import { webRequestAction } from '../../../../actions/utils';
 import { loginWithPhoneAction } from '../../../../actions/auth';
@@ -8,13 +8,13 @@ function mapStateToProps(state) {
   return {
     loginState: state.auth.login,
     hasProfile: state.auth.hasProfile,
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     loginWithPhone: (info) => {
-      dispatch(new webRequestAction({
+      dispatch(webRequestAction({
         url: '/api/login/phone',
         method: 'POST',
         body: {
@@ -22,12 +22,12 @@ function mapDispatchToProps(dispatch) {
           password: info.password,
         },
         nextAction: loginWithPhoneAction,
-      }))
+      }));
     },
-  }
+  };
 }
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(LoginModalContent)
+)(LoginModalContent);

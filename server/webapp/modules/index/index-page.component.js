@@ -14,7 +14,7 @@ class IndexPage extends React.Component {
     return store.dispatch(webRequestAction(constructInitialStatePayload({
       method: 'GET',
       url: '/api/global_info',
-    })))
+    })));
   }
 
   componentWillMount() {
@@ -31,7 +31,7 @@ class IndexPage extends React.Component {
           <Footer />
         </div>
       </DocumentTitle>
-    )
+    );
   }
 }
 
@@ -40,4 +40,4 @@ IndexPage.propTypes = {
   loadLoginStatus: React.PropTypes.func,
 };
 
-export default IndexPage
+export default IndexPage;

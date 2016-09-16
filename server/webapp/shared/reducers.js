@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 
 // Reducer components
@@ -11,7 +11,7 @@ function pageInitialState(state = {}, action) {
     case 'LOADED_INITIAL_STATE':
       return Object.assign({}, state, action.payload);
     default:
-      return state
+      return state;
   }
 }
 
@@ -23,4 +23,4 @@ const appReducers = combineReducers({
   routing: routerReducer,
 });
 
-export default appReducers
+export default appReducers;

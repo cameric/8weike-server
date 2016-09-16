@@ -21,20 +21,19 @@ class Input extends React.Component {
         errorText: __('This field is required!'),
       });
       return false;
-    } else {
-      for (const v of this.props.validators) {
-        if (!v.validator(inputValue)) {
-          this.setState({
-            errorText: v.errorText,
-          });
-          return false;
-        }
-      }
-      this.setState({
-        errorText: '',
-      });
-      return true;
     }
+    for (const v of this.props.validators) {
+      if (!v.validator(inputValue)) {
+        this.setState({
+          errorText: v.errorText,
+        });
+        return false;
+      }
+    }
+    this.setState({
+      errorText: '',
+    });
+    return true;
   }
 
   _handleInputChange(event) {
@@ -51,28 +50,29 @@ class Input extends React.Component {
 
   render() {
     return (
-      <TextField type={this.props.type}
-                 value={this.props.value}
-                 className={this.props.className}
-                 style={ {
-                   width: '',
-                   minWidth: '100px',
-                 } }
-                 disabled={this.props.disabled}
-                 errorText={this.state.errorText}
-                 errorStyle={ {
-                   top: '5px',
-                   marginTop: '-20px',
-                 } }
-                 floatingLabelText={this.props.hintText}
-                 onChange={this._handleInputChange.bind(this)}
-                 onBlur={this._handleInputBlur.bind(this)}
+      <TextField
+        type={this.props.type}
+        value={this.props.value}
+        className={this.props.className}
+        style={{
+          width: '',
+          minWidth: '100px',
+        }}
+        disabled={this.props.disabled}
+        errorText={this.state.errorText}
+        errorStyle={{
+          top: '5px',
+          marginTop: '-20px',
+        }}
+        floatingLabelText={this.props.hintText}
+        onChange={this._handleInputChange.bind(this)}
+        onBlur={this._handleInputBlur.bind(this)}
       >
         {this.props.children}
       </TextField>
-    )
+    );
   }
-};
+}
 
 Input.propTypes = {
   type: React.PropTypes.oneOf(['text', 'password']),

@@ -30,8 +30,8 @@ class PasswordStrengthMeter extends React.Component {
       },
       4: {
         label: __('Strong'),
-        color: '#91CA00'
-      }
+        color: '#91CA00',
+      },
     };
 
     this.state = {
@@ -41,11 +41,11 @@ class PasswordStrengthMeter extends React.Component {
     this.strength = {
       score: 0,
       warning: '',
-    }
+    };
   }
 
   componentDidMount() {
-    this.targetButton = ReactDOM.findDOMNode(this.refs['strengthMeterButton'])
+    this.targetButton = ReactDOM.findDOMNode(this.refs.strengthMeterButton);
   }
 
   componentDidUpdate() {
@@ -55,63 +55,68 @@ class PasswordStrengthMeter extends React.Component {
   }
 
   _closeStrengthMeter() {
-    this.setState({isVisible: false});
+    this.setState({ isVisible: false });
   }
 
   _toggleStrengthMeter(e) {
     e.preventDefault();
-    this.setState({isVisible: !this.state.isVisible});
+    this.setState({ isVisible: !this.state.isVisible });
   }
 
   _renderWarning() {
     if (this.strength.warning !== '') {
       return (
-        <p className='password-strength__warning'>
+        <p className="password-strength__warning">
           <b>Explanation: </b>
           {this.strength.warning}
         </p>
-      )
-    } else {
-      return null;
+      );
     }
+    return null;
   }
 
   render() {
     return (
       <div className={this.props.classNames}>
-        <FlatButton ref='strengthMeterButton'
-                    onTouchTap={this._toggleStrengthMeter.bind(this)}
-                    style={ {
-                      minWidth: 0,
-                      width: '30px',
-                      height: '33px',
-                    } }>
+        <FlatButton
+          ref="strengthMeterButton"
+          onTouchTap={this._toggleStrengthMeter.bind(this)}
+          style={{
+            minWidth: 0,
+            width: '30px',
+            height: '33px',
+          }}
+        >
           <div className="password-strength-target-icon"></div>
         </FlatButton>
-        <Popover anchorEl={this.targetButton}
-                 anchorOrigin={ { vertical: 'top', horizontal: 'right' } }
-                 onRequestClose={this._closeStrengthMeter.bind(this)}
-                 open={this.state.isVisible}
-                 targetOrigin={ { vertical: 'top', horizontal: 'left' } }>
-          <div className='password-strength'>
-            <h4 className='password-strength__title'>{__('Password Strength Meter')}</h4>
+        <Popover
+          anchorEl={this.targetButton}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          onRequestClose={this._closeStrengthMeter.bind(this)}
+          open={this.state.isVisible}
+          targetOrigin={{ vertical: 'top', horizontal: 'left' }}
+        >
+          <div className="password-strength">
+            <h4 className="password-strength__title">{__('Password Strength Meter')}</h4>
             <Divider />
-            <span className='password-strength__label'>
+            <span className="password-strength__label">
               {__('Your password is: ')}{this.strengthMappings[this.strength.score].label}
             </span>
-            <LinearProgress mode='determinate'
-                            value={parseInt(this.strength.score, 10)}
-                            color={this.strengthMappings[this.strength.score].color}
-                            min={0}
-                            max={4}
-                            style={ {
-                              marginBottom: '10px'
-                            } }/>
+            <LinearProgress
+              mode="determinate"
+              value={parseInt(this.strength.score, 10)}
+              color={this.strengthMappings[this.strength.score].color}
+              min={0}
+              max={4}
+              style={{
+                marginBottom: '10px',
+              }}
+            />
             {this._renderWarning()}
           </div>
         </Popover>
       </div>
-    )
+    );
   }
 }
 
@@ -120,4 +125,4 @@ PasswordStrengthMeter.propTypes = {
   classNames: React.PropTypes.string,
 };
 
-export default PasswordStrengthMeter
+export default PasswordStrengthMeter;

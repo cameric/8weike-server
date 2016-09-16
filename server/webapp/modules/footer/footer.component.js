@@ -7,11 +7,11 @@ require('../../stylesheets/modules/footer.scss');
 class Footer extends React.Component {
   render() {
     return (
-        <div className='footer'>
-          <LocaleSelector />
-        </div>
-    )
+      <div className="footer">
+        <LocaleSelector />
+      </div>
+    );
   }
 }
 
-export default Footer
+export default Footer;

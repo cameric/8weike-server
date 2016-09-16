@@ -1,14 +1,14 @@
 // The store in the production environment
 
 import promiseMiddleware from 'redux-promise';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 
 import webAPIMiddleware from '../../middlewares/api';
 import parseErrorMiddleware from '../../middlewares/parse-error';
 
 // A list of middlewares to be fed into Redux
 // Note that the order of middlewares matters.
-let middlewares = [
+const middlewares = [
   webAPIMiddleware,
   promiseMiddleware,
   parseErrorMiddleware,
@@ -27,4 +27,4 @@ function configureStore(reducers, initialState) {
       );
 }
 
-export default configureStore
+export default configureStore;

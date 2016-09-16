@@ -8,7 +8,7 @@ class Modal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isVisible: false
+      isVisible: false,
     };
   }
 
@@ -22,12 +22,12 @@ class Modal extends React.Component {
 
   _createTargetButton() {
     return React.cloneElement(this.props.targetButton, {
-      onClick: () => this._toggleVisibility()
-    })
+      onClick: () => this._toggleVisibility(),
+    });
   }
 
   _toggleVisibility() {
-    this.setState({isVisible: !this.state.isVisible});
+    this.setState({ isVisible: !this.state.isVisible });
   }
 
   _closeModal() {
@@ -39,18 +39,20 @@ class Modal extends React.Component {
     return (
       <div className={this.props.containerClassNames}>
         {this._createTargetButton()}
-        <Dialog contentClassName={this.props.contentClassNames}
-                contentStyle={ {
-                  width: ''
-                } }
-                open={this.state.isVisible}
-                onRequestClose={this._closeModal.bind(this)}
-                title={this.props.title}
-                autoScrollBodyContent={this.props.isContentScrollable}>
+        <Dialog
+          contentClassName={this.props.contentClassNames}
+          contentStyle={{
+            width: '',
+          }}
+          open={this.state.isVisible}
+          onRequestClose={this._closeModal.bind(this)}
+          title={this.props.title}
+          autoScrollBodyContent={this.props.isContentScrollable}
+        >
           {this.props.children}
         </Dialog>
       </div>
-    )
+    );
   }
 }
 
@@ -60,7 +62,7 @@ Modal.propTypes = {
   containerClassNames: React.PropTypes.string, // No inline style permitted
   contentClassNames: React.PropTypes.string, // No inline style permitted
   onClose: React.PropTypes.func,
-  isContentScrollable: React.PropTypes.bool
+  isContentScrollable: React.PropTypes.bool,
 };
 
 Modal.defaultProps = {
@@ -68,4 +70,4 @@ Modal.defaultProps = {
   onClose: noop,
 };
 
-export default Modal
+export default Modal;

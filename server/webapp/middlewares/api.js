@@ -13,11 +13,13 @@ export default store => next => action => {
     return next(action);
   }
 
-  let request = action.payload;
-  let { method, url, body, nextAction } = request;
+  const request = action.payload;
+  const { method, url, body } = request;
+  let { nextAction } = request;
 
-  if (!nextAction)
+  if (!nextAction) {
     nextAction = noopAction;
+  }
 
   // Construct a FSA action with a promise payload
   // and pass it down to redux-promise
@@ -25,7 +27,7 @@ export default store => next => action => {
     superagent(method, url)
       .set({
         'X-Requested-With': 'XMLHttpRequest',
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       })
       .send(JSON.stringify(body || {}))
@@ -38,5 +40,5 @@ export default store => next => action => {
       }, (error) => {
         reject(error);
       });
-  })))
-}
+  })));
+};

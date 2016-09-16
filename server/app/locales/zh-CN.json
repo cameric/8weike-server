@@ -3,5 +3,6 @@
 	"Credential already exists!": "用户已存在!",
 	"Incorrect captcha response!": "验证码错误!",
 	"Code is incorrect!": "短信验证码错误!",
-	"An error occurred": "发生错误"
+	"An error occurred": "发生错误",
+	"User has not set up a profile yet!": "User has not set up a profile yet!"
 }

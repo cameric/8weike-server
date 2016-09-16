@@ -2,7 +2,7 @@
 
 import promiseMiddleware from 'redux-promise';
 import createLogger from 'redux-logger';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 
 import webAPIMiddleware from '../../middlewares/api';
 import parseErrorMiddleware from '../../middlewares/parse-error';
@@ -10,14 +10,14 @@ import parseErrorMiddleware from '../../middlewares/parse-error';
 // A list of middlewares to be fed into Redux
 // Note that the order of middlewares matters.
 
-let middlewares = [
+const middlewares = [
   webAPIMiddleware,
   promiseMiddleware,
   parseErrorMiddleware,
 ];
 
 // Only log Redux state changes on client side
-if (global.BUNDLE_ID === "8WEIKE_WEB_CLIENT") {
+if (global.BUNDLE_ID === '8WEIKE_WEB_CLIENT') {
   const loggerMiddleware = createLogger();
   middlewares.push(loggerMiddleware);
 }
@@ -35,4 +35,4 @@ function configureStore(reducers, initialState) {
       );
 }
 
-export default configureStore
+export default configureStore;
