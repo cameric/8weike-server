@@ -1,7 +1,5 @@
 const Promise = require('bluebird');
-const validator = require('validator');
 
-const config = require('../config/config');
 const credentialModel = require('./credential');
 const db = require('../database');
 

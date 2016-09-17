@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
 import UserAuth from './user-auth.component';
 import { webRequestAction } from '../../../actions/utils';
@@ -12,29 +12,29 @@ function mapStateToProps(state) {
     loginState: state.auth.login,
     signupState: state.auth.signup,
     profile: state.profile.info,
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     loadProfileById: () => {
-      dispatch(new webRequestAction({
-        url: `/api/profile/info`,
+      dispatch(webRequestAction({
+        url: '/api/profile/info',
         method: 'GET',
         nextAction: loadProfileByIdAction,
-      }))
+      }));
     },
     logout: () => {
-      dispatch(new webRequestAction({
+      dispatch(webRequestAction({
         url: '/api/logout',
         method: 'GET',
         nextAction: logoutAction,
-      }))
-    }
-  }
+      }));
+    },
+  };
 }
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(UserAuth)
+)(UserAuth);

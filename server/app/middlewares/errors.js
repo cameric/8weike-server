@@ -1,5 +1,6 @@
 // The middlewares serve all error handling
 const Promise = require('bluebird');
+const i18n = require('i18n');
 
 // Log raw error messages to the console.
 // Will only be applied in development environment.
@@ -10,6 +11,14 @@ function logErrors(err, req, res, next) {
     console.error(err);
   }
   next(err);
+}
+
+// Localize error messages
+function localizeErrors(err, req, res, next) {
+  const errWithLocalizedMsg = err;
+  // eslint-disable-next-line no-underscore-dangle
+  errWithLocalizedMsg.message = i18n.__(err.message || 'An error occurred.');
+  next(errWithLocalizedMsg);
 }
 
 // Handle errors produced by Ajax requests
@@ -27,7 +36,7 @@ function clientErrorHandler(err, req, res, next) {
 
 // Handle errors produced by server-side failure.
 // Will render an error page to the client-side.
-function serverErrorHandler(err, req, res, next) {
+function serverErrorHandler(err, req, res) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
@@ -48,6 +57,7 @@ function notFoundError(req, res) {
 
 module.exports = {
   logErrors,
+  localizeErrors,
   clientErrorHandler,
   serverErrorHandler,
   notFoundError,

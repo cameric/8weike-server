@@ -10,6 +10,7 @@ const auth = require('../middlewares/auth');
 
 // All Router modules are imported here
 const captchaRouter = require('./auth/captcha');
+const localeRouter = require('./locale');
 const loginRouter = require('./auth/login');
 const profileRouter = require('./profile');
 const signupRouter = require('./auth/signup');
@@ -22,10 +23,10 @@ const appRouter = express.Router(); // eslint-disable-line new-cap
 
 // Api for showing global information about the company
 appRouter.get('/global_info', (req, res) => {
-  res.send(JSON.stringify({
+  res.status(200).send({
     version: 'Alpha',
     company: 'Cameric',
-  }));
+  });
 });
 
 // Authentication-related APIs
@@ -36,5 +37,8 @@ appRouter.use('/captcha', captchaRouter);
 
 // Profile-related APIs
 appRouter.use('/profile', profileRouter);
+
+// Locale-related APIs
+appRouter.use('/locale', localeRouter);
 
 module.exports = appRouter;

@@ -2,7 +2,7 @@
 
 const _ = require('lodash/core');
 const React = require('react');
-const ReactDOM = require('react-dom/server');
+const ReactDOMServer = require('react-dom/server');
 const router = require('react-router');
 const Redux = require('react-redux');
 const serialize = require('serialize-javascript');
@@ -15,8 +15,8 @@ const reducers = require('../../webapp/shared/reducers').default;
 const ce = React.createElement;
 
 function loadReduxInitialState(props, store) {
-  let { query, params } = props;
-  let component = props.components[props.components.length - 1].WrappedComponent;
+  const { query, params } = props;
+  const component = props.components[props.components.length - 1].WrappedComponent;
   return _.has(component, 'fetchData') ?
     component.fetchData({ query, params, store }) :
     Promise.resolve();
@@ -35,16 +35,33 @@ function match(req, res, next) {
       // Server-side rendering of initial state
       const store = configureStore(reducers);
       loadReduxInitialState(props, store).then(() => {
-        const reduxInitialState = serialize(store.getState());
+        const locale = req.cookies[config.locale.cookie] || config.locale.default;
         const context = ce(Redux.Provider, {
           store,
         }, ce(router.RouterContext, props));
 
         // If we got props then we matched a route and can render
+        // Note(tony): try ... catch block is ugly but we have to use it
+        // to catch the error in `renderToString`. Otherwise the request will hang.
+        let result = null;
+        try {
+          result = ReactDOMServer.renderToString(context);
+        } catch (renderErr) {
+          // Fallback to client-side rendering
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Server-side rendering failed with error:');
+            console.log(renderErr);
+          }
+          result = '';
+        }
+
         res.status(200).render('index', {
-          reactContent: ReactDOM.renderToString(context),
-          reduxInitialState,
+          reactContent: result,
+          reduxInitialState: serialize(Object.assign({}, store.getState(), {
+            locale,
+          })),
           nonceHash: config.csp.nonceHash,
+          locale,
         });
       });
     } else {

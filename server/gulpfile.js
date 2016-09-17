@@ -14,7 +14,7 @@ const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 
 const config = require('./app/config/config');
-const clientWebappConfig = require('./webpack.config');
+const clientWebappConfig = require('./webpack.client.config.template')('en');
 const serverWebappConfig = require('./webpack.server.config');
 
 const SOURCE_GLOBS = [

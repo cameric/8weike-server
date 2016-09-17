@@ -17,12 +17,12 @@ class App extends React.Component {
           { this.props.children }
         </MuiThemeProvider>
       </DocumentTitle>
-    )
+    );
   }
 }
 
 export default (
   <Route path="/" component={App}>
-    <IndexRoute component={IndexPage}/>
+    <IndexRoute component={IndexPage} />
   </Route>
 );
