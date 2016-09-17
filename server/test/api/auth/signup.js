@@ -256,7 +256,7 @@ describe('Signup Routing', () => {
     describe('Invalid input', () => {
       it('(400) Responds Bad Request if user has not completed step 1 of signup', (done) => {
         request(app)
-            .post('/api/signup/verify')
+            .post('/api/signup/resend_code')
             .send()
             .expect(400)
             .end((err, _) => {
