@@ -9,10 +9,10 @@ function sendCode(pendingCredential) {
 }
 
 function resendCode(req, res, next) {
-  const pendingCredential = req.session.pending_credential;
+  const pendingCredential = req.session.pendingCredential;
 
   if (!pendingCredential) {
-    const err = new Promise.OperationalError('User has not completed step 1 of signup.');
+    const err = new Promise.OperationalError('User is not pending signup.');
     return next(Object.assign(err, { status: 400 }));
   }
 
@@ -70,7 +70,14 @@ function verify(req, res, next) {
   const { code } = req.body;
   const session = req.session;
 
-  tfaService.verifyCode(req.session.pendingCredential.tfa_secret, code)
+  const pendingCredential = session.pendingCredential;
+  if (!pendingCredential) {
+    const err = new Promise.OperationalError('User is not pending signup.');
+    next(Object.assign(err, { status: 400 }));
+    return;
+  }
+
+  tfaService.verifyCode(pendingCredential.tfa_secret, code)
       .then(() => credentialModel.saveToDatabase(req.session.pendingCredential))
       .then((newCredentialEntry) => {
         // Automatically login after the credential is created
