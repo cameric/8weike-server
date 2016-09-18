@@ -1,0 +1,39 @@
+{
+  "8WeiKe - Index": "8Weike - 主页",
+
+  "This field is required!": "这是一个必填项!",
+  "Sign Up": "注册",
+  "Phone Number": "电话号码",
+  "Password": "密码",
+  "Confirm Password": "确认密码",
+  "Captcha Numbers": "验证码",
+  "Already a member?": "已有账户?",
+  "Not a valid phone number!": "手机号格式错误!",
+  "Password should be at least 8 characters!": "密码长度至少为8!",
+  "Passwords do not match!": "密码不一致!",
+  "Code length should be 6!": "验证码长度应为6!",
+  "Unable to load Captcha!": "验证码加载失败!",
+
+  "Password Strength Meter": "密码强度",
+  "Your password is: ": "您的密码强度为: ",
+  "Worst": "极弱",
+  "Bad": "弱",
+  "Weak": "一般",
+  "Good": "良好",
+  "String": "强",
+
+  "A passcode has been sent to your phone": "验证码已发送至您的手机",
+  "6-digit Passcode": "6位数字验证码",
+  "Confirm Phone Number": "验证手机",
+
+  "Nickname": "昵称",
+  "Finish": "完成",
+
+  "Login": "登陆",
+  "Login with Wechat": "微信登录",
+  "Login with Weibo": "微博登陆",
+  "OR": "或",
+  "Forgot Password?": "忘记密码?",
+  "Don't have an account?": "还没有账户?",
+  "Logout": "退出登录"
+}

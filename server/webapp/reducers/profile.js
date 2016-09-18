@@ -1,5 +1,5 @@
-// This is reducers for all auth-related actions
-import * as _ from 'lodash/object'
+// This is reducers for all profile-related actions
+import * as _ from 'lodash/object';
 
 // state = state.profile
 function profileReducers(state = {}, action) {
@@ -9,13 +9,13 @@ function profileReducers(state = {}, action) {
         return _.merge({}, state, {
           error: action.payload.error,
         });
-      } else {
-        return _.merge({}, state, {
-          info: {
-            id: action.payload.profileId,
-          },
-        });
       }
+
+      return _.merge({}, state, {
+        info: {
+          id: action.payload.profileId,
+        },
+      });
 
     case 'LOAD_PROFILE_BY_ID':
       // Use loaded attribute to separate initial loading
@@ -24,11 +24,11 @@ function profileReducers(state = {}, action) {
         return _.merge({}, state, {
           error: action.payload.error,
         });
-      } else {
-        return _.merge({}, state, {
-          info: action.payload,
-        });
       }
+
+      return _.merge({}, state, {
+        info: action.payload,
+      });
     default:
       return state;
   }

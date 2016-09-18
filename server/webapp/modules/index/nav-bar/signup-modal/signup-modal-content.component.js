@@ -32,14 +32,15 @@ class SignupModalContent extends React.Component {
 
     this._phoneValidators = [
       {
-        validator: (phone) => validator.isMobilePhone(phone, global.LOCALE),
-        errorText: 'Not a valid phone number!',
-      }
+        // TODO: Add functionality to add phone number other than China's
+        validator: (phone) => validator.isMobilePhone(phone, 'zh-CN'),
+        errorText: __('Not a valid phone number!'),
+      },
     ];
     this._passwordValidators = [
       {
-        validator: (password) => validator.isLength(password, {min: 8, max: undefined}),
-        errorText: 'Password should be at least 8 characters!',
+        validator: (password) => validator.isLength(password, { min: 8, max: undefined }),
+        errorText: __('Password should be at least 8 characters!'),
       },
       // TODO: Find a better way to handle password requirement
       //{
@@ -50,15 +51,15 @@ class SignupModalContent extends React.Component {
     this._confirmPasswordValidators = [
       {
         validator: (confirmPassword) => confirmPassword === this.state.credential.password,
-        errorText: 'Passwords do not match!',
-      }
+        errorText: __('Passwords do not match!'),
+      },
     ];
     this._tfaValidators = [
       {
         validator: (tfaCode) => validator.isNumeric(tfaCode) &&
-          validator.isLength(tfaCode, {min: 6, max: 6}),
-        errorText: 'Code should contain 6 digits!',
-      }
+          validator.isLength(tfaCode, { min: 6, max: 6 }),
+        errorText: 'Code length should be 6!',
+      },
     ];
   }
 
@@ -70,17 +71,17 @@ class SignupModalContent extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.state.status === 'loading' &&
-        nextProps.signupState != this.props.signupState) {
+        nextProps.signupState !== this.props.signupState) {
       if (nextProps.signupState.status === 'error') {
         // Reset user input if error
-        this.setState({status: 'waiting'});
+        this.setState({ status: 'waiting' });
         // Regenerate a new captcha if anything fails
         this.props.generateCaptcha();
       } else if (nextProps.signupState.status === 'success') {
         // Proceed to next step
         this.setState({
           status: 'waiting',
-          step: nextProps.signupState.nextStep
+          step: nextProps.signupState.nextStep,
         });
       }
     }
@@ -91,39 +92,44 @@ class SignupModalContent extends React.Component {
   _renderErrorMsg() {
     if (this.props.signupState && this.props.signupState.status === 'error') {
       return (
-        <ErrorBanner errorMsg={this.props.signupState.error.message}/>
+        <ErrorBanner errorMsg={this.props.signupState.error.message} />
       );
-    } else {
-      return null;
     }
+    return null;
   }
 
   _renderCaptcha() {
     if (this.props.signupState && this.props.signupState.captcha) {
       if (this.props.signupState.captcha.picture) {
         return (
-            <div>
-              <Input ref="captchaInput"
-                     value={this.state.credential.captcha}
-                     isRequired={true}
-                     className='signup-modal-content__captcha-input'
-                     disabled={this.state.status === 'loading'}
-                     hintText='Captcha Numbers'
-                     onChange={this._updateCaptcha.bind(this)}/>
-              <button className="button-as-link"
-                      onClick={this.props.generateCaptcha.bind(this)}>
-                <img src={ `data:image/png;base64,${this.props.signupState.captcha.picture}` }/>
-              </button>
-            </div>
-        )
-      } else {
-        return (
-            <div>Unable to load Captcha!</div>
-        )
+          <div>
+            <Input
+              ref="captchaInput"
+              value={this.state.credential.captcha}
+              isRequired={true}
+              className="signup-modal-content__captcha-input"
+              disabled={this.state.status === 'loading'}
+              hintText={__('Captcha Numbers')}
+              onChange={this._updateCaptcha.bind(this)}
+            />
+            <button
+              className="button-as-link"
+              onClick={this.props.generateCaptcha}
+            >
+              <img
+                alt={__('Captcha text')}
+                src={`data:image/png;base64,${this.props.signupState.captcha.picture}`}
+              />
+            </button>
+          </div>
+        );
       }
-    } else {
-      return null;
+
+      return (
+        <div>{__('Unable to load Captcha!')}</div>
+      );
     }
+    return null;
   }
 
   _renderTFAResendBtnContent() {
@@ -145,18 +151,20 @@ class SignupModalContent extends React.Component {
 
   _renderNextStepButton(info, handleTouchTap) {
     const buttonMsg = (this.state.status === 'waiting') ? info
-        : (<CircularProgress color={white} size={0.3} style={{ marginTop: '-7px' }}/>);
+        : (<CircularProgress color={white} size={0.3} style={{ marginTop: '-7px' }} />);
     return (
-      <FlatButton backgroundColor='#00BCD4'
-                  hoverColor='#0CB6C9'
-                  disabled={this.state.status === 'loading'}
-                  onTouchTap={handleTouchTap}
-                  style={ {
-                    width: '100%',
-                    margin: '20px 0 20px 0',
-                    color: 'white',
-                  } }>{buttonMsg}</FlatButton>
-    )
+      <FlatButton
+        backgroundColor="#00BCD4"
+        hoverColor="#0CB6C9"
+        disabled={this.state.status === 'loading'}
+        onTouchTap={handleTouchTap}
+        style={{
+          width: '100%',
+          margin: '20px 0 20px 0',
+          color: 'white',
+        }}
+      >{buttonMsg}</FlatButton>
+    );
   }
 
   // Helpers for the basic info step
@@ -209,7 +217,7 @@ class SignupModalContent extends React.Component {
   }
 
   _submitTFACode() {
-    this.setState({ status: 'loading'});
+    this.setState({ status: 'loading' });
     this.props.verifyTFACode({
       id: this.props.credentialId,
       phone: this.state.credential.phone,
@@ -221,71 +229,87 @@ class SignupModalContent extends React.Component {
     return (
       <div>
         {this._renderErrorMsg()}
-        <Input ref="phoneInput"
-               value={this.state.credential.phone}
-               className='signup-modal-content__input'
-               disabled={this.state.status === 'loading'}
-               isRequired={true}
-               hintText='Phone Number'
-               validators={this._phoneValidators}
-               onChange={this._updatePhone.bind(this)}/>
-        <div className='signup-modal-content__password-container'>
-          <PasswordStrength classNames='signup-modal-content__password-strength'
-                            password={this.state.credential.password}/>
-          <Input ref="passwordInput"
-                 type='password'
-                 value={this.state.credential.password}
-                 isRequired={true}
-                 className='signup-modal-content__input'
-                 disabled={this.state.status === 'loading'}
-                 hintText='Password'
-                 validators={this._passwordValidators}
-                 onChange={this._updatePassword.bind(this)}/>
+        <Input
+          ref="phoneInput"
+          value={this.state.credential.phone}
+          className="signup-modal-content__input"
+          disabled={this.state.status === 'loading'}
+          isRequired
+          hintText={__('Phone Number')}
+          validators={this._phoneValidators}
+          onChange={this._updatePhone.bind(this)}
+        />
+        <div className="signup-modal-content__password-container">
+          <PasswordStrength
+            classNames="signup-modal-content__password-strength"
+            password={this.state.credential.password}
+          />
+          <Input
+            ref="passwordInput"
+            type="password"
+            value={this.state.credential.password}
+            isRequired
+            className="signup-modal-content__input"
+            disabled={this.state.status === 'loading'}
+            hintText={__('Password')}
+            validators={this._passwordValidators}
+            onChange={this._updatePassword.bind(this)}
+          />
         </div>
-        <Input ref="confirmPasswordInput"
-               type="password"
-               value={this.state.credential.confirmPassword}
-               isRequired={true}
-               className='signup-modal-content__input'
-               disabled={this.state.status === 'loading'}
-               hintText='Confirm Password'
-               validators={this._confirmPasswordValidators}
-               onChange={this._updateConfirmPassword.bind(this)}/>
+        <Input
+          ref="confirmPasswordInput"
+          type="password"
+          value={this.state.credential.confirmPassword}
+          isRequired
+          className="signup-modal-content__input"
+          disabled={this.state.status === 'loading'}
+          hintText={__('Confirm Password')}
+          validators={this._confirmPasswordValidators}
+          onChange={this._updateConfirmPassword.bind(this)}
+        />
         {this._renderCaptcha()}
-        {this._renderNextStepButton('Sign Up', this._submitCredential.bind(this))}
+        {this._renderNextStepButton(__('Sign Up'), this._submitCredential.bind(this))}
         <span className="signup-modal-content__options">
-          Already a member?
-          <button className='signup-modal-content__switch-btn button-as-link'
-                  onClick={this.props.transitToLogin}>Login</button>
+          {__('Already a member?')}
+          <button
+            className="signup-modal-content__switch-btn button-as-link"
+            onClick={this.props.transitToLogin}
+          >{__('Login')}</button>
         </span>
       </div>
-    )
+    );
   }
 
   renderTFAStep() {
     return (
       <div>
         {this._renderErrorMsg()}
-        <span style={ {
-          display: 'block',
-          marginTop: '30px',
-        } }>
-          A passcode has been sent to your phone.
-          <button className="button-as-link signup-modal-content__tfa-resend-btn"
-                  disabled={this.state.shouldDisableTfaBtn}
-                  onClick={this._handleTFAResend.bind(this)}>
+        <span
+          style={{
+            display: 'block',
+            marginTop: '30px',
+          }}
+        >
+          {__('A passcode has been sent to your phone')}
+          <button
+            className="button-as-link signup-modal-content__tfa-resend-btn"
+            disabled={this.state.shouldDisableTfaBtn}
+            onClick={this._handleTFAResend.bind(this)}
+          >
             {this._renderTFAResendBtnContent()}
           </button>
         </span>
-        <Input value={this.state.tfaCode}
-               className='signup-modal-content__input'
-               isRequired={true}
-               hintText='6-digit Passcode'
-               validators={this._tfaValidators}
-               onChange={this._updateTFACode.bind(this)}/>
-        {this._renderNextStepButton('Confirm Phone Number', this._submitTFACode.bind(this))}
+        <Input
+          value={this.state.tfaCode}
+          className="signup-modal-content__input"
+          isRequired
+          hintText={__('6-digit Passcode')}
+          validators={this._tfaValidators}
+          onChange={this._updateTFACode.bind(this)}
+        />
+        {this._renderNextStepButton(__('Confirm Phone Number'), this._submitTFACode.bind(this))}
       </div>
-    )
+    );
   }
 
   render() {
@@ -295,18 +319,25 @@ class SignupModalContent extends React.Component {
       case 'tfa':
         return this.renderTFAStep();
       case 'profile':
-        return (<CreateProfileModal submitBtnMsg='Finish'
-                                    onSuccess={this.props.onSignupSuccess.bind(this)}/>);
+        return (
+          <CreateProfileModal
+            submitBtnMsg={__('Finish')}
+            onSuccess={this.props.onSignupSuccess.bind(this)}
+          />);
       default:
-        return (<span style={ {
-          display: 'block',
-          marginTop: '30px',
-        } }>Done</span>);
+        return (
+          <span
+            style={{
+              display: 'block',
+              marginTop: '30px',
+            }}
+          >Done</span>);
     }
   }
 }
 
 SignupModalContent.propTypes = {
+  credentialId: React.PropTypes.string,
   signupState: React.PropTypes.object,
   transitToLogin: React.PropTypes.func,
   onSignupSuccess: React.PropTypes.func,

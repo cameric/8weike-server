@@ -1,8 +1,9 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 
 // Reducer components
 import authReducers from '../reducers/auth';
+import localeReducers from '../reducers/locale';
 import profileReducers from '../reducers/profile';
 
 function pageInitialState(state = {}, action) {
@@ -10,15 +11,16 @@ function pageInitialState(state = {}, action) {
     case 'LOADED_INITIAL_STATE':
       return Object.assign({}, state, action.payload);
     default:
-      return state
+      return state;
   }
 }
 
 const appReducers = combineReducers({
   pageInitialState,
   auth: authReducers,
+  locale: localeReducers,
   profile: profileReducers,
   routing: routerReducer,
 });
 
-export default appReducers
+export default appReducers;

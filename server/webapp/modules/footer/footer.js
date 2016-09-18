@@ -1,6 +1,6 @@
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
-import NavBar from './nav-bar.component';
+import Footer from './footer.component';
 
 function mapStateToProps() {
   return {};
@@ -13,4 +13,4 @@ function mapDispatchToProps() {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(NavBar);
+)(Footer);

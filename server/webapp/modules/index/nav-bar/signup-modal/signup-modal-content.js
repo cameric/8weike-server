@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
 import { webRequestAction } from '../../../../actions/utils';
 import { signupWithPhoneCredentialAction,
@@ -8,15 +8,16 @@ import SignupModalContent from './signup-modal-content.component';
 
 function mapStateToProps(state) {
   return {
+    locale: (typeof state.locale === 'string') ? state.locale : 'zh-CN',
     signupState: state.auth.signup,
     credentialId: state.auth.id,
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     generateCaptcha: () => {
-      dispatch(new webRequestAction({
+      dispatch(webRequestAction({
         url: '/api/captcha',
         method: 'POST',
         body: {
@@ -27,10 +28,10 @@ function mapDispatchToProps(dispatch) {
           quality: 80,
         },
         nextAction: renderCaptchaInSignupAction,
-      }))
+      }));
     },
     sendCredential: (credential, captchaHash) => {
-      dispatch(new webRequestAction({
+      dispatch(webRequestAction({
         url: '/api/signup/phone/web',
         method: 'POST',
         body: {
@@ -40,23 +41,23 @@ function mapDispatchToProps(dispatch) {
           hash: captchaHash,
         },
         nextAction: signupWithPhoneCredentialAction,
-      }))
+      }));
     },
     resendTFACode: () => {
 
     },
     verifyTFACode: (credential, code) => {
-      dispatch(new webRequestAction({
+      dispatch(webRequestAction({
         url: '/api/signup/verify',
         method: 'POST',
         body: { credential, code },
         nextAction: signupWithPhoneTFAAction,
-      }))
+      }));
     },
-  }
+  };
 }
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(SignupModalContent)
+)(SignupModalContent);

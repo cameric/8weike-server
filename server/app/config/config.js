@@ -22,6 +22,17 @@ const defaults = {
       key: null,  // TODO
       cert: null, // TODO
     },
+    cookie: {
+      // TODO: Set this to true after we have HTTPS enabled
+      secure: false,
+      maxAge: 3600000,
+      httpOnly: true,
+    },
+  },
+  locale: {
+    default: 'zh-CN',
+    supported: ['zh-CN', 'en'],
+    cookie: '8weike-user-locale',
   },
   sessionSecret: '8weike-terces',
   crypto: {
@@ -54,4 +65,3 @@ const configs = {
 
 // Export only the config specified by NODE_ENV
 module.exports = configs[process.env.NODE_ENV];
-

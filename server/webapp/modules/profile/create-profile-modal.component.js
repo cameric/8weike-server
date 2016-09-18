@@ -12,7 +12,7 @@ class CreateProfileModal extends React.Component {
     this.state = {
       status: 'waiting',
       nickname: '',
-    }
+    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -39,31 +39,35 @@ class CreateProfileModal extends React.Component {
 
   _renderSubmitButton() {
     const buttonMsg = (this.state.status === 'waiting') ? this.props.submitBtnMsg
-        : (<CircularProgress color={white} size={0.3} style={{ marginTop: '-7px' }}/>);
+        : (<CircularProgress color={white} size={0.3} style={{ marginTop: '-7px' }} />);
     return (
-        <FlatButton backgroundColor='#00BCD4'
-                    hoverColor='#0CB6C9'
-                    disabled={this.state.status === 'loading'}
-                    onTouchTap={this._submitProfile.bind(this)}
-                    style={ {
-                    width: '100%',
-                    margin: '20px 0 0 0',
-                    color: 'white',
-                  } }>{buttonMsg}</FlatButton>
-    )
+      <FlatButton
+        backgroundColor="#00BCD4"
+        hoverColor="#0CB6C9"
+        disabled={this.state.status === 'loading'}
+        onTouchTap={this._submitProfile.bind(this)}
+        style={{
+          width: '100%',
+          margin: '20px 0 0 0',
+          color: 'white',
+        }}
+      >{buttonMsg}</FlatButton>
+    );
   }
 
   render() {
     return (
-        <div>
-          <Input value={this.state.nickname}
-                 className='signup-modal-content__input'
-                 isRequired={true}
-                 hintText='Nickname'
-                 onChange={this._updateNickname.bind(this)}/>
-          {this._renderSubmitButton()}
-        </div>
-    )
+      <div>
+        <Input
+          value={this.state.nickname}
+          className="signup-modal-content__input"
+          isRequired
+          hintText={__('Nickname')}
+          onChange={this._updateNickname.bind(this)}
+        />
+        {this._renderSubmitButton()}
+      </div>
+    );
   }
 }
 
@@ -71,6 +75,7 @@ CreateProfileModal.propTypes = {
   submitBtnMsg: React.PropTypes.string,
   onSuccess: React.PropTypes.func,
 
+  profile: React.PropTypes.object,
   createProfile: React.PropTypes.func,
   logoutIfNotSet: React.PropTypes.func,
 };

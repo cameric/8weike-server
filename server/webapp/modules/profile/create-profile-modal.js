@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
 import { webRequestAction } from '../../actions/utils';
 import { logoutAction } from '../../actions/auth';
@@ -8,31 +8,30 @@ import CreateProfileModal from './create-profile-modal.component';
 function mapStateToProps(state) {
   return {
     profile: state.profile.info,
-    loginState: state.auth.login,
-  }
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     createProfile: (nickname) => {
-      dispatch(new webRequestAction({
+      dispatch(webRequestAction({
         url: '/api/profile',
         method: 'POST',
         body: { nickname },
         nextAction: createProfileAction,
-      }))
+      }));
     },
     logoutIfNotSet: () => {
-      dispatch(new webRequestAction({
+      dispatch(webRequestAction({
         url: '/api/logout',
         method: 'GET',
         nextAction: logoutAction,
-      }))
-    }
-  }
+      }));
+    },
+  };
 }
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(CreateProfileModal)
+)(CreateProfileModal);

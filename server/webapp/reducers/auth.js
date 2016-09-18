@@ -1,5 +1,5 @@
 // This is reducers for all auth-related actions
-import * as _ from 'lodash/object'
+import * as _ from 'lodash/object';
 
 // state = state.auth
 function authReducers(state = {}, action) {
@@ -11,17 +11,17 @@ function authReducers(state = {}, action) {
             currentStep: 'credential',
             status: 'error',
             error: action.payload.parsedError,
-          }
-        });
-      } else {
-        return _.merge({}, state, {
-          signup: {
-            currentStep: 'credential',
-            status: 'success',
-            nextStep: 'tfa',
-          }
+          },
         });
       }
+
+      return _.merge({}, state, {
+        signup: {
+          currentStep: 'credential',
+          status: 'success',
+          nextStep: 'tfa',
+        },
+      });
     case 'SIGNUP_WITH_PHONE_TFA':
       if (action.error) {
         return _.merge({}, state, {
@@ -29,75 +29,76 @@ function authReducers(state = {}, action) {
             currentStep: 'tfa',
             status: 'error',
             error: action.payload.parsedError,
-          }
-        });
-      } else {
-        return _.merge({}, state, {
-          uid: action.payload.id,
-          hasProfile: false,
-          signup: {
-            currentStep: 'tfa',
-            status: 'success',
-            nextStep: 'profile',
-          }
+          },
         });
       }
+
+      return _.merge({}, state, {
+        uid: action.payload.id,
+        hasProfile: false,
+        signup: {
+          currentStep: 'tfa',
+          status: 'success',
+          nextStep: 'profile',
+        },
+      });
     case 'RENDER_CAPTCHA_IN_SIGNUP':
       if (action.error) {
         return _.merge({}, state, {
-          signup: { captcha: {} }
-        });
-      } else {
-        return _.merge({}, state, {
-          signup: {
-            captcha: action.payload
-          }
+          signup: { captcha: {} },
         });
       }
+
+      return _.merge({}, state, {
+        signup: {
+          captcha: action.payload,
+        },
+      });
     case 'LOGIN_WITH_PHONE':
       if (action.error) {
         return Object.assign({}, state, {
           login: {
             status: 'error',
             error: action.payload.parsedError,
-          }
-        });
-      } else {
-        return Object.assign({}, state, {
-          uid: action.payload.id,
-          hasProfile: action.payload.profileId != null,
-          login: {
-            status: 'success',
-          }
+          },
         });
       }
+
+      return Object.assign({}, state, {
+        uid: action.payload.id,
+        hasProfile: action.payload.profileId != null,
+        login: {
+          status: 'success',
+        },
+      });
     case 'LOAD_LOGIN_STATUS':
       if (action.error) {
         return Object.assign({}, state, {
           hasProfile: false,
           uid: null,
         });
-      } else {
-        return Object.assign({}, state, {
-          hasProfile: true,
-          uid: action.payload.id,
-        });
       }
+
+      return Object.assign({}, state, {
+        hasProfile: true,
+        uid: action.payload.id,
+      });
     case 'LOGOUT':
       if (action.error) {
         return Object.assign({}, state, {
           login: {
             status: 'error',
             error: action.payload.parsedError,
-          }
+          },
         });
-      } else {
-        location.reload();
-        return state;
       }
+
+      // eslint-disable-next-line no-undef
+      location.reload();
+      return state;
     default:
       return state;
   }
 }
 
-export default authReducers
+export default authReducers;

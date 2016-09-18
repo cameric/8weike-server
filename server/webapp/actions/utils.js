@@ -32,5 +32,5 @@ export const constructInitialStatePayload = (body) => {
     nextAction: loadedInitialStateAction,
   }, body, {
     url: `http://localhost:8080${body.url}`,
-  })
+  });
 };

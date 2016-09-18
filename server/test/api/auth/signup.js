@@ -5,8 +5,9 @@ const Promise = require('bluebird');
 const app = require('../../../app');
 const credentialModel = require('../../../app/models/credential');
 const db = require('../../../app/database');
+const expect = require('chai').expect;
 const fixture = require('../../fixtures/user');
-const tfa = require('../../../app/services/tfa');
+const tfaService = require('../../../app/services/tfa');
 const utils = require('../../utils');
 
 const bcrypt = Promise.promisifyAll(require('bcrypt'));
@@ -14,12 +15,6 @@ const request = require('supertest');
 const sinon = require('sinon');
 
 describe('Signup Routing', () => {
-  before(() => {
-    // Stub out sms service so that it won't send code
-    let stub = sinon.stub(tfa, 'sendCode');
-    stub.returns(Promise.resolve());
-  });
-
   beforeEach((done) => {
     // Truncate the credential table
     db.truncate(['credential', 'profile'])
@@ -31,14 +26,12 @@ describe('Signup Routing', () => {
   });
 
   after((done) => {
-    tfa.sendCode.restore();
-
     db.truncate(['credential', 'profile'])
         .then(done.bind(null, null))
         .catch(done);
   });
 
-  describe('Phone on mobile', () => {
+  describe('POST /api/signup/phone/mobile', () => {
     describe('valid input', () => {
       it('(200) Responds OK when given valid credentials for a new credential', (done) => {
         const data = {
@@ -104,7 +97,7 @@ describe('Signup Routing', () => {
     });
   });
 
-  describe('Phone on web', () => {
+  describe('POST /api/signup/phone/web', () => {
     describe('valid input with various captcha', () => {
       const fixtureCaptcha = 'ABCDEF';
       const fixtureUser = {
@@ -153,11 +146,11 @@ describe('Signup Routing', () => {
     };
 
     // Spy on the update function
-    const spy = sinon.spy(credentialModel, 'saveToDatabase');
-    const verifyCodeStub = sinon.stub(tfa, 'verifyCode');
+    const saveToDatabaseSpy = sinon.spy(credentialModel, 'saveToDatabase');
+    const verifyCodeStub = sinon.stub(tfaService, 'verifyCode');
 
     afterEach(() => {
-      spy.reset();
+      saveToDatabaseSpy.reset();
       verifyCodeStub.restore();
     });
 
@@ -180,7 +173,8 @@ describe('Signup Routing', () => {
                 if (err) return done(err);
 
                 try {
-                  sinon.assert.calledWith(spy, sinon.match({ phone: signupInfo.phone }));
+                  sinon.assert.calledWith(saveToDatabaseSpy,
+                      sinon.match({ phone: signupInfo.phone }));
                 } catch (e) {
                   return done(e);
                 }
@@ -205,11 +199,10 @@ describe('Signup Routing', () => {
               .send(data)
               .expect(400)
               .end((err, _) => {
-                sinon.assert.notCalled(spy);
                 if (err) return done(err);
 
                 try {
-                  sinon.assert.notCalled(spy);
+                  sinon.assert.notCalled(saveToDatabaseSpy);
                 } catch (e) {
                   return done(e);
                 }
@@ -217,6 +210,64 @@ describe('Signup Routing', () => {
                 return done();
               });
         }).catch(done);
+      });
+    });
+  });
+
+  describe('POST /api/signup/resend_code', () => {
+    const signupInfo = {
+      phone: '18610322136',
+      password: 'p@55w0rd',
+    };
+
+    beforeEach((done) => {
+      // Spy on the TFA service sendCode function
+      console.log('BEFORE_EACH');
+      sinon.spy(tfaService, 'sendCode');
+      done();
+    });
+
+    afterEach((done) => {
+      console.log('AFTER_EACH');
+      tfaService.sendCode.restore();
+      done();
+    });
+
+    describe('Valid input', () => {
+      it('(200) Responds OK if user has completed step 1 of signup', (done) => {
+        const agent = request.agent(app);
+
+        utils.signupWithAgent(agent, signupInfo.phone, signupInfo.password).then(() => {
+          agent
+              .post('/api/signup/resend_code')
+              .send()
+              .expect(200)
+              .end((err, _) => {
+                if (err) return done(err);
+
+                const checkSendCode = () => { sinon.assert.callCount(tfaService.sendCode, 2); };
+                expect(checkSendCode).to.not.throw(Error);
+
+                return done();
+              });
+        }).catch(done);
+      });
+    });
+
+    describe('Invalid input', () => {
+      it('(400) Responds Bad Request if user has not completed step 1 of signup', (done) => {
+        request(app)
+            .post('/api/signup/resend_code')
+            .send()
+            .expect(400)
+            .end((err, _) => {
+              if (err) return done(err);
+
+              const checkSendCode = () => { sinon.assert.notCalled(tfaService.sendCode); };
+              expect(checkSendCode).to.not.throw(Error);
+
+              return done();
+            });
       });
     });
   });

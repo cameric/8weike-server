@@ -1,12 +1,12 @@
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const express = require('express');
+const i18n = require('i18n');
 const helmet = require('helmet');
 const path = require('path');
 const passport = require('passport');
 const session = require('express-session');
-const redis = require('redis');
-const redisStore = require('connect-redis')(session);
+const RedisStore = require('connect-redis')(session);
 
 const config = require('./config/config');
 const passportConfig = require('./config/passport');
@@ -59,15 +59,33 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Configure i18n
+i18n.configure({
+  locales: config.locale.supported,
+  defaultLocale: config.locale.default,
+  cookie: config.locale.cookie,
+  directory: path.join(__dirname, '/locales'),
+  logDebugFn: (msg) => {
+    if (process.env.NODE_ENV === 'development') console.log('debug', msg);
+  },
+  logWarnFn: (msg) => {
+    if (process.env.NODE_ENV === 'development') console.log('warn', msg);
+  },
+  logErrorFn: (msg) => {
+    if (process.env.NODE_ENV === 'development') console.log('error', msg);
+  },
+});
+app.use(i18n.init);
+
 // Configure session
 app.use(session({
   secret: config.sessionSecret,
-  store: new redisStore(config.redis),
+  store: new RedisStore(config.redis),
   resave: false,
   saveUninitialized: true,
   // NOTE(tony): before setting up HTTPS,
   // enable cookie transmission in HTTP insecurely
-  cookie: { secure: false, maxAge: 3600000 },
+  cookie: config.express.cookie,
 }));
 
 // Passport authentication
@@ -78,7 +96,11 @@ passportConfig(passport);
 // Setup router (order is important)
 
 // Client-side React Router middleware
+// Material-UI server-side globals
+global.navigator = global.navigator || {};
+global.navigator.userAgent = 'all';
 app.use(clientRouter);
+
 // REST API top-level router under /api
 app.use('/api', router);
 
@@ -88,6 +110,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(errorHandlers.logErrors);
 }
 
+app.use(errorHandlers.localizeErrors);
 app.use(errorHandlers.clientErrorHandler);
 app.use(errorHandlers.serverErrorHandler);
 
