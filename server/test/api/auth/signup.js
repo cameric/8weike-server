@@ -5,6 +5,7 @@ const Promise = require('bluebird');
 const app = require('../../../app');
 const credentialModel = require('../../../app/models/credential');
 const db = require('../../../app/database');
+const expect = require('chai').expect;
 const fixture = require('../../fixtures/user');
 const tfaService = require('../../../app/services/tfa');
 const utils = require('../../utils');
@@ -15,10 +16,6 @@ const sinon = require('sinon');
 
 describe('Signup Routing', () => {
   beforeEach((done) => {
-    // Stub out the TFA service sendCode function
-    const sendCodeStub = sinon.stub(tfaService, 'sendCode');
-    sendCodeStub.returns(Promise.resolve());
-
     // Truncate the credential table
     db.truncate(['credential', 'profile'])
     // Import the fixture
@@ -26,11 +23,6 @@ describe('Signup Routing', () => {
         // Finish
         .then(done.bind(null, null))
         .catch(done);
-  });
-
-  afterEach((done) => {
-    tfaService.sendCode.restore();
-    done();
   });
 
   after((done) => {
@@ -228,6 +220,19 @@ describe('Signup Routing', () => {
       password: 'p@55w0rd',
     };
 
+    beforeEach((done) => {
+      // Spy on the TFA service sendCode function
+      console.log('BEFORE_EACH');
+      sinon.spy(tfaService, 'sendCode');
+      done();
+    });
+
+    afterEach((done) => {
+      console.log('AFTER_EACH');
+      tfaService.sendCode.restore();
+      done();
+    });
+
     describe('Valid input', () => {
       it('(200) Responds OK if user has completed step 1 of signup', (done) => {
         const agent = request.agent(app);
@@ -240,12 +245,8 @@ describe('Signup Routing', () => {
               .end((err, _) => {
                 if (err) return done(err);
 
-                try {
-                  // Sent once, then resent
-                  sinon.assert.callCount(tfaService.sendCode, 2);
-                } catch (e) {
-                  return done(e);
-                }
+                const checkSendCode = () => { sinon.assert.callCount(tfaService.sendCode, 2); };
+                expect(checkSendCode).to.not.throw(Error);
 
                 return done();
               });
@@ -262,11 +263,8 @@ describe('Signup Routing', () => {
             .end((err, _) => {
               if (err) return done(err);
 
-              try {
-                sinon.assert.notCalled(tfaService.sendCode);
-              } catch (e) {
-                return done(e);
-              }
+              const checkSendCode = () => { sinon.assert.notCalled(tfaService.sendCode); };
+              expect(checkSendCode).to.not.throw(Error);
 
               return done();
             });

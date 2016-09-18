@@ -4,10 +4,6 @@ const credentialModel = require('../../models/credential');
 const tfaService = require('../../services/tfa');
 const captchaService = require('../../services/captcha');
 
-function sendCode(pendingCredential) {
-  return tfaService.sendCode(pendingCredential.tfa_secret, pendingCredential.phone);
-}
-
 function resendCode(req, res, next) {
   const pendingCredential = req.session.pendingCredential;
 
@@ -19,7 +15,7 @@ function resendCode(req, res, next) {
   // TODO: Later on, we may want to consider adding a progressively-lengthening delay after the SMS
   // is resent a certain number of times, to prevent spam. However, this requires some cache
   // infrastructure to record which phone numbers we have sent SMSes to recently.
-  return sendCode(pendingCredential)
+  return tfaService.sendCode(pendingCredential.tfa_secret, pendingCredential.phone)
       .then(() => { res.status(200).send(); })
       .error((err) => { next(Object.assign(err, { status: 400 })); })
       .catch(next);
@@ -48,7 +44,7 @@ function signupWithPhoneWithoutCaptcha(req, res, next) {
   const session = req.session;
 
   saveSignupDataToSession(session, phone, password)
-      .then(() => sendCode(session.pendingCredential))
+      .then(() => tfaService.sendCode(session.pendingCredential.tfa_secret, phone))
       .then(() => { res.status(200).send(); })
       .error((err) => { next(Object.assign(err, { status: 400 })); })
       .catch(next);
@@ -60,7 +56,7 @@ function signupWithPhoneWithCaptcha(req, res, next) {
 
   captchaService.verify(captcha, hash)
       .then(() => saveSignupDataToSession(session, phone, password))
-      .then(() => sendCode(session.pendingCredential))
+      .then(() => tfaService.sendCode(session.pendingCredential.tfa_secret, phone))
       .then(() => { res.status(200).send(); })
       .error((err) => { next(Object.assign(err, { status: 400 })); })
       .catch(next);
