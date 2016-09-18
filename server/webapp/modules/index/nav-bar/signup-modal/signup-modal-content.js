@@ -44,7 +44,10 @@ function mapDispatchToProps(dispatch) {
       }));
     },
     resendTFACode: () => {
-
+      dispatch(webRequestAction({
+        url: '/api/signup/resend_code',
+        method: 'POST',
+      }));
     },
     verifyTFACode: (credential, code) => {
       dispatch(webRequestAction({

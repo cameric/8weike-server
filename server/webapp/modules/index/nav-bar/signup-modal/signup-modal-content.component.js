@@ -135,18 +135,17 @@ class SignupModalContent extends React.Component {
   _renderTFAResendBtnContent() {
     if (this.state.shouldDisableTfaBtn) {
       return (
-          <span>
-            Enable resend in <CountDown duration={30}
-                                        onFinished={() => {
-                         this.setState({ shouldDisableTfaBtn: false })
-                       }}/> seconds
-          </span>
-      )
-    } else {
-      return (
-          <span>Resend code now</span>
-      )
+        <span>
+          Enable resend in <CountDown
+            duration={30}
+            onFinished={() => {
+              this.setState({ shouldDisableTfaBtn: false });
+            }}
+          /> seconds
+        </span>
+      );
     }
+    return (<span>Resend code now</span>);
   }
 
   _renderNextStepButton(info, handleTouchTap) {
