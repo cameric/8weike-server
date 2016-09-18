@@ -43,6 +43,12 @@ function mapDispatchToProps(dispatch) {
         nextAction: signupWithPhoneCredentialAction,
       }));
     },
+    resendTFACode: () => {
+      dispatch(webRequestAction({
+        url: '/api/signup/resend_code',
+        method: 'POST',
+      }));
+    },
     verifyTFACode: (credential, code) => {
       dispatch(webRequestAction({
         url: '/api/signup/verify',

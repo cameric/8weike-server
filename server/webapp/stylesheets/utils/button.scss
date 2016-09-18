@@ -10,4 +10,13 @@
     text-decoration: underline;
     cursor: pointer;
   }
+
+  &:disabled {
+    color: #CCC;
+    cursor: default;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }
