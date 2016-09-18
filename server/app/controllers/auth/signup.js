@@ -4,6 +4,23 @@ const credentialModel = require('../../models/credential');
 const tfaService = require('../../services/tfa');
 const captchaService = require('../../services/captcha');
 
+function resendCode(req, res, next) {
+  const pendingCredential = req.session.pendingCredential;
+
+  if (!pendingCredential) {
+    const err = new Promise.OperationalError('User is not pending signup.');
+    return next(Object.assign(err, { status: 400 }));
+  }
+
+  // TODO: Later on, we may want to consider adding a progressively-lengthening delay after the SMS
+  // is resent a certain number of times, to prevent spam. However, this requires some cache
+  // infrastructure to record which phone numbers we have sent SMSes to recently.
+  return tfaService.sendCode(pendingCredential.tfa_secret, pendingCredential.phone)
+      .then(() => { res.status(200).send(); })
+      .error((err) => { next(Object.assign(err, { status: 400 })); })
+      .catch(next);
+}
+
 function saveSignupDataToSession(session, phone, password) {
   const verifyNotAlreadySignedUp = () => credentialModel.findByPhoneNumber(phone, ['id'])
       .then(() => Promise.reject(new Promise.OperationalError('Credential already exists!')),
@@ -17,16 +34,17 @@ function saveSignupDataToSession(session, phone, password) {
       .then(() => saveSession);
 
   return verifyNotAlreadySignedUp()
-      .then(() => savePendingCredentialToSession())
-      .then(() => tfaService.sendCode(session.pendingCredential.tfa_secret,
-          session.pendingCredential.phone));
+      .then(() => savePendingCredentialToSession());
 }
 
+// TODO: This is unfixably spam-enabling in a variety of ways. We need captcha for all signup EPs,
+// since they can be used to send SMS.
 function signupWithPhoneWithoutCaptcha(req, res, next) {
   const { phone, password } = req.body;
   const session = req.session;
 
   saveSignupDataToSession(session, phone, password)
+      .then(() => tfaService.sendCode(session.pendingCredential.tfa_secret, phone))
       .then(() => { res.status(200).send(); })
       .error((err) => { next(Object.assign(err, { status: 400 })); })
       .catch(next);
@@ -38,6 +56,7 @@ function signupWithPhoneWithCaptcha(req, res, next) {
 
   captchaService.verify(captcha, hash)
       .then(() => saveSignupDataToSession(session, phone, password))
+      .then(() => tfaService.sendCode(session.pendingCredential.tfa_secret, phone))
       .then(() => { res.status(200).send(); })
       .error((err) => { next(Object.assign(err, { status: 400 })); })
       .catch(next);
@@ -47,7 +66,14 @@ function verify(req, res, next) {
   const { code } = req.body;
   const session = req.session;
 
-  tfaService.verifyCode(req.session.pendingCredential.tfa_secret, code)
+  const pendingCredential = session.pendingCredential;
+  if (!pendingCredential) {
+    const err = new Promise.OperationalError('User is not pending signup.');
+    next(Object.assign(err, { status: 400 }));
+    return;
+  }
+
+  tfaService.verifyCode(pendingCredential.tfa_secret, code)
       .then(() => credentialModel.saveToDatabase(req.session.pendingCredential))
       .then((newCredentialEntry) => {
         // Automatically login after the credential is created
@@ -72,5 +98,6 @@ module.exports = {
   withCaptcha: {
     phone: signupWithPhoneWithCaptcha,
   },
+  resendCode,
   verify,
 };

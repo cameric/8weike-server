@@ -3,7 +3,6 @@
 const db = require('../../app/database');
 const expect = require('chai').expect;
 const fixture = require('../fixtures/user');
-const randomItem = require('../utils').randomItem;
 const profileModel = require('../../app/models/profile');
 
 describe('Profile Model', () => {
