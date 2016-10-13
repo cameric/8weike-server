@@ -61,6 +61,7 @@
     "passport-weixin": "^0.1.0",
     "path": "^0.12.7",
     "react": "^15.3.0",
+    "react-bootstrap": "^0.30.5",
     "react-document-title": "^2.0.2",
     "react-dom": "^15.3.0",
     "react-redux": "^4.4.5",

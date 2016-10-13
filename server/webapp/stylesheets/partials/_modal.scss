@@ -1,0 +1,16 @@
+$target-min-width: 744px;
+$target-max-width: $target-min-width - 1;
+
+// Create a responsive modal with custom width
+@mixin modal($model-width, $model-height) {
+  @media (min-width: $target-min-width) {
+    width: $model-width;
+    height: $model-height;
+  }
+
+  @media (max-width: $target-max-width) {
+    table-layout: fixed;
+    width: 100%;
+    height: 100%;
+  }
+}

@@ -24,7 +24,7 @@ module.exports = {
       // Valid sources of styles.
       styleSrc: ["'self'", "https://fonts.googleapis.com", `'nonce-${NONCE_HASH}'`],
       // Valid sources of fonts
-      fontSrc: ["https://fonts.gstatic.com"],
+      fontSrc: ["https://fonts.gstatic.com", "https://maxcdn.bootstrapcdn.com"],
       // Valid sources of images.
       imgSrc: ["'self'", "data:"],
       // Valid sources of Flash objects nad other plugins.

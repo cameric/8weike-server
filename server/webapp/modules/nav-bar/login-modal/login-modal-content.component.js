@@ -3,12 +3,11 @@ import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import { white } from 'material-ui/styles/colors';
 
-import ErrorBanner from '../../../../ui/error-banner';
-import Input from '../../../../ui/input';
-import CreateProfileModal from '../../../profile/create-profile-modal';
+import ErrorBanner from '../../../ui/error-banner';
+import Input from '../../../ui/input';
+import CreateProfileModal from '../../profile/create-profile-modal';
 
-require('../../../../stylesheets/modules/login-modal-content.scss');
-require('../../../../stylesheets/utils/button.scss');
+require('../../../stylesheets/modules/nav-bar/user-auth/login-modal-content.scss');
 
 class LoginModalContent extends React.Component {
   constructor(props) {
