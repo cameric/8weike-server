@@ -2,7 +2,7 @@ import React from 'react';
 
 import LocaleSelector from './locale-selector';
 
-require('../../stylesheets/modules/footer.scss');
+require('../../stylesheets/modules/footer/footer.scss');
 
 class Footer extends React.Component {
   render() {

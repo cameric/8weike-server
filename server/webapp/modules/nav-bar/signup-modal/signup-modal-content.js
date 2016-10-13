@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 
-import { webRequestAction } from '../../../../actions/utils';
+import { webRequestAction } from '../../../actions/utils';
 import { signupWithPhoneCredentialAction,
          signupWithPhoneTFAAction,
-         renderCaptchaInSignupAction } from '../../../../actions/auth';
+         renderCaptchaInSignupAction } from '../../../actions/auth';
 import SignupModalContent from './signup-modal-content.component';
 
 function mapStateToProps(state) {

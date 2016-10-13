@@ -4,14 +4,13 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { white } from 'material-ui/styles/colors';
 import validator from 'validator';
 
-import CountDown from '../../../../ui/countdown';
-import CreateProfileModal from '../../../profile/create-profile-modal';
-import ErrorBanner from '../../../../ui/error-banner';
-import Input from '../../../../ui/input';
+import CountDown from '../../../ui/countdown';
+import CreateProfileModal from '../../profile/create-profile-modal';
+import ErrorBanner from '../../../ui/error-banner';
+import Input from '../../../ui/input';
 import PasswordStrength from './password-strength';
 
-require('../../../../stylesheets/modules/signup-modal-content.scss');
-require('../../../../stylesheets/utils/button.scss');
+require('../../../stylesheets/modules/nav-bar/user-auth/signup-modal-content.scss');
 
 class SignupModalContent extends React.Component {
   constructor(props) {
@@ -113,7 +112,7 @@ class SignupModalContent extends React.Component {
               onChange={this._updateCaptcha.bind(this)}
             />
             <button
-              className="button-as-link"
+              className="button-as-link signup-modal-content__captcha-button"
               onClick={this.props.generateCaptcha}
             >
               <img

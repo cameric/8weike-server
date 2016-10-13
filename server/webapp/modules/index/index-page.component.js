@@ -3,11 +3,11 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
 
-import NavBar from './nav-bar/nav-bar';
+import NavBar from '../nav-bar/nav-bar';
 import Footer from '../footer/footer';
 import { webRequestAction, constructInitialStatePayload } from '../../actions/utils';
 
-require('../../stylesheets/modules/index-page.scss');
+require('../../stylesheets/modules/index-page/index-page.scss');
 
 class IndexPage extends React.Component {
   static fetchData({ store }) {

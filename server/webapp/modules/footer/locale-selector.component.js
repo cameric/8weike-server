@@ -1,6 +1,6 @@
 import React from 'react';
 
-require('../../stylesheets/modules/locale-selector.scss');
+require('../../stylesheets/modules/footer/locale-selector.scss');
 
 class LocaleSelector extends React.Component {
   _renderLocaleSelectBtn(msg, locale) {

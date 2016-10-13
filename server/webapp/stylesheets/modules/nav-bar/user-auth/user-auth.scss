@@ -1,3 +1,5 @@
+@import "../../../partials/modal";
+
 .user-auth {
   font-size: 16px;
   float: right;
@@ -15,4 +17,12 @@
       text-decoration: none;
     }
   }
+}
+
+.signup-modal {
+  @include modal(350px, auto);
+}
+
+.login-modal {
+  @include modal(350px, auto)
 }

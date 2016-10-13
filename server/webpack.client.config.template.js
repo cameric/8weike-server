@@ -5,7 +5,7 @@ const path = require('path');
 const webpack = require('webpack');
 const config = require('./app/config/config');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const I18nPlugin = require("i18n-webpack-plugin");
+const I18nPlugin = require('i18n-webpack-plugin');
 
 const devEntryPoints = [
   'babel-polyfill',
@@ -23,11 +23,11 @@ const defaultPlugins = [
     'global.BUNDLE_ID': '"8WEIKE_WEB_CLIENT"',
   }),
   new ExtractTextPlugin('style.bundle.css', {
-    allChunks: true
+    allChunks: true,
   }),
 ];
 
-module.exports = (langName, langLocale=null) => {
+module.exports = (langName, langLocale = null) => {
   let plugins = [];
   if (process.env.NODE_ENV === 'production') {
     plugins = _.concat(defaultPlugins, [
@@ -35,7 +35,7 @@ module.exports = (langName, langLocale=null) => {
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.OccurrenceOrderPlugin(),
       new webpack.optimize.UglifyJsPlugin(),
-    ])
+    ]);
   } else {
     plugins = _.concat(defaultPlugins, [
       new I18nPlugin(langLocale),
@@ -69,5 +69,5 @@ module.exports = (langName, langLocale=null) => {
       ],
     },
     plugins,
-  }
+  };
 };

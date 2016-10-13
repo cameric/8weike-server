@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Modal from '../../../ui/modal';
+import Modal from '../../ui/modal';
 import SignupModalContent from './signup-modal/signup-modal-content';
 import LoginModalContent from './login-modal/login-modal-content';
 
-require('../../../stylesheets/modules/user-auth.scss');
-require('../../../stylesheets/utils/button.scss');
+require('../../stylesheets/modules/nav-bar/user-auth/user-auth.scss');
+require('../../stylesheets/modules/ui/button.scss');
 
 class UserAuth extends React.Component {
   constructor(props) {

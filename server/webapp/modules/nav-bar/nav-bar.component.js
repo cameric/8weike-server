@@ -2,7 +2,7 @@ import React from 'react';
 
 import UserAuth from './user-auth';
 
-require('../../../stylesheets/modules/nav-bar.scss');
+require('../../stylesheets/modules/nav-bar/nav-bar.scss');
 
 class NavBar extends React.Component {
   render() {
