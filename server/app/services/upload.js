@@ -1,10 +1,17 @@
 // Services for handling file uploads
 
-const Promise = require('bluebird');
 const AWS = require('aws-sdk');
+const fs = require('fs');
+const path = require('path');
+const Promise = require('bluebird');
 
-function removeTemporary(filename) {
+const config = require('../config/config');
 
+const unlink = Promise.promisify(fs.unlink);
+
+function removeTemporary(tmpFilename) {
+  const tmpFilePath = path.join(config.upload.diskLocation, tmpFilename);
+  return unlink(tmpFilePath);
 }
 
 function uploadToS3(Key, Body) {

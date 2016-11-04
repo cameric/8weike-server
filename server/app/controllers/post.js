@@ -14,6 +14,12 @@ function create(req, res, next) {
   const postData = req.body;
   const mediaData = req.files;
 
+  // Construct a media file name with the following standard:
+  //
+  //    profile_id-post_id-hash-original_name.ext
+  //
+  // This standard will make sure that given one S3 bucket, it's easy
+  // to index media files and avoid duplicated keys as much as possible.
   const constructPostMediaName = (post, mediaMeta) => {
     // Note(tony): the media field comes from the filename defind in
     // `api/post`. We need to have a more systematic way to make sure that the
