@@ -13,6 +13,7 @@ const captchaRouter = require('./auth/captcha');
 const localeRouter = require('./locale');
 const loginRouter = require('./auth/login');
 const profileRouter = require('./profile');
+const postRouter = require('./post');
 const signupRouter = require('./auth/signup');
 
 // All controllers are imported here
@@ -37,6 +38,9 @@ appRouter.use('/captcha', captchaRouter);
 
 // Profile-related APIs
 appRouter.use('/profile', profileRouter);
+
+// Post-related APIS
+appRouter.use('/post', postRouter);
 
 // Locale-related APIs
 appRouter.use('/locale', localeRouter);
