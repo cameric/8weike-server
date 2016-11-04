@@ -1,23 +1,28 @@
-function mediaUpload(fileName) {
-  //.then((post) => {
-  //  // Note(tony): Construct a media file key with the following syntax:
-  //  //
-  //  //   profile_id-post_id-hash-file_name.file_extension
-  //  //
-  //  // This convention will make sure we parse the file names correctly and without collision.
-  //  for (let i = 0; i < media.length; ++i) {
-  //    const fileParts = [
-  //      post.profile_id,
-  //      post.id,
-  //      utils.generateHashWithDate(),
-  //      media[i].name,
-  //    ];
-  //    const fileName = fileParts.join('-');
-  //    uploader.uploadMedia(fileName);
-  //  }
-  //})
+// Services for handling file uploads
+
+const Promise = require('bluebird');
+const AWS = require('aws-sdk');
+
+function removeTemporary(filename) {
+
+}
+
+function uploadToS3(Key, Body) {
+  // Only upload file to S3 in production environment
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`File: ${Key} sent to S3...`);
+    return Promise.resolve();
+  }
+
+  // Configure AWS
+  AWS.config.update({ region: 'us-east-1' });
+  AWS.config.setPromisesDependency(Promise);
+
+  const s3 = new AWS.S3();
+  return s3.upload({ Key, Body, ACL: 'public-read' }).promise();
 }
 
 module.exports = {
-  mediaUpload,
+  uploadToS3,
+  removeTemporary,
 };

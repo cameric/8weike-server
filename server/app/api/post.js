@@ -7,6 +7,7 @@ const path = require('path');
 const auth = require('../middlewares/auth');
 const config = require('../config/config');
 const post = require('../controllers/post');
+const utils = require('../services/utils');
 
 // Construct disk storage for storing uploaded media files
 const storage = multer.diskStorage({
@@ -15,7 +16,8 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const baseName = path.basename(file.originalname);
-    const tmpFileName = `post-${baseName}-${config.upload.tmpSpecifier}-${Date.now()}`;
+    const fileHash = utils.generateHashWithDate();
+    const tmpFileName = `post-${baseName}-${config.upload.tmpSpecifier}-${fileHash}`;
     cb(null, tmpFileName);
   },
 });
