@@ -47,10 +47,9 @@ const defaults = {
     url: 'https://sms.yunpian.com/v1',
     apiKey: '2847caf78d61a130bb058962d18bac8c',
   },
-  post: {
-    media: {
-      maxCount: 10,
-    },
+  upload: {
+    diskLocation: path.join(root, '/tmp/uploads'),
+    tmpSpecifier: 'tmp',
   },
   webapp: {
     source: path.join(root, '/webapp'),
