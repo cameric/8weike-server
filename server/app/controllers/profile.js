@@ -28,7 +28,7 @@ function getLoggedInUserProfile(req, res, next) {
     .catch(next);
 }
 
-function getProfileById(req, res, next) {
+function getUserProfile(req, res, next) {
   const profileId = req.params.profileId;
 
   return profileModel.findById(profileId, [
@@ -43,5 +43,5 @@ function getProfileById(req, res, next) {
 module.exports = {
   create,
   getLoggedInUserProfile,
-  getProfileById,
+  getUserProfile,
 };

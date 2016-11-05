@@ -9,6 +9,6 @@ const profileRouter = express.Router(); // eslint-disable-line new-cap
 
 profileRouter.post('/', auth.requiresLogin, profile.create);
 profileRouter.get('/me', auth.requiresLogin, profile.getLoggedInUserProfile);
-profileRouter.get('/:profileId', profile.getProfileById);
+profileRouter.get('/:profileId', profile.getUserProfile);
 
 module.exports = profileRouter;

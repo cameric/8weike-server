@@ -20,5 +20,6 @@
 	"Password too short.": "Password too short.",
 	"User is not pending signup.": "User is not pending signup.",
 	"Nickname is not provided!": "Nickname is not provided!",
-	"Profile already exists!": "Profile already exists!"
+	"Profile already exists!": "Profile already exists!",
+	"Promise.OperationalError is not a constructor": "Promise.OperationalError is not a constructor"
 }
