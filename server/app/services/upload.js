@@ -14,7 +14,7 @@ function removeTemporary(tmpFilename) {
   return unlink(tmpFilePath);
 }
 
-function uploadToS3(Key, Body) {
+function uploadToS3(Bucket, Key, Body) {
   // Only upload file to S3 in production environment
   if (process.env.NODE_ENV !== 'production') {
     console.log(`File: ${Key} sent to S3...`);
@@ -26,7 +26,7 @@ function uploadToS3(Key, Body) {
   AWS.config.setPromisesDependency(Promise);
 
   const s3 = new AWS.S3();
-  return s3.upload({ Key, Body, ACL: 'public-read' }).promise();
+  return s3.upload({ Bucket, Key, Body, ACL: 'public-read' }).promise();
 }
 
 module.exports = {
