@@ -3,7 +3,7 @@ const date = require('../services/date');
 
 /**
  * Create a post and associates it with an existing profile
- * @param pid {number} - The credential id of the user.
+ * @param pid {number} - The profile id of the user.
  * @param columns {Object} - an object of data to insert
  * @returns {Promise.<Object>}
  */
@@ -28,9 +28,29 @@ function createPostForProfile(pid, columns) {
 }
 
 /**
- * Find a post given its unique ID
+ * Associate a media resource to a post
+ * @param postId {number} - ID of the post.
+ * @param mediaId {Object} - ID of the media resource
+ * @returns {Promise.<Object>}
+ */
+function addMediaToPost(postId, mediaId) {
+  const queryString = 'INSERT INTO post_collection ( ?? ) values ( ? )';
+
+  const relation = {
+    post_id: postId,
+    media_id: mediaId,
+  };
+
+  const columnNames = Object.keys(relation);
+  const columnValues = columnNames.map((col) => relation[col]);
+
+  return db.query(queryString, [columnNames, columnValues]);
+}
+
+/**
+ * Find a post metadata given its unique ID
  * @param postId {number} - post ID of the post
- * @param columns {Object} - columns to retrieve from
+ * @param columns {Array} - columns to retrieve from
  * @returns {Promise.<Object>}
  */
 function findById(postId, columns) {
@@ -48,7 +68,31 @@ function findById(postId, columns) {
   });
 }
 
+/**
+ * Find all media resources that are associated with the given post
+ * @param postId {number} - post ID of the post
+ * @param columns {Array} - array of columns to retrieve. Default to the resource name and location
+ * @returns {Promise.<Array>}
+ */
+function findMediaForPost(postId, columns = ['name', 'cdn_location']) {
+  const tables = 'post p, media m, post_collection pc';
+  const selection = 'p.id = ? AND p.id = pc.post_id AND m.id = pc.media_id';
+  const order = 'm.created_at';
+  const queryString = `SELECT ?? FROM ${tables} WHERE ${selection} ORDER BY ${order}`;
+
+  return db.query(queryString, [columns, postId]).then((res) => {
+    if (res.length < 1) {
+      return Promise.reject(new Promise.OperationalError(
+          'No media associated with this post.'));
+    }
+
+    return res;
+  });
+}
+
 module.exports = {
   createPostForProfile,
+  addMediaToPost,
   findById,
+  findMediaForPost,
 };
