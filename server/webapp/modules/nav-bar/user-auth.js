@@ -19,7 +19,7 @@ function mapDispatchToProps(dispatch) {
   return {
     loadProfileById: () => {
       dispatch(webRequestAction({
-        url: '/api/profile/info',
+        url: '/api/profiles/me',
         method: 'GET',
         nextAction: loadProfileByIdAction,
       }));
