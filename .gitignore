@@ -23,6 +23,9 @@ logs
 *.log
 npm-debug.log*
 
+# tmp files
+tmp
+
 # Runtime data
 pids
 *.pid

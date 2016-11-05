@@ -4,5 +4,14 @@
 	"Incorrect captcha response!": "验证码错误!",
 	"Code is incorrect!": "短信验证码错误!",
 	"An error occurred": "发生错误",
-	"User has not set up a profile yet!": "User has not set up a profile yet!"
+	"User has not set up a profile yet!": "User has not set up a profile yet!",
+	"request entity too large": "request entity too large",
+	"Unexpected token -": "Unexpected token -",
+	"Multipart: Boundary not found": "Multipart: Boundary not found",
+	"ER_BAD_FIELD_ERROR: Unknown column 'profile_id' in 'field list'": "ER_BAD_FIELD_ERROR: Unknown column 'profile_id' in 'field list'",
+	"User is not authorized": "User is not authorized",
+	"ER_BAD_NULL_ERROR: Column 'profile_id' cannot be null": "ER_BAD_NULL_ERROR: Column 'profile_id' cannot be null",
+	"Path must be a string. Received undefined": "Path must be a string. Received undefined",
+	"Unknown encoding: 7bit": "Unknown encoding: 7bit",
+	"Cannot read property 'originalname' of undefined": "Cannot read property 'originalname' of undefined"
 }

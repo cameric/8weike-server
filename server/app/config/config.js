@@ -48,8 +48,8 @@ const defaults = {
     apiKey: '2847caf78d61a130bb058962d18bac8c',
   },
   upload: {
+    limit: '50mb',
     diskLocation: path.join(root, '/tmp/uploads'),
-    tmpSpecifier: 'tmp',
   },
   webapp: {
     source: path.join(root, '/webapp'),

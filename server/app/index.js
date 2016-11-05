@@ -56,8 +56,8 @@ app.set('views', path.join(config.webapp.source, 'views'));
 app.use(express.static(path.join(config.root, '/public')));
 
 app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: config.upload.limit }));
+app.use(bodyParser.urlencoded({ limit: config.upload.limit, extended: true }));
 
 // Configure i18n
 i18n.configure({

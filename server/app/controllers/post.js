@@ -18,7 +18,7 @@ function create(req, res, next) {
 
   // Construct a media file name with the following standard:
   //
-  //    profile_id/post_id/hash/original_name.ext
+  //    profile_id/post_id/hash-original_name.ext
   //
   // This standard will make sure that given one S3 bucket, it's easy
   // to index media files and avoid duplicated keys as much as possible.
@@ -26,22 +26,22 @@ function create(req, res, next) {
     // Note(tony): the media field comes from the filename defind in
     // `api/post`. We need to have a more systematic way to make sure that the
     // two names are consistent.
-    const originalName = mediaMeta.media.originalname;
+    const originalName = mediaMeta.originalname;
     const fileHash = utils.generateHashWithDate();
-    return `${post.profile_id}/${post.id}/${fileHash}/${originalName}`;
+    return `${post.profile_id}/${post.id}/${fileHash}-${originalName}`;
   };
 
   const uploadMedia = (post, media) => {
     // Get path to the temporarily uploaded file
     const tmpFilePath = path.join(config.upload.diskLocation, media.filename);
-    return readFile(tmpFilePath, media.encoding)
-        .then((file) =>
-            uploader.uploadToS3(mediaBucket, constructPostMediaName(post, media), file));
+    return readFile(tmpFilePath).then((file) =>
+        uploader.uploadToS3(mediaBucket, constructPostMediaName(post, media), file));
   };
 
-  return profileModel.findByCredential(req.user.id, ['profile_id'])
-      .then((profile) => postModel.createPostForProfile(profile.profile_id, postData))
-      .then((post) => Promise.all(mediaData.map(uploadMedia.bind(post))))
+  return profileModel.findByCredential(req.user.id, ['id'])
+      .then((profile) => postModel.createPostForProfile(profile.id, postData))
+      .then((packet) => postModel.findById(packet.insertId, ['id', 'profile_id']))
+      .then((post) => Promise.all(mediaData.map(uploadMedia.bind(this, post))))
       .then((postId) => {
         res.status(200).send(postId);
       })

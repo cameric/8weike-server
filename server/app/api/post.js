@@ -15,9 +15,9 @@ const storage = multer.diskStorage({
     cb(null, config.upload.diskLocation);
   },
   filename: (req, file, cb) => {
-    const baseName = path.basename(file.originalname);
+    const parsedName = path.parse(file.originalname);
     const fileHash = utils.generateHashWithDate();
-    const tmpFileName = `post-${baseName}-${config.upload.tmpSpecifier}-${fileHash}`;
+    const tmpFileName = `tmp.post-${parsedName.name}-${fileHash}${parsedName.ext}`;
     cb(null, tmpFileName);
   },
 });
