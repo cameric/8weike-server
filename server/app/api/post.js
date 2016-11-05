@@ -28,5 +28,6 @@ const postRouter = express.Router(); // eslint-disable-line new-cap
 const handleUpload = upload.array('media', 10);
 
 postRouter.post('/', auth.requiresLogin, handleUpload, post.create);
+postRouter.get('/:postId', post.getPostById);
 
 module.exports = postRouter;

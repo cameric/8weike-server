@@ -15,5 +15,11 @@
 	"Unknown encoding: 7bit": "Unknown encoding: 7bit",
 	"Cannot read property 'originalname' of undefined": "Cannot read property 'originalname' of undefined",
 	"Cannot read property 'Key' of undefined": "Cannot read property 'Key' of undefined",
-	"Unexpected field": "Unexpected field"
+	"Unexpected field": "Unexpected field",
+	"Invalid phone number.": "Invalid phone number.",
+	"Password too short.": "Password too short.",
+	"User is not pending signup.": "User is not pending signup.",
+	"Nickname is not provided!": "Nickname is not provided!",
+	"Profile already exists!": "Profile already exists!",
+	"Promise.OperationalError is not a constructor": "Promise.OperationalError is not a constructor"
 }

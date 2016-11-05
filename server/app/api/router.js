@@ -37,10 +37,10 @@ appRouter.get('/logout', auth.requiresLogin, logout);
 appRouter.use('/captcha', captchaRouter);
 
 // Profile-related APIs
-appRouter.use('/profile', profileRouter);
+appRouter.use('/profiles', profileRouter);
 
 // Post-related APIS
-appRouter.use('/post', postRouter);
+appRouter.use('/posts', postRouter);
 
 // Locale-related APIs
 appRouter.use('/locale', localeRouter);

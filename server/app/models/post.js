@@ -80,14 +80,7 @@ function findMediaForPost(postId, columns = ['name', 'cdn_location']) {
   const order = 'm.created_at';
   const queryString = `SELECT ?? FROM ${tables} WHERE ${selection} ORDER BY ${order}`;
 
-  return db.query(queryString, [columns, postId]).then((res) => {
-    if (res.length < 1) {
-      return Promise.reject(new Promise.OperationalError(
-          'No media associated with this post.'));
-    }
-
-    return res;
-  });
+  return db.query(queryString, [columns, postId]);
 }
 
 module.exports = {
