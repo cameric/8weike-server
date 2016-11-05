@@ -3,6 +3,7 @@ const path = require('path');
 const Promise = require('bluebird');
 
 const config = require('../config/config');
+const mediaModel = require('../models/media');
 const profileModel = require('../models/profile');
 const postModel = require('../models/post');
 const uploader = require('../services/upload');
@@ -33,17 +34,30 @@ function create(req, res, next) {
 
   const uploadMedia = (post, media) => {
     // Get path to the temporarily uploaded file
+    const originalBasename = path.parse(media.originalname).name;
     const tmpFilePath = path.join(config.upload.diskLocation, media.filename);
-    return readFile(tmpFilePath).then((file) =>
-        uploader.uploadToS3(mediaBucket, constructPostMediaName(post, media), file));
+
+    // Construct S3 object name, upload to S3, build media metadata and its
+    // relation with the post object, and finally remove the temporary file.
+    return readFile(tmpFilePath)
+        .then((file) => uploader.uploadToS3(mediaBucket,
+            constructPostMediaName(post, media), file))
+        .then((s3Record) => mediaModel.createMediaResource(originalBasename,
+            s3Record.Key, s3Record.Location))
+        .then((packet) => postModel.addMediaToPost(post.id, packet.insertId))
+        .then((_) => uploader.removeTemporary(media.filename));
   };
 
+  let postId = null;
   return profileModel.findByCredential(req.user.id, ['id'])
       .then((profile) => postModel.createPostForProfile(profile.id, postData))
       .then((packet) => postModel.findById(packet.insertId, ['id', 'profile_id']))
-      .then((post) => Promise.all(mediaData.map(uploadMedia.bind(this, post))))
-      .then((postId) => {
-        res.status(200).send(postId);
+      .then((post) => {
+        postId = post.id; // Save the post ID for sending response
+        return Promise.all(mediaData.map(uploadMedia.bind(this, post)));
+      })
+      .then((_) => {
+        res.status(200).send({ id: postId });
       })
       .error((err) => { next(Object.assign(err, { status: 400 })); })
       .catch(next);

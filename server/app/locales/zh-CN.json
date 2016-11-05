@@ -13,5 +13,7 @@
 	"ER_BAD_NULL_ERROR: Column 'profile_id' cannot be null": "ER_BAD_NULL_ERROR: Column 'profile_id' cannot be null",
 	"Path must be a string. Received undefined": "Path must be a string. Received undefined",
 	"Unknown encoding: 7bit": "Unknown encoding: 7bit",
-	"Cannot read property 'originalname' of undefined": "Cannot read property 'originalname' of undefined"
+	"Cannot read property 'originalname' of undefined": "Cannot read property 'originalname' of undefined",
+	"Cannot read property 'Key' of undefined": "Cannot read property 'Key' of undefined",
+	"Unexpected field": "Unexpected field"
 }

@@ -3,9 +3,9 @@ const date = require('../services/date');
 
 /**
  * Create a new media and associate it with CDN location and name
- * @param name {number} - The human-readable original name of the media
- * @param cdnName {number} - The name of the resource stored on the CDN cloud (S3).
- * @param cdnLocation {Object} - The CDN location to access the resource
+ * @param name {String} - The human-readable original name of the media
+ * @param cdnName {String} - The name of the resource stored on the CDN cloud (S3).
+ * @param cdnLocation {String} - The CDN location to access the resource
  * @returns {Promise.<Object>}
  */
 function createMediaResource(name, cdnName, cdnLocation) {
