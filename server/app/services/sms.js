@@ -23,7 +23,7 @@ function send(phone, content, tplId=1) {
     method: 'POST',
     uri: `${config.sms.url}/sms/tpl_send.json`,
     headers: {
-      'Accept': 'application/json; charset=utf-8',
+      Accept: 'application/json; charset=utf-8',
       'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
     },
     form: {

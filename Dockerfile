@@ -19,6 +19,8 @@ MAINTAINER Tony Zhang <zhzhangtony@gmail.com>
 # If you want the environment variable to be applied
 # to only one environment (like NODE_ENV), please refer
 # to the paper doc "Docker Setup Guide".
+ENV AWS_ACCESS_KEY_ID "AKIAJBDITNQWN62JV3LQ"
+ENV AWS_SECRET_ACCESS_KEY "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"
 
 # Create and move to app directory
 RUN mkdir -p /srv/nSERVER
