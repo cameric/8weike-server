@@ -1,5 +1,5 @@
-const Promise = require('bluebird');
 const oneLine = require('common-tags/lib/oneLine');
+const Promise = require('bluebird');
 
 const credentialModel = require('./credential');
 const db = require('../database');
@@ -39,7 +39,10 @@ function createProfileForCredential(cid, columns) {
  * @returns {Promise.<user>} A promise that returns a profile if fulfilled.
  */
 function findById(pid, columns) {
-  const queryString = 'SELECT ?? FROM profile WHERE id = ?';
+  const queryString = oneLine`
+    SELECT ??
+    FROM profile
+    WHERE id = ?`;
 
   // IDs are unique, so we can automatically return the first element in `res` (if any).
   // The response will either be an individual user object, or null
@@ -62,7 +65,9 @@ function findById(pid, columns) {
  * @returns {Promise.<Object>}
  */
 function updateById(pid, columns) {
-  const queryString = 'UPDATE profile SET ? WHERE id = ?';
+  const queryString = oneLine`
+    UPDATE profile SET ?
+    WHERE id = ?`;
 
   return db.query(queryString, [columns, pid]).then((okPacket) => {
     if (okPacket.affectedRows < 1) {
@@ -129,6 +134,31 @@ function findPostsByProfile(pid, columns, skip = 0, limit = 10, order = 'time') 
   return db.query(queryString, [columns, pid]);
 }
 
+/**
+ * A small aggregate function that finds the total number of posts that
+ * associates with a particular id
+ * @param pid {number} - The ID of the profile
+ * @returns {Promise.<Object>}
+ */
+function findNumPostsByProfile(pid) {
+  const queryString = oneLine`
+    SELECT COUNT(*) AS postCount
+    FROM post p, profile pf
+    WHERE pf.id = ? AND p.profile_id = pf.id`;
+
+  return db.query(queryString, [pid]).then((res) => {
+    if (res.length < 1) {
+      return Promise.reject(new Promise.OperationalError(
+          'No entry returned from an aggregator. This should never occur!'));
+    } else if (res.length > 1) {
+      return Promise.reject(new Promise.OperationalError(
+          'Multiple entries returned from an aggregator. This should never occur!'));
+    }
+    console.log(res[0].postCount);
+    return res[0].postCount;
+  });
+}
+
 module.exports = {
   createProfileForCredential,
   findById,
@@ -136,4 +166,5 @@ module.exports = {
   findByCredential,
   updateByCredential,
   findPostsByProfile,
+  findNumPostsByProfile,
 };

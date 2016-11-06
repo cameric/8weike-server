@@ -57,7 +57,10 @@ function addMediaToPost(postId, mediaId) {
  * @returns {Promise.<Object>}
  */
 function findById(postId, columns) {
-  const queryString = 'SELECT ?? FROM post WHERE id = ?';
+  const queryString = oneLine`
+    SELECT ??
+    FROM post
+    WHERE id = ?`;
 
   return db.query(queryString, [columns, postId]).then((res) => {
     if (res.length < 1) {

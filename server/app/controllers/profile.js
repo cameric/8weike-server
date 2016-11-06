@@ -1,3 +1,4 @@
+const paginate = require('express-paginate');
 const Promise = require('bluebird');
 
 const credentialModel = require('../models/credential');
@@ -45,11 +46,20 @@ function retrievePostsForProfile(req, res, next) {
   const profileId = req.params.profileId;
   const order = req.query.sort || 'time';
 
+  const getNumPages = (numPosts) => Math.ceil((numPosts * 1.0) / req.query.limit);
+
   return profileModel.findPostsByProfile(profileId, ['id'], req.skip, req.query.limit, order)
       .then((postsMeta) => Promise.all(postsMeta.map((postMeta) =>
           postModel.findPostWithMedia(postMeta.id, ['title', 'description', 'created_at'])
       )))
-      .then((posts) => { res.status(200).send(posts); })
+      .then((posts) => profileModel.findNumPostsByProfile(profileId)
+        .then((numPosts) => ({
+          posts,
+          has_more: paginate.hasNextPages(req)(getNumPages(numPosts)),
+        })))
+      .then((posts) => {
+        res.status(200).send(posts);
+      })
       .error((err) => { next(Object.assign(err, { status: 400 })); })
       .catch(next);
 }
