@@ -47,6 +47,9 @@ const defaults = {
     url: 'https://sms.yunpian.com/v1',
     apiKey: '2847caf78d61a130bb058962d18bac8c',
   },
+  rabbitmq: {
+    heartbeat: 60,
+  },
   upload: {
     limit: '50mb',
     diskLocation: path.join(root, '/tmp/uploads'),
