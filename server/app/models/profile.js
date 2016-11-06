@@ -1,4 +1,5 @@
 const Promise = require('bluebird');
+const oneLine = require('common-tags/lib/oneLine');
 
 const credentialModel = require('./credential');
 const db = require('../database');
@@ -95,10 +96,44 @@ function updateByCredential(cid, columns) {
   return credentialModel.getProfileForId(cid).then((pid) => updateById(pid, columns));
 }
 
+/**
+ * Find a subset of posts that are associated with a profile. Note that this function
+ * will handle pagination if provided.
+ * @param pid {number} - The ID of the profile
+ * @param columns {Object} - An object representing the columns to update as key-value pairs.
+ * @param skip {number} - The number of elements to skip for pagination
+ * @param limit {number} - The number of posts to fetch in this batch
+ * @param order {String} - One of the following sorted types. Default to time
+ *  - time: sort by post created time
+ * @returns {Promise.<Object>}
+ */
+function findPostsByProfile(pid, columns, skip = 0, limit = 10, order = 'time') {
+  // Default order by time
+  let orderKey = null;
+  switch (order) {
+    case 'time':
+      orderKey = 'created_at';
+      break;
+    default:
+      orderKey = 'created_at';
+  }
+
+  const queryString = oneLine`
+    SELECT ??
+    FROM post p
+    INNER JOIN (SELECT id AS profile_id FROM profile WHERE id = ?) pf
+    WHERE p.profile_id = pf.profile_id
+    ORDER BY ${orderKey}
+    LIMIT ${limit} OFFSET ${skip}`;
+
+  return db.query(queryString, [columns, pid]);
+}
+
 module.exports = {
   createProfileForCredential,
   findById,
   updateById,
   findByCredential,
   updateByCredential,
+  findPostsByProfile,
 };
