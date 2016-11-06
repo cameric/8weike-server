@@ -1,3 +1,5 @@
+const oneLine = require('common-tags/lib/oneLine');
+
 const db = require('../database');
 const date = require('../services/date');
 
@@ -32,7 +34,10 @@ function createMediaResource(name, cdnName, cdnLocation) {
  * @returns {Promise.<Object>}
  */
 function findById(mediaId, columns) {
-  const queryString = 'SELECT ?? FROM media WHERE id = ?';
+  const queryString = oneLine`
+    SELECT ??
+    FROM media
+    WHERE id = ?`;
 
   return db.query(queryString, [columns, mediaId]).then((res) => {
     if (res.length < 1) {

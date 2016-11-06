@@ -66,20 +66,8 @@ function create(req, res, next) {
 function getPostById(req, res, next) {
   const postId = req.params.postId;
 
-  const postDataPromise = postModel.findById(postId, ['title', 'description', 'created_at']);
-  const mediaDataPromise = postModel.findMediaForPost(postId);
-
-  return Promise.all([postDataPromise, mediaDataPromise])
-      .then((data) => {
-        const [post, media] = data;
-        // Note(tony): have an extra level of abstraction to allow more flexibility
-        // in the response object structure.
-        post.media = media.map((m) => ({
-          name: m.name,
-          original: m.cdn_location,
-        }));
-        res.status(200).send(post);
-      })
+  return postModel.findPostWithMedia(postId, ['title', 'description', 'created_at'])
+      .then((post) => { res.status(200).send(post); })
       .error((err) => { next(Object.assign(err, { status: 400 })); })
       .catch(next);
 }

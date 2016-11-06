@@ -1,3 +1,4 @@
+const oneLine = require('common-tags/lib/oneLine');
 const Promise = require('bluebird');
 const speakeasy = require('speakeasy');
 const validator = require('validator');
@@ -13,7 +14,10 @@ const db = require('../database');
  * @returns {Promise.<user>} A promise that returns a user if fulfilled.
  */
 function findById(id, columns) {
-  const queryString = 'SELECT ?? FROM credential WHERE id = ?';
+  const queryString = oneLine`
+    SELECT ??
+    FROM credential
+    WHERE id = ?`;
 
   // IDs are unique, so we can automatically return the first element in `res` (if any).
   // The response will either be an individual user object, or null
@@ -35,7 +39,10 @@ function findById(id, columns) {
  * @returns {Promise.<Object>}
  */
 function findByPhoneNumber(phone, columns) {
-  const queryString = 'SELECT ?? FROM credential WHERE phone = ?';
+  const queryString = oneLine`
+    SELECT ??
+    FROM credential
+    WHERE phone = ?`;
 
   return db.query(queryString, [columns, phone]).then((res) => {
     if (res.length < 1) {

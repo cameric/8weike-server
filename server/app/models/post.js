@@ -1,3 +1,6 @@
+const oneLine = require('common-tags/lib/oneLine');
+const Promise = require('bluebird');
+
 const db = require('../database');
 const date = require('../services/date');
 
@@ -54,7 +57,10 @@ function addMediaToPost(postId, mediaId) {
  * @returns {Promise.<Object>}
  */
 function findById(postId, columns) {
-  const queryString = 'SELECT ?? FROM post WHERE id = ?';
+  const queryString = oneLine`
+    SELECT ??
+    FROM post
+    WHERE id = ?`;
 
   return db.query(queryString, [columns, postId]).then((res) => {
     if (res.length < 1) {
@@ -75,12 +81,37 @@ function findById(postId, columns) {
  * @returns {Promise.<Array>}
  */
 function findMediaForPost(postId, columns = ['name', 'cdn_location']) {
-  const tables = 'post p, media m, post_collection pc';
-  const selection = 'p.id = ? AND p.id = pc.post_id AND m.id = pc.media_id';
-  const order = 'm.created_at';
-  const queryString = `SELECT ?? FROM ${tables} WHERE ${selection} ORDER BY ${order}`;
+  const queryString = oneLine`
+    SELECT ??
+    FROM post p, media m, post_collection pc
+    WHERE p.id = ? AND p.id = pc.post_id AND m.id = pc.media_id
+    ORDER BY m.created_at`;
 
   return db.query(queryString, [columns, postId]);
+}
+
+/**
+ * Find and construct a post object with all corresponding media resource metadata
+ * @param postId {number} - post ID of the post
+ * @param postColumns {Array} - array of post columns to retrieve
+ * @param mediaColumns {Array} - array of media columns. Default to the resource name and location
+ * @returns {Promise.<Array>}
+ */
+function findPostWithMedia(postId, postColumns, mediaColumns = ['name', 'cdn_location']) {
+  const postDataPromise = findById(postId, postColumns);
+  const mediaDataPromise = findMediaForPost(postId, mediaColumns);
+
+  return Promise.all([postDataPromise, mediaDataPromise])
+      .then((data) => {
+        const [post, media] = data;
+        // Note(tony): have an extra level of abstraction to allow more flexibility
+        // in the response object structure.
+        post.media = media.map((m) => ({
+          name: m.name,
+          original: m.cdn_location,
+        }));
+        return Promise.resolve(post);
+      });
 }
 
 module.exports = {
@@ -88,4 +119,5 @@ module.exports = {
   addMediaToPost,
   findById,
   findMediaForPost,
+  findPostWithMedia,
 };
