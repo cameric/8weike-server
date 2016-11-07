@@ -21,6 +21,7 @@ MAINTAINER Tony Zhang <zhzhangtony@gmail.com>
 # to the paper doc "Docker Setup Guide".
 ENV AWS_ACCESS_KEY_ID "AKIAJBDITNQWN62JV3LQ"
 ENV AWS_SECRET_ACCESS_KEY "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"
+ENV CLOUDAMQP_URL "amqp://huozjfuw:qwPVZM1QiUrGS6TnRbqG4UszEVe2LGzj@buck.rmq.cloudamqp.com/huozjfuw"
 
 # Create and move to app directory
 RUN mkdir -p /srv/nSERVER

@@ -4,6 +4,7 @@ const Promise = require('bluebird');
 
 const config = require('../config/config');
 const mediaModel = require('../models/media');
+const mq = require('../mq');
 const profileModel = require('../models/profile');
 const postModel = require('../models/post');
 const uploader = require('../services/upload');
@@ -42,8 +43,12 @@ function create(req, res, next) {
     return readFile(tmpFilePath)
         .then((file) => uploader.uploadToS3(mediaBucket,
             constructPostMediaName(post, media), file))
-        .then((s3Record) => mediaModel.createMediaResource(originalBasename,
-            s3Record.Key, s3Record.Location))
+        .then((s3Record) => {
+          // Add image processing task to mq
+          mq.publishTask(config.rabbitmq.exchange, config.rabbitmq.routing.image, s3Record);
+          return mediaModel.createMediaResource(originalBasename,
+              s3Record.Key, s3Record.Location);
+        })
         .then((packet) => postModel.addMediaToPost(post.id, packet.insertId))
         .then((_) => uploader.removeTemporary(media.filename));
   };
