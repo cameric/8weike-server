@@ -27,37 +27,42 @@ function getConnection() {
     });
 }
 
-function getChannel() {
-  const createChannel = (conn) => conn.createConfirmChannel().disposer((ch) => {
-    ch.close();
+function getChannel(conn) {
+  return conn.createConfirmChannel().disposer((ch) => {
+    // TODO(tony): Because of a bug in the implementation of `close`, a TypeError will be thrown
+    // every time close is called. Comment this line out until a newer version is released.
+    // Check this issue for more details:
+    // https://github.com/squaremo/amqp.node/issues/297
+    // ch.close();
   });
-
-  return Promise.using(getConnection(), createChannel);
-}
-
-function checkConnection(exchange, options = {}) {
-  const checkExchange = (ch) => ch.assertExchange(exchange, 'direct', options)
-      .then((_) => ch);
-
-  return Promise.using(getChannel(), checkExchange);
 }
 
 function publishTask(exchange, routingKey, content, options = {}) {
-  return checkConnection(exchange)
+  // Transform the JSON object into a Node buffer array
+  const bufferedContent = Buffer.from(JSON.stringify(content));
+
+  const publish = (ch) => {
+    // Promisify the `publish` function in ConfirmChannel mode
+    const chAsync = Promise.promisifyAll(ch);
+
+    return ch.assertExchange(exchange, 'direct', options)
+        .error(() => Promise.reject(new Promise.OperationalError('Exchange does not exist!')))
+        .then(() => chAsync.publishAsync(exchange, routingKey, bufferedContent, options))
+        .then(() => Promise.all(offlineQueue.map((task) => chAsync.publishAsync(...task, options)))
+        .then(() => {
+          // Empty the queue
+          offlineQueue = [];
+          return Promise.resolve();
+        }));
+  };
+
+  const publishToChannel = (conn) => Promise.using(getChannel(conn), publish);
+  return Promise.using(getConnection(), publishToChannel)
       .error((err) => {
         // Add to offline queue if failed to connected to MQ
-        offlineQueue.push([exchange, routingKey, content]);
+        offlineQueue.push([exchange, routingKey, bufferedContent]);
         return Promise.reject(err);
-      })
-      // Promisify the `publish` function in ConfirmChannel mode
-      .then((ch) => Promise.promisifyAll(ch))
-      .then((ch) => Promise.all(offlineQueue.map((task) => ch.publishAsync(...task, options)))
-          .then((_) => {
-            // Empty the queue
-            offlineQueue = [];
-            return ch;
-          }))
-      .then(ch => ch.publishAsync(exchange, routingKey, content, options));
+      });
 }
 
 module.exports = {

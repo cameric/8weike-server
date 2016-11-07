@@ -48,6 +48,10 @@ const defaults = {
     apiKey: '2847caf78d61a130bb058962d18bac8c',
   },
   rabbitmq: {
+    exchange: '8weike-exchange',
+    routing: {
+      image: 'image-process',
+    },
     heartbeat: 60,
   },
   upload: {
