@@ -20,6 +20,10 @@ const config = require('./config/config');
  */
 let offlineQueue = [];
 
+/**
+ * Gets a connection from the RabbitMQ server.
+ * @returns {Promise.<amqp.Connection>} A promise to return a connection.
+ */
 function getConnection() {
   return amqp.connect(oneLineTrim`${process.env.CLOUDAMQP_URL}?
     heartbeat=${config.rabbitmq.heartbeat}`).disposer((conn) => {
@@ -27,6 +31,11 @@ function getConnection() {
     });
 }
 
+/**
+ * Gets a channel for sending tasks to RabbitMQ with a connection
+ * @param conn {Object} - A node amqp connection object
+ * @returns {Promise.<amqp.Channel>} A promise to return a channel object.
+ */
 function getChannel(conn) {
   return conn.createConfirmChannel().disposer((ch) => {
     // TODO(tony): Because of a bug in the implementation of `close`, a TypeError will be thrown
@@ -37,6 +46,16 @@ function getChannel(conn) {
   });
 }
 
+/**
+ * Gets a connection, creates a ConfirmChannel and pushes a task into the messaging queue.
+ * Both the channel and the connection will be closed afterwards. Note that instead of directly
+ * pushing into the queue, the exchange -> routing -> queue model is used.
+ * @param exchange {string} - A valid exchange. See ./config/config for default value.
+ * @param routingKey {string} - A valid routing. See ./config/config for a map of routes.
+ * @param content {Object} - A json object as the content
+ * @param options {Object} - Optional parameter passed to `publish`
+ * @returns {Promise.<Object>} A promise to signify success or failure
+ */
 function publishTask(exchange, routingKey, content, options = {}) {
   // Transform the JSON object into a Node buffer array
   const bufferedContent = Buffer.from(JSON.stringify(content));
