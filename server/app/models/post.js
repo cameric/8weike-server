@@ -80,7 +80,7 @@ function findById(postId, columns) {
  * @param columns {Array} - array of columns to retrieve. Default to the resource name and location
  * @returns {Promise.<Array>}
  */
-function findMediaForPost(postId, columns = ['name', 'cdn_location']) {
+function findMediaForPost(postId, columns = ['name', 'orig_location']) {
   const queryString = oneLine`
     SELECT ??
     FROM post p, media m, post_collection pc
@@ -97,7 +97,7 @@ function findMediaForPost(postId, columns = ['name', 'cdn_location']) {
  * @param mediaColumns {Array} - array of media columns. Default to the resource name and location
  * @returns {Promise.<Array>}
  */
-function findPostWithMedia(postId, postColumns, mediaColumns = ['name', 'cdn_location']) {
+function findPostWithMedia(postId, postColumns, mediaColumns = ['name', 'orig_location']) {
   const postDataPromise = findById(postId, postColumns);
   const mediaDataPromise = findMediaForPost(postId, mediaColumns);
 

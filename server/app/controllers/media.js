@@ -9,6 +9,6 @@ function updateMedia(req, res, next) {
       .catch(next);
 }
 
-module.export = {
+module.exports = {
   updateMedia,
 };
