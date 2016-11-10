@@ -43,13 +43,16 @@ function create(req, res, next) {
     return readFile(tmpFilePath)
         .then((file) => uploader.uploadToS3(mediaBucket,
             constructPostMediaName(post, media), file))
-        .then((s3Record) => {
-          // Add image processing task to mq
-          mq.publishTask(config.rabbitmq.exchange, config.rabbitmq.routing.image, s3Record);
-          return mediaModel.createMediaResource(originalBasename,
-              s3Record.Key, s3Record.Location);
-        })
-        .then((packet) => postModel.addMediaToPost(post.id, packet.insertId))
+        .then((s3Record) => mediaModel.createMediaResource(originalBasename,
+            s3Record.Key, s3Record.Location).then((packet) => {
+              // Add image processing task to mq
+              const task = s3Record;
+              task.id = packet.insertId;
+              mq.publishTask(config.rabbitmq.exchange, config.rabbitmq.routing.image, task);
+
+              // Associate media resource with post
+              return postModel.addMediaToPost(post.id, packet.insertId);
+            }))
         .then((_) => uploader.removeTemporary(media.filename));
   };
 
