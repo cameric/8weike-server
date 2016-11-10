@@ -1,4 +1,5 @@
 const oneLine = require('common-tags/lib/oneLine');
+const Promise = require('bluebird');
 
 const db = require('../database');
 const date = require('../services/date');
@@ -6,18 +7,18 @@ const date = require('../services/date');
 /**
  * Create a new media and associate it with CDN location and name
  * @param name {String} - The human-readable original name of the media
- * @param cdnName {String} - The name of the resource stored on the CDN cloud (S3).
- * @param cdnLocation {String} - The CDN location to access the resource
+ * @param origName {String} - The name of the original resource stored on the CDN cloud (S3).
+ * @param origLocation {String} - The CDN location to access the original resource
  * @returns {Promise.<Object>}
  */
-function createMediaResource(name, cdnName, cdnLocation) {
+function createMediaResource(name, origName, origLocation) {
   const queryString = 'INSERT INTO media ( ?? ) values ( ? )';
 
   // Associate profile id and created time with the data
   const mediaMetadata = {
     name,
-    cdn_name: cdnName,
-    cdn_location: cdnLocation,
+    orig_name: origName,
+    orig_location: origLocation,
     created_at: date.getCurrentDateInMySQLFormat(),
   };
 
@@ -51,7 +52,31 @@ function findById(mediaId, columns) {
   });
 }
 
+/**
+ * Update a media metadata given its unique ID
+ * @param mediaId {number} - ID of the media resource
+ * @param columns {Object} - columns to update
+ * @returns {Promise.<Object>}
+ */
+function updateById(mediaId, columns) {
+  const queryString = oneLine`
+    UPDATE media SET ?
+    WHERE id = ?`;
+
+  return db.query(queryString, [columns, mediaId]).then((okPacket) => {
+    if (okPacket.affectedRows < 1) {
+      return Promise.reject(new Promise.OperationalError(
+          'No media exists with the given id.'));
+    } else if (okPacket.affectedRows > 1) {
+      return Promise.reject(new Promise.OperationalError(
+          'Multiple media entries link to the same Id. This should never occur!'));
+    }
+    return Promise.resolve();
+  });
+}
+
 module.exports = {
   createMediaResource,
   findById,
+  updateById,
 };

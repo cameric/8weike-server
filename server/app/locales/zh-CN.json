@@ -25,5 +25,7 @@
 	"Cannot read property 'hasPreviousPages' of undefined": "Cannot read property 'hasPreviousPages' of undefined",
 	"ER_NON_UNIQ_ERROR: Column 'id' in field list is ambiguous": "ER_NON_UNIQ_ERROR: Column 'id' in field list is ambiguous",
 	"postModel.findPostWithMedia(...).then(...).error is not a function": "postModel.findPostWithMedia(...).then(...).error is not a function",
-	"express-paginate: `pageCount` is not a number >= 0": "express-paginate: `pageCount` is not a number >= 0"
+	"express-paginate: `pageCount` is not a number >= 0": "express-paginate: `pageCount` is not a number >= 0",
+	"ER_BAD_FIELD_ERROR: Unknown column 'cdn_name' in 'field list'": "ER_BAD_FIELD_ERROR: Unknown column 'cdn_name' in 'field list'",
+	"No media exists with the given id.": "No media exists with the given id."
 }

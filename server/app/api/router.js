@@ -12,6 +12,7 @@ const auth = require('../middlewares/auth');
 const captchaRouter = require('./auth/captcha');
 const localeRouter = require('./locale');
 const loginRouter = require('./auth/login');
+const mediaRouter = require('./media');
 const profileRouter = require('./profile');
 const postRouter = require('./post');
 const signupRouter = require('./auth/signup');
@@ -39,8 +40,9 @@ appRouter.use('/captcha', captchaRouter);
 // Profile-related APIs
 appRouter.use('/profiles', profileRouter);
 
-// Post-related APIS
+// Post- and media-related APIS
 appRouter.use('/posts', postRouter);
+appRouter.use('/medias', mediaRouter);
 
 // Locale-related APIs
 appRouter.use('/locale', localeRouter);

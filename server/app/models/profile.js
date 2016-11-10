@@ -154,7 +154,6 @@ function findNumPostsByProfile(pid) {
       return Promise.reject(new Promise.OperationalError(
           'Multiple entries returned from an aggregator. This should never occur!'));
     }
-    console.log(res[0].postCount);
     return res[0].postCount;
   });
 }
