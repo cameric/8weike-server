@@ -11,9 +11,7 @@ const utils = require('../services/utils');
 
 // Construct disk storage for storing uploaded media files
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, config.upload.diskLocation);
-  },
+  destination: config.upload.diskLocation,
   filename: (req, file, cb) => {
     const parsedName = path.parse(file.originalname);
     const fileHash = utils.generateHashWithDate();
