@@ -77,10 +77,10 @@ function findById(postId, columns) {
 /**
  * Find all media resources that are associated with the given post
  * @param postId {number} - post ID of the post
- * @param columns {Array} - array of columns to retrieve. Default to the resource name and location
+ * @param columns {Array} - array of columns to retrieve.
  * @returns {Promise.<Array>}
  */
-function findMediaForPost(postId, columns = ['name', 'orig_location']) {
+function findMediaForPost(postId, columns) {
   const queryString = oneLine`
     SELECT ??
     FROM post p, media m, post_collection pc
@@ -97,7 +97,8 @@ function findMediaForPost(postId, columns = ['name', 'orig_location']) {
  * @param mediaColumns {Array} - array of media columns. Default to the resource name and location
  * @returns {Promise.<Array>}
  */
-function findPostWithMedia(postId, postColumns, mediaColumns = ['name', 'orig_location']) {
+function findPostWithMedia(postId, postColumns, mediaColumns = ['name', 'orig_location',
+  'medium_location', 'thumbnail_location']) {
   const postDataPromise = findById(postId, postColumns);
   const mediaDataPromise = findMediaForPost(postId, mediaColumns);
 
@@ -108,7 +109,9 @@ function findPostWithMedia(postId, postColumns, mediaColumns = ['name', 'orig_lo
         // in the response object structure.
         post.media = media.map((m) => ({
           name: m.name,
-          original: m.cdn_location,
+          original: m.orig_location,
+          medium: m.medium_location,
+          thumbnail: m.thumbnail_location,
         }));
         return Promise.resolve(post);
       });
