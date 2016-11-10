@@ -57,6 +57,12 @@ function getChannel(conn) {
  * @returns {Promise.<Object>} A promise to signify success or failure
  */
 function publishTask(exchange, routingKey, content, options = {}) {
+  // TODO(tony): come up with a better way to handle dev/prod
+  // potentially using multiple queues, but difficult since not all services are running locally
+  if (process.env.NODE_ENV !== 'production') {
+    return Promise.resolve('Message has been published!');
+  }
+
   // Transform the JSON object into a Node buffer array
   const bufferedContent = Buffer.from(JSON.stringify(content));
 

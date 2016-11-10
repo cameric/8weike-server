@@ -51,7 +51,32 @@ function findById(mediaId, columns) {
   });
 }
 
+/**
+ * Update a media metadata given its unique ID
+ * @param mediaId {number} - ID of the media resource
+ * @param columns {Object} - columns to update
+ * @returns {Promise.<Object>}
+ */
+function updateById(mediaId, columns) {
+  const queryString = oneLine`
+    UPDATE media SET ?
+    WHERE id = ?`;
+
+  return db.query(queryString, [columns, mediaId]).then((okPacket) => {
+    if (okPacket.affectedRows < 1) {
+      return Promise.reject(new Promise.OperationalError(
+          'No media exists with the given id.'));
+    } else if (okPacket.affectedRows > 1) {
+      return Promise.reject(new Promise.OperationalError(
+          'Multiple media entries link to the same Id. This should never occur!'));
+    }
+    return Promise.resolve();
+  });
+}
+
+
 module.exports = {
   createMediaResource,
   findById,
+  updateById,
 };
